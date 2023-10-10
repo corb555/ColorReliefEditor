@@ -1,7 +1,7 @@
 # Editor for the color text file used by gdaldem color-relief
 
 
-![screenshot](https://github.com/corb555/openstreetmap-carto-walking/blob/1fe3b736e584b62f742cadb9c64ec72148f3dbe2/seattle_z16.png)
+![screenshot](https://github.com/corb555/ColorReliefEditor/blob/8b9dc20a4ae7fdd0e1b266afe9492fbab3d42d52/colorrelief.png)
 
 # Description   
 gdaldem color-relief uses a file with lines describing the RGB values to be used for each elevation   
