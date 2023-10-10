@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+
+
+[project]
+name = "Color Relief color text file Editor"
+version = "0.1.0"
+description = "Editor for the color text file used by gdaldem color-relief.  Display the colors and allow you to edit colors and elevations"
+authors = [
+    {name="M Herbert", email="you@example.com"}
+]
+license = "MIT"
+dependencies = [
+    "PyQt5==5.15.4"  # Adjust version if necessary
+]

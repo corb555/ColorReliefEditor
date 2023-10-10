@@ -1,5 +1,5 @@
-# ColorReliefEditor
-Editor for the color text file used by gdaldem color-relief
+# Editor for the color text file used by gdaldem color-relief
+
 
 ![screenshot](https://github.com/corb555/openstreetmap-carto-walking/blob/1fe3b736e584b62f742cadb9c64ec72148f3dbe2/seattle_z16.png)
 
