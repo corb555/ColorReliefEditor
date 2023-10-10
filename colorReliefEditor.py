@@ -13,7 +13,6 @@ NUM_ROWS = 6
 PIXELS_PER_CHAR = 10
 
 
-
 class ColorReliefEditor(QWidget):
     """
     Editor for RGB colors used by gdaldem color-relief
