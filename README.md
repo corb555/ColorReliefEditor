@@ -3,11 +3,17 @@
 
 ![screenshot](https://github.com/corb555/ColorReliefEditor/blob/8b9dc20a4ae7fdd0e1b266afe9492fbab3d42d52/colorrelief.png)
 # Description   
-gdaldem color-relief uses a file with lines describing the RGB values to be used for each elevation   
-This provides an editor for the colors and elevations and displays all the colors together
+An editor for the color definition file used by the gdaldem color-relief utility. This tool displays the color for each elevation
+and allows you to edit each color and elevation.  
+gdaldem generates a color relief map based on defining colors for each elevation based on a file.  
+For details on gdaldem:  https://gdal.org/programs/gdaldem.html
+
+# Installation
+`python3 -m pip install "ColorReliefEditor"`
 
 # Usage
-colorReliefEditor color_text_file   
+`python3 ColorReliefEditor`   
+This will display a file dialog filtered for *.txt
 
-filename is a color relief file which contains lines of the format:  
+This will edit a color relief file which contains lines of the format:  
 _elevation_value red green blue_ 

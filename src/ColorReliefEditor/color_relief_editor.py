@@ -1,232 +1,192 @@
 import os
 import sys
 
-from PyQt5 import QtWidgets
-from PyQt5.QtCore import pyqtSignal, Qt
-from PyQt5.QtGui import QPainter, QColor, QLinearGradient
+from PyQt5.QtCore import pyqtSignal, Qt, QObject
+from PyQt5.QtGui import QPainter, QColor, QLinearGradient, QFontMetrics
 from PyQt5.QtWidgets import (QWidget, QVBoxLayout, QPushButton, QTableWidget, QLineEdit,
                              QHBoxLayout, QColorDialog, QApplication, QLabel, QSizePolicy,
-                             QFileDialog)
+                             QFileDialog, QHeaderView)
 
 
 class ColorReliefEditor(QWidget):
     """
-    Editor for the color definitions used by the gdaldem color-relief utility. This tool displays
-    the color for each elevation
-    and allows you to edit each color and elevation.  gdaldem generates a color relief map based
-    on defining colors for each
-    elevation based on a file with the following format:
-    Each row has: elevation R G B [A]
+    Editor for the color definitions used by the gdaldem color-relief utility. Read in the color
+    ramp file, display the color for each elevation and allow you to edit each color and
+    elevation.
+    gdaldem generates a color relief map based on defining colors for each elevation
 
     See:  https://gdal.org/programs/gdaldem.html
+
+    Args:
+        sample_height (int): The height of the sample view panel.
+        sample_width (int): The width of the sample view panel.
+        initial_rows (int): The initial number of rows to display in the color edit widget.
     """
 
-    def __init__(self, filename):
+    def __init__(self, sample_height, sample_width, initial_rows):
         """
         Initialize the ColorReliefEditor.
-
-        Args:
-            filename (str): The path to the color file.
-
-        Raises:
-            FileNotFoundError: If the specified file is not found.
         """
         super().__init__()
 
-        try:
-            self.color_ramp = ColorRamp(filename)
-            self.color_ramp.read()  # Read in the color definitions
-        except FileNotFoundError as e:
-            print(str(e))
+        # Read in file and put in ColorRamp
+        self.color_ramp = ColorRamp()  # Reads, stores, and updates ColorRamp data
+        self.filename = get_filename()
+        if not self.filename:
             sys.exit(1)
+        self.color_ramp.read(self.filename)
 
-        self.color_edit_widget, self.sample_view = None, None
-        self.init_ui()
+        # Create UI
+        self.color_edit_widget, self.view_sample = None, None
+        self.init_ui(sample_height, sample_width, initial_rows)
 
-    def init_ui(self):
+    def init_ui(self, sample_height, sample_width, initial_rows):
         """
         Initialize the user interface.
 
         The UI consists of the following panels:
-        - ColorEditWidget: A panel to edit the colors and their elevations.
         - ViewSample: A panel to display a sample of the colors.
-        """
-        # Create ColorEditWidget - panel to edit colors
-        self.color_edit_widget = ColorEditWidget(self.color_ramp)
+        - ColorEditWidget: A panel to edit the colors and their elevations.
+        - Save Button
 
-        # Create SampleView widget - panel to display a sample of the colors
-        self.sample_view = ViewSample(self.color_ramp)
-
-        # Connect the update event of ColorPaneWidget to redraw the ViewSample
-        self.color_edit_widget.data_updated.connect(self.sample_view.redraw)
-
-        # Create the main display with sample view, and color pane
-        main_pane = QHBoxLayout()  # QHBoxLayout arranges widgets in a single row, from left to
-        # right.
-        main_pane.addWidget(self.sample_view)  # Add the sample view to the main pane on the left
-        main_pane.addWidget(
-            self.color_edit_widget
-            )  # Add the color edit widget to the main pane on the right
-        self.setLayout(main_pane)  # Set the layout for this widget
-
-
-class ColorRamp:
-    """
-    Class to read and save GDAL ColorRamp elevation and RGB(A) values from/to a file.
-    The data is stored in the "data" array.
-    Each line in the file contains: elevation, R, G, B, A (optional).
-    Elevation can be "nv" indicating a special case for "no value".
-    """
-
-    def __init__(self, filename):
-        """
-        Initialize the ColorRamp instance.
-
-        Args:
-            filename (str): The path to the file containing elevation and RGB(A) values.
-        """
-        self.filename = filename
-        self._data = []
-        self.nv_line = None
-
-    def read(self):
-        """
-        Read elevation and RGB(A) values from the file and store them in "_data".
-        Each line in the file contains: elevation, R, G, B, A (optional).
-        Elevation can be "nv" indicating a special case for "no value".
+        [main_layout - QVBox]
+          [edit_pane - QHBox]
+            [ViewSample]  [ColorEdit]
+          [button_pane - QHBox]
+            [save_button]
         """
 
-        def validate_rgba(values):
-            """
-            Validate that the RGBA values are within the acceptable range (0-255).
+        # Create the edit_pane with sample view, and ColorEditWidget
+        edit_pane = QHBoxLayout()
 
-            Args:
-                values (list): List of RGB(A) values.
+        # Create SampleView on left - panel to display a sample of the color settings
 
-            Raises:
-                ValueError: If any of the RGB(A) values are out of the range 0-255.
-            """
-            for val in values[1:]:
-                if not (0 <= val <= 255):
-                    raise ValueError(f"RGBA values must be between 0 and 255. Found {val}.")
+        self.view_sample = ViewSample(self.color_ramp, sample_height, sample_width)
+        edit_pane.addWidget(self.view_sample)  # Add the sample view on the left
 
-        try:
-            with open(self.filename, 'r') as file:
-                for line_number, line in enumerate(file, start=1):
-                    tokens = line.strip().split()
-                    try:
-                        if tokens[0].lower() == "nv":  # Special case for "no value"
-                            self.nv_line = line.strip()
-                            continue
+        # Create ColorEditWidget on right - panel to edit elevation and colors
+        self.color_edit_widget = ColorEditWidget(self.color_ramp, initial_rows)
+        edit_pane.addWidget(self.color_edit_widget)  # Add  color edit widget on the  right
 
-                        if len(tokens) not in (4, 5):
-                            raise ValueError(
-                                f"Incorrect number of values (expected 4 or 5, got {len(tokens)})"
-                            )
+        # Create button pane with a Save button
+        button_pane = QHBoxLayout()
+        self.save_button = create_button('Save', self.on_save_button, self)
+        self.save_button.setEnabled(False)  # Only enabled when data has been changed
+        button_pane.addWidget(self.save_button)
 
-                        elevation, r, g, b = map(int, tokens[0:4])
-                        a = int(tokens[4]) if len(tokens) == 5 else None
+        # Create main layout with edit_pane and button pane
+        main_layout = QVBoxLayout()  # QVBoxLayout arranges widgets in a single column
+        main_layout.addLayout(edit_pane)
+        main_layout.addLayout(button_pane)
+        self.setLayout(main_layout)  # Set the layout for this widget
 
-                        validate_rgba([elevation, r, g, b, a])
-                        self._data.append([elevation, r, g, b, a])
+        # Connect update methods so components update when the edit widget changes data
+        self.color_edit_widget.data_updated.connect(self.on_data_updated)
+        self.color_edit_widget.data_updated.connect(self.view_sample.update)
 
-                    except (ValueError, IndexError) as e:
-                        print(
-                            f"ERROR in Color Ramp: line {line_number}: {str(e)} \n {line.strip()}"
-                        )
-                        sys.exit(1)
-        except FileNotFoundError:
-            raise FileNotFoundError(f"File {os.path.abspath(self.filename)} not found.")
-
-    def save(self):
+    def on_data_updated(self):
         """
-        Save the RGB(A) values to the file.
+        Enable the save button if changes have been made.
         """
-        with open(self.filename, 'w') as file:
-            if self.nv_line:
-                file.write(self.nv_line + '\n')
-            for row in self._data:
-                file.write(" ".join(map(str, [value for value in row if value is not None])) + '\n')
+        self.save_button.setEnabled(True)
 
-    def __iter__(self):
-        return iter(self._data)
-
-    def __getitem__(self, index):
+    def on_save_button(self):
         """
-        Get an item from the data list by index.
+        Save data and disable Save button
         """
-        return self._data[index]
-
-    def __setitem__(self, index, value):
-        """
-        Set an item in the data list at the specified index.
-        """
-        self._data[index] = value
-
-    def __len__(self):
-        """
-        Get the number of items in the data list.
-        """
-        return len(self._data)
+        self.save_button.setEnabled(False)
+        self.color_ramp.save(self.filename)
 
 
 class ColorEditWidget(QWidget):
     """
-    Widget to display and edit a list of elevations and their corresponding color.
+    Widget for displaying and editing a table of color_ramp elevation levels and their
+    corresponding colors.
+
+    This widget allows users to view and modify both the elevation values and their associated
+    colors (RGB or RGBA). Each row contains an elevation level and its color. Rows can be
+    inserted and deleted.
+
+    Emits data_updated when any data is edited
     """
-    # Class-level constants
-    ROW_HEIGHT = 30
-    PIXELS_PER_CHAR = 10  # Assuming a fixed value for PIXELS_PER_CHAR
-    LABEL_WIDTH = 9 * PIXELS_PER_CHAR
-    COLOR_FRAME_WIDTH = ROW_HEIGHT * 4
+    data_updated = pyqtSignal()  # Signal that data has been updated and needs redisplay
 
-    data_updated = pyqtSignal()  # Signal emitted when the data has been updated.
-
-    def __init__(self, color_ramp):
+    def __init__(self, color_ramp, initial_rows):
         """
-        Initialize the ColorPaneWidget.
+        Initialize the ColorEditWidget.
 
         Args:
             color_ramp (ColorRamp): An instance of the ColorRamp class containing color data.
         """
         super().__init__()
         self.color_ramp = color_ramp
+        self.initial_rows = initial_rows
         self.color_table = None
-        self.save_button = None
+        self.insert_button, self.delete_button = None, None
+        self.font_metrics = QFontMetrics(self.font())
+        self.row_height = self.font_metrics.height() + 10  # Calc row height with some padding
         self.init_ui()
-        self.set_data_changed(False)
+        self.data_updated.connect(self.on_data_updated)
 
-    # noinspection PyUnboundLocalVariable
     def init_ui(self):
         """
         Initialize the user interface elements of the widget.
 
         The UI consists of:
-        1. color_table to display and edit elevation and color information.
-        2. Instruction label to guide the user.
-        3. Save button to save changes.
+        1. color_table to display and edit elevation and color information at the top.
+        2. Instruction label to guide the user next.
+        3. Insert and Delete buttons at the bottom.
         """
-        # Create table with a column for elevation and column for color for each item in color_ramp
-        self.color_table = QTableWidget(len(self.color_ramp), 2, self)
+        # Create the color_table with a column for elevation and column for color
+        self.color_table = QTableWidget(1, 2, self)
         self.color_table.horizontalHeader().setSectionResizeMode(
-            1, QtWidgets.QHeaderView.ResizeToContents
+            1, QHeaderView.ResizeToContents
         )
         self.color_table.horizontalHeader().hide()  # Hide the horizontal header
         self.color_table.verticalHeader().hide()  # Hide the vertical header
-        self.color_table.setFixedHeight(
-            self.ROW_HEIGHT * len(self.color_ramp)
-        )  # Set fixed height for the table
+        self.color_table.setFixedHeight(self.row_height * self.initial_rows)  # Set 10 row height
 
-        # Populate the table with elevation in column 0 and color in column 1
+        # Populate the color_table with color_ramp elevations and colors
+        self.on_data_updated()
+
+        # Create an instruction label
+        instructions_label = QLabel("Click elev or color above to edit", self)
+
+        # Create a button row for insert and delete buttons
+        button_layout = QHBoxLayout()
+        button_help = QLabel("Row ", self)
+        button_layout.addWidget(button_help)
+        self.insert_button = create_button('Insert', self.insert_row, self)
+        button_layout.addWidget(self.insert_button)
+        self.delete_button = create_button('Delete', self.delete_row, self)
+        button_layout.addWidget(self.delete_button)
+
+        # Set up the overall layout with these widgets vertically
+        layout = QVBoxLayout()
+        layout.addWidget(self.color_table, 0)  # Add the color table at the top
+        layout.addWidget(instructions_label, 0)  # Add the instruction label next
+        layout.addLayout(button_layout)  # Add the insert button row
+        layout.addStretch(1)  # Add stretch to push all widgets to the top
+        self.setLayout(layout)  # Set the layout
+
+    def on_data_updated(self):
+        """
+        Populate the color_table with color_ramp elevation in column 0 and color in column 1.
+        """
+        self.color_table.setRowCount(len(self.color_ramp))
         for idx, (elevation, r, g, b, a) in enumerate(self.color_ramp):
             # Create an editable cell for elevation
             elevation_edit = QLineEdit(str(elevation))
-            elevation_edit.setFixedHeight(self.ROW_HEIGHT)  # Set fixed height for the cell
-            elevation_edit.setFixedWidth(self.LABEL_WIDTH)  # Set fixed width for the cell
+            elevation_edit.setFixedHeight(
+                self.row_height
+            )  # Set fixed height for the cell
+            elevation_edit.setFixedWidth(
+                self.font_metrics.boundingRect(str("99999")).width()
+            )  # Set fixed width for the cell
             elevation_edit.setAlignment(Qt.AlignBottom)  # Align text at the bottom
-            elevation_edit.textEdited.connect(
-                self.on_elevation_edited
-            )  # Connect text edited signal
+            elevation_edit.editingFinished.connect(
+                lambda idx=idx: self.on_elevation_edited(idx)
+            )  # Connect editing finished signal
             self.color_table.setCellWidget(
                 idx, 0, elevation_edit
             )  # Add the elevation cell to the table column 0
@@ -234,61 +194,74 @@ class ColorEditWidget(QWidget):
             # Create a button for each color to open a color picker
             color_button = QPushButton(self)
             color_button.setFlat(True)  # Makes the button look like a plain rectangle
-            if a is not None:  # If alpha value is provided
-                color_button.setStyleSheet(
-                    "background-color: rgba({}, {}, {}, {}); border: none;".format(r, g, b, a)
-                )
-            else:
-                color_button.setStyleSheet(
-                    "background-color: rgb({}, {}, {}); border: none;".format(r, g, b)
-                )
-            color_button.setFixedSize(
-                self.COLOR_FRAME_WIDTH, self.ROW_HEIGHT
-            )  # Set fixed size for the color button
-            color_button.clicked.connect(
-                lambda _, idx=idx: self.open_color_picker(idx)
-            )  # Connect click signal
-            self.color_table.setCellWidget(
-                idx, 1, color_button
-            )  # Add the color button to the table column 1
+            color_button.setStyleSheet(
+                f"""
+                QPushButton {{
+                    background-color: rgba({r}, {g}, {b}, {a if a is not None else 255});
+                    border: none;
+                }}
+                QPushButton:focus {{
+                    border: 2px solid blue;
+                }}
+                """
+            )
 
-            self.color_table.setRowHeight(idx, self.ROW_HEIGHT)  # Set fixed height for the row
+            color_button.setFixedSize(self.row_height * 2, self.row_height)
+            color_button.clicked.connect(lambda _, idx=idx: self.open_color_picker(idx))
+            self.color_table.setCellWidget(idx, 1, color_button)
+            self.color_table.setRowHeight(idx, self.row_height)
 
-        # Create an instruction label
-        instructions_label = QLabel("Click on elevation or color above to edit", self)
+            # Set column widths based on the widgets' sizes
+            if self.color_table.rowCount() > 0:
+                elevation_edit = self.color_table.cellWidget(0, 0)
+                color_button = self.color_table.cellWidget(0, 1)
+                if elevation_edit and color_button:
+                    self.color_table.setColumnWidth(0, elevation_edit.width())
+                    self.color_table.setColumnWidth(1, color_button.width())
+                    # Set the fixed width of the table based on the sum of column widths
+                    self.color_table.setFixedWidth(
+                        elevation_edit.width() + color_button.width() + 5
+                        )
 
-        # Create a save button
-        self.save_button = QPushButton("Save", self)
-        self.save_button.clicked.connect(self.save)  # Connect click signal
-        self.save_button.setSizePolicy(
-            QSizePolicy.Fixed, QSizePolicy.Fixed
-        )  # Set fixed size policy
-
-        # Set up the layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.color_table, 0)  # Add the color table to the layout at the top
-        layout.addWidget(
-            instructions_label, 0
-        )  # Add the instruction label below the color table
-        layout.addWidget(
-            self.save_button, 0, Qt.AlignTop
-        )  # Add the save button below the instruction label
-        layout.addStretch(1)  # Add stretch to push all widgets to the top
-        self.setLayout(layout)  # Set the layout for the widget
-
-    def on_elevation_edited(self):
+    def on_elevation_edited(self, idx):
         """
         Handle the event when the elevation value is edited in the table.
         """
-        sender = self.sender()
-        if sender:
-            idx = self.color_table.indexAt(sender.pos()).row()
-            if 0 <= idx < len(self.color_ramp):
-                try:
-                    self.color_ramp[idx][0] = int(sender.text())
-                except ValueError:
-                    pass  # Handle invalid conversion to integer if needed
-                self.set_data_changed(True)  # Mark that a change has been made
+        elevation_edit = self.color_table.cellWidget(idx, 0)
+        if elevation_edit:
+            try:
+                val = int(elevation_edit.text())
+                self.color_ramp[idx][0] = val
+            except ValueError:
+                pass  # Handle invalid conversion to integer if needed
+        self.data_updated.emit()  # Emit signal that data has updated
+
+    def insert_row(self):
+        """
+        Insert a new row into the color_table.
+        """
+        current_row = self.color_table.currentRow()
+        if current_row >= 0:
+            current = self.color_ramp[current_row]
+
+            # Current elev plus 1, white color, current alpha
+            new_data = [current[0] + 1] + [255, 255, 255] + [current[4]]
+
+            self.color_ramp.insert(current_row, new_data)
+            self.color_table.setFixedHeight(self.row_height * len(self.color_ramp) + 5)
+            self.data_updated.emit()
+
+    def delete_row(self):
+        """
+        Delete the current row from the color_table.
+        """
+        current_row = self.color_table.currentRow()  # Get the currently selected row
+        if current_row != -1:  # If a valid row is selected
+            self.color_ramp.delete(current_row)  # Delete the row from the color_ramp data
+            self.color_table.setFixedHeight(
+                self.row_height * len(self.color_ramp) + 5
+            )  # Adjust height
+            self.data_updated.emit()
 
     def open_color_picker(self, idx):
         """
@@ -325,34 +298,16 @@ class ColorEditWidget(QWidget):
                     QPushButton:released {background-color: %s; border: none;}
                 """ % (new_color.name(), new_color.name(), new_color.name())
                 color_button.setStyleSheet(color_style)
-                self.set_data_changed(True)  # Mark that a change has been made
-
-    def save(self):
-        """
-        Save the RGB values to the file and clear flag
-        """
-        self.color_ramp.save()
-        self.set_data_changed(False)
-
-    # noinspection PyUnresolvedReferences
-    def set_data_changed(self, changed: bool):
-        """
-        Enable or disable the save button based on whether changes have been made.
-
-        Args:
-            changed (bool): True if changes have been made, False otherwise.
-        """
-        self.save_button.setEnabled(changed)
-        if changed:
-            self.data_updated.emit()
+        self.data_updated.emit()  # Emit signal that data has updated
 
 
 class ViewSample(QWidget):
     """
-    Widget to display a sample of the colors.
+    Widget to display a sample of color bands with gradients between colors.
+    Each band's height is scaled according to elevation values.
     """
 
-    def __init__(self, color_ramp):
+    def __init__(self, color_ramp, height, width):
         """
         Initialize the ViewSample widget.
 
@@ -363,50 +318,45 @@ class ViewSample(QWidget):
         self.color_ramp = color_ramp
         self.offset = None
         self.offset_data = None
-        self.setMinimumSize(220, 500)
+        self.setMinimumSize(width, height)
 
     def scale_color_bands(self):
         """
         Calculate parameters for each color sample band.
-        Each band is a scaled height filled with a gradient of the band's bottom color and top
-        color.
+        Each band is a scaled height filled with a gradient of the band's bottom color and top color.
 
         Returns:
-            list: List of parameters for drawing each color band, including
-                  coordinates, dimensions, and color information.
+            list: List of parameters for drawing each color band, including coordinates, dimensions,
+                  and color information.
         """
-        draw_parameters = []  # List to store parameters for drawRect
-
-        # Determine the minimum y-value and offset to make all y-values positive.
-        # Create offset_data list with all values offset
+        # Offset all elevations so they are positive
         min_y = min(self.color_ramp, key=lambda x: x[0])[0]
-        self.offset = -min_y if min_y < 0 else 0
+        self.offset = -min_y if min_y < 0 else 0     # Offset everything so it is positive
         self.offset_data = [(y + self.offset, r, g, b, a) for y, r, g, b, a in self.color_ramp]
 
-        # Find the maximum y-value in offset_data to calculate scale factor
+        # Calculate scale factor to scale max elevation to window height
         max_y_value = float(max(self.offset_data, key=lambda x: x[0])[0])
-        padding = max_y_value * 0.1  # Add space for the top band
-        scale_factor = float(self.height()) / (max_y_value + padding)
+        padding = max_y_value * 0.1
+        scale_factor = 1 if max_y_value + padding == 0 else float(self.height()) / (
+                    max_y_value + padding)
 
-        previous_y = self.height()  # Start from the top
+        previous_y = self.height()   # Start at top
+        draw_parameters = []
 
-        # Create list of parameters for each band: x, y, width, height, bot_color, top_color
-        for i, data_row in enumerate(
-                sorted(self.offset_data, key=lambda x: x[0], reverse=True)
-        ):
-            y_value, r, g, b, a = data_row
+        # Calculate draw parameters for each band - scaled x, y, w, h, bottom and top color
+        sorted_data = sorted(self.offset_data, key=lambda x: x[0], reverse=True)
+        for i, (y_value, r, g, b, a) in enumerate(sorted_data):
             scaled_y = int(y_value * scale_factor)
             band_height = max(1, previous_y - scaled_y)
             target_y = self.height() - (scaled_y + band_height)
+            color = QColor(r, g, b, a) if a is not None else QColor(r, g, b)
 
             next_color = None
             if i + 1 < len(self.offset_data):
                 next_r, next_g, next_b, next_a = self.offset_data[i + 1][1:5]
                 next_color = QColor(
                     next_r, next_g, next_b, next_a
-                ) if next_a is not None else QColor(next_r, next_g, next_b)
-
-            color = QColor(r, g, b, a) if a is not None else QColor(r, g, b)
+                    ) if next_a is not None else QColor(next_r, next_g, next_b)
 
             draw_parameters.append((0, target_y, self.width(), band_height, color, next_color))
             previous_y = scaled_y
@@ -436,36 +386,172 @@ class ViewSample(QWidget):
 
         painter.end()
 
-    def redraw(self):
-        """
-        Trigger a redraw of the color sample bands.
-        """
-        self.update()
 
-
-def main():
+class ColorRamp(QObject):
     """
-    Main function to launch the application.
+    Class to read GDAL ColorRamp elevation and RGB(A) values from a file and support
+    updates to the data and file save.
     """
-    app = QApplication(sys.argv)
 
-    # Open a file dialog to select the color ramp file
+    def __init__(self):
+        """
+        Initialize the ColorRamp instance.
+        """
+        super().__init__()
+        self._data = []
+        self.nv_line = None
+
+    def read(self, filename):
+        """
+        Read elevation and RGB(A) values from the file and store them in "_data".
+        Each line in the file contains: elevation, R, G, B, A (optional).
+        Elevation can be "nv" indicating a special case for "no value".
+        """
+
+        def validate_rgba(values):
+            """
+            Validate that the RGBA values are within the acceptable range (0-255).
+
+            Args:
+                values (list): List of RGB(A) values.
+
+            Raises:
+                ValueError: If any of the RGB(A) values are out of the range 0-255.
+            """
+            for val in values[1:]:
+                if not (0 <= val <= 255):
+                    raise ValueError(f"RGBA values must be between 0 and 255. Found {val}.")
+
+        try:
+            with open(filename, 'r') as file:
+                for line_number, line in enumerate(file, start=1):
+                    tokens = line.strip().split()
+                    try:
+                        if tokens[0].lower() == "nv":  # Special case for "no value"
+                            self.nv_line = line.strip()
+                            continue
+
+                        if len(tokens) not in (4, 5):
+                            raise ValueError(
+                                f"Incorrect number of values (expected 4 or 5, got {len(tokens)})"
+                            )
+
+                        elevation, r, g, b = map(int, tokens[0:4])
+                        a = int(tokens[4]) if len(tokens) == 5 else None
+
+                        validate_rgba([elevation, r, g, b, a])
+                        self._data.append([elevation, r, g, b, a])
+
+                    except (ValueError, IndexError) as e:
+                        print(
+                            f"ERROR in Color Ramp: line {line_number}: {str(e)} \n {line.strip()}"
+                        )
+                        sys.exit(1)
+
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File {os.path.abspath(filename)} not found.")
+
+    def save(self, filename):
+        """
+        Save the RGB(A) values to the file in GDAL format
+        """
+        with open(filename, 'w') as file:
+            if self.nv_line:
+                file.write(self.nv_line + '\n')
+            for row in self._data:
+                file.write(" ".join(map(str, [value for value in row if value is not None])) + '\n')
+
+    def __iter__(self):
+        return iter(self._data)
+
+    def __getitem__(self, index):
+        """
+        Get an item from the data list by index.
+        """
+        return self._data[index]
+
+    def __setitem__(self, index, value):
+        """
+        Set an item in the data list at the specified index.
+        """
+        self._data[index] = value
+
+    def __len__(self):
+        """
+        Get the number of items in the data list.
+        """
+        return len(self._data)
+
+    def insert(self, index, value):
+        """
+        Insert an item into the data list before the specified index.
+
+        Args:
+            index (int): The index before which the item should be inserted.
+            value (list): The item to be inserted into the data list.
+        """
+        self._data.insert(index, value)
+
+    def delete(self, index):
+        """
+        Delete an item from the data list at the specified index.
+
+        Args:
+            index (int): The index of the item to be deleted.
+        """
+        if 0 <= index < len(self._data):
+            del self._data[index]
+
+
+def create_button(text, callback, parent):
+    """
+    Create a QPushButton.
+
+    Args:
+        text (str): The text to display on the button.
+        callback (callable): The function to call when the button is clicked.
+
+    Returns:
+        QPushButton: The created button.
+    """
+    button = QPushButton(text, parent)
+    button.clicked.connect(callback)
+    button.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+    return button
+
+def get_filename():
+    """
+    Popup a file dialog to select a color ramp file.
+
+    Returns:
+        str: The selected file name or None if no file was selected.
+    """
     file_dialog = QFileDialog()
     file_dialog.setNameFilter("Color Ramp Files (*.txt);;All Files (*)")
     file_dialog.setWindowTitle("Select Color Ramp File")
     file_dialog.setFileMode(QFileDialog.ExistingFile)
+    file_dialog.setAcceptMode(QFileDialog.AcceptOpen)
 
     if file_dialog.exec_() == QFileDialog.Accepted:
-        selected_file = file_dialog.selectedFiles()[0]
+        file_name = file_dialog.selectedFiles()[0]
+        return file_name
     else:
-        sys.exit(0)
+        return None
+
+
+def main():
+    """
+    Main function
+    Display the ColorReliefEditor window to edit the file contents
+    """
+    app = QApplication(sys.argv)
 
     # Launch the main application window
-    window = ColorReliefEditor(selected_file)
-    window.setWindowTitle(f"Color Relief Editor - {selected_file}")
+    window = ColorReliefEditor(600,500, 10)
+    window.setWindowTitle(f"Color Relief Editor")
     window.show()
     sys.exit(app.exec_())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
