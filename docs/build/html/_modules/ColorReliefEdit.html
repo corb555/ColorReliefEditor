@@ -1,0 +1,401 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ColorReliefEdit &mdash; Color Relief Editor 0.11 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=086c1757"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">ColorReliefEdit</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for ColorReliefEdit</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2024.</span>
+<span class="c1">#   Copyright (c) 2024. Permission is hereby granted, free of charge, to any person obtaining a</span>
+<span class="c1">#   copy of this software and associated documentation files (the “Software”), to deal in the</span>
+<span class="c1">#   Software without restriction,</span>
+<span class="c1">#   including without limitation the rights to use, copy, modify, merge, publish, distribute,</span>
+<span class="c1">#   sublicense, and/or sell copies</span>
+<span class="c1">#   of the Software, and to permit persons to whom the Software is furnished to do so, subject to</span>
+<span class="c1">#   the following conditions:</span>
+<span class="c1">#  #</span>
+<span class="c1">#   The above copyright notice and this permission notice shall be included in all copies or</span>
+<span class="c1">#   substantial portions of the Software.</span>
+<span class="c1">#  #</span>
+<span class="c1">#   THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING</span>
+<span class="c1">#   BUT NOT LIMITED TO THE</span>
+<span class="c1">#   WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO</span>
+<span class="c1">#   EVENT SHALL THE AUTHORS OR</span>
+<span class="c1">#   COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF</span>
+<span class="c1">#   CONTRACT, TORT OR</span>
+<span class="c1">#   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span>
+<span class="c1">#   DEALINGS IN THE SOFTWARE.</span>
+<span class="c1">#  #</span>
+<span class="c1">#   This uses QT for some components which has the primary open-source license is the GNU Lesser General Public License v. 3 (“LGPL”).</span>
+<span class="c1">#   With the LGPL license option, you can use the essential libraries and some add-on libraries of Qt.</span>
+<span class="c1">#   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.</span>
+
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="n">QApplication</span><span class="p">,</span> <span class="n">QMainWindow</span><span class="p">,</span> <span class="n">QTabWidget</span><span class="p">,</span> <span class="n">QWidget</span><span class="p">,</span> <span class="n">QVBoxLayout</span><span class="p">,</span> \
+    <span class="n">QSpacerItem</span><span class="p">,</span> <span class="n">QSizePolicy</span>
+
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.app_settings_tab</span> <span class="kn">import</span> <span class="n">AppSettingsTab</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.color_tab</span> <span class="kn">import</span> <span class="n">ColorTab</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.elevation_tab</span> <span class="kn">import</span> <span class="n">ElevationTab</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.hillshade_tab</span> <span class="kn">import</span> <span class="n">HillshadeTab</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.make_process</span> <span class="kn">import</span> <span class="n">MakeProcess</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.project_tab</span> <span class="kn">import</span> <span class="n">ProjectData</span><span class="p">,</span> <span class="n">ProjectTab</span><span class="p">,</span> <span class="n">app_files_path</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.relief_tab</span> <span class="kn">import</span> <span class="n">ReliefTab</span>
+<span class="kn">from</span> <span class="nn">YMLEditor.yaml_config</span> <span class="kn">import</span> <span class="n">YamlConfig</span>
+
+
+<div class="viewcode-block" id="ColorReliefEdit">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit">[docs]</a>
+<span class="k">class</span> <span class="nc">ColorReliefEdit</span><span class="p">(</span><span class="n">QMainWindow</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Main window for the Color Relief Editor, which manages color relief projects, settings,</span>
+<span class="sd">    and GDAL makefile operations.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">    - make (QProcess or None): A QProcess object that handles GDAL makefile operations.</span>
+<span class="sd">    - project (ProjectData): An instance of the ProjectData class, which handles the</span>
+<span class="sd">      management of project data.</span>
+<span class="sd">    - config (ConfigFile): An instance of the ConfigFile class, which manages configuration</span>
+<span class="sd">      settings.</span>
+<span class="sd">    - tabs (QTabWidget): A tab widget that contains the tabs for project</span>
+<span class="sd">      settings, color ramps, and makefile operations.</span>
+<span class="sd">    - current_tab (int): The index of the currently selected tab in the QTabWidget.</span>
+<span class="sd">    **Methods**:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Manage opening projects and keeping paths to key project files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">:</span> <span class="n">ProjectData</span> <span class="o">=</span> <span class="n">ProjectData</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_process</span> <span class="o">=</span> <span class="n">MakeProcess</span><span class="p">()</span>  <span class="c1"># Manage Makefile operations to build images</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">:</span> <span class="n">YamlConfig</span> <span class="o">=</span> <span class="n">YamlConfig</span><span class="p">()</span>  <span class="c1"># Manage project settings (loaded by Project tab)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_config</span><span class="p">:</span> <span class="n">YamlConfig</span> <span class="o">=</span> <span class="n">YamlConfig</span><span class="p">()</span>  <span class="c1"># Manage general application settings</span>
+
+        <span class="c1"># Load general application settings</span>
+        <span class="n">app_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_app_config</span><span class="p">(</span><span class="s2">&quot;relief_editor.cfg&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;App config file: </span><span class="si">{</span><span class="n">app_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># The tabs to create (name and routine)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_tab</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">:</span> <span class="n">QTabWidget</span> <span class="o">=</span> <span class="n">QTabWidget</span><span class="p">()</span>  <span class="c1"># Tab for each feature</span>
+        <span class="c1"># The features to launch</span>
+        <span class="n">tab_classes</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Project&quot;</span><span class="p">:</span> <span class="n">ProjectTab</span><span class="p">,</span> <span class="s2">&quot;Elevation Files&quot;</span><span class="p">:</span> <span class="n">ElevationTab</span><span class="p">,</span> <span class="s2">&quot;Hillshade&quot;</span><span class="p">:</span> <span class="n">HillshadeTab</span><span class="p">,</span>
+            <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="n">ColorTab</span><span class="p">,</span> <span class="s2">&quot;Relief&quot;</span><span class="p">:</span> <span class="n">ReliefTab</span><span class="p">,</span> <span class="s2">&quot;Settings&quot;</span><span class="p">:</span> <span class="n">AppSettingsTab</span>
+        <span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_ui</span><span class="p">(</span><span class="n">tab_classes</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ColorReliefEdit.init_ui">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.init_ui">[docs]</a>
+    <span class="k">def</span> <span class="nf">init_ui</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_classes</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The UI is a tab control with a tab per feature</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">set_style</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setWindowTitle</span><span class="p">(</span><span class="s2">&quot;Color Relief&quot;</span><span class="p">)</span>
+        <span class="n">central_widget</span> <span class="o">=</span> <span class="n">QWidget</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">setCentralWidget</span><span class="p">(</span><span class="n">central_widget</span><span class="p">)</span>
+
+        <span class="n">layout</span> <span class="o">=</span> <span class="n">QVBoxLayout</span><span class="p">(</span><span class="n">central_widget</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addSpacerItem</span><span class="p">(</span><span class="n">expanding_vertical_spacer</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addWidget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="p">)</span>
+        <span class="n">layout</span><span class="o">.</span><span class="n">addSpacerItem</span><span class="p">(</span><span class="n">expanding_vertical_spacer</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+        <span class="c1"># Instantiate tabs</span>
+        <span class="k">for</span> <span class="n">tab_name</span><span class="p">,</span> <span class="n">tab_class</span> <span class="ow">in</span> <span class="n">tab_classes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">tab</span> <span class="o">=</span> <span class="n">tab_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tab_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">addTab</span><span class="p">(</span><span class="n">tab</span><span class="p">,</span> <span class="n">tab_name</span><span class="p">)</span>
+
+        <span class="c1"># Note: when a project is loaded, all tabs will have load() called</span>
+
+        <span class="c1"># Notify on tab changes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">currentChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">on_tab_changed</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_tab</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">currentIndex</span><span class="p">()</span>  <span class="c1"># Index of the current tab</span>
+
+        <span class="c1"># Disable all tabs except Project and Settings until a project has been loaded</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_tabs_available</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;Project&quot;</span><span class="p">,</span> <span class="s2">&quot;Settings&quot;</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="ColorReliefEdit.create_default_app_config">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.create_default_app_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">create_default_app_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app_path</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create default config file for app settings if none exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">default_config</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;DOWNLOAD&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;US&quot;</span><span class="p">:</span> <span class="s2">&quot;https://earthexplorer.usgs.gov/&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;US_HIGH&quot;</span><span class="p">:</span> <span class="s2">&quot;https://apps.nationalmap.gov/downloader/&quot;</span>
+            <span class="p">},</span> <span class="s2">&quot;MODE&quot;</span><span class="p">:</span> <span class="s2">&quot;basic&quot;</span><span class="p">,</span> <span class="s2">&quot;VIEWER&quot;</span><span class="p">:</span> <span class="s2">&quot;QGIS&quot;</span><span class="p">,</span> <span class="s2">&quot;PREVIEW&quot;</span><span class="p">:</span> <span class="s1">&#39;3000&#39;</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_config</span><span class="o">.</span><span class="n">file_path</span> <span class="o">=</span> <span class="n">app_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app_config</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">default_config</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ColorReliefEdit.set_tabs_available">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.set_tabs_available">[docs]</a>
+    <span class="k">def</span> <span class="nf">set_tabs_available</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">,</span> <span class="n">always_enabled</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Enable or disable tabs based on enable flag. Tabs in &quot;always_enabled&quot;</span>
+<span class="sd">        are always enabled.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            enable (bool): Whether to enable or disable tabs.</span>
+<span class="sd">            always_enabled (list): tabs that are always enabled.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">tab_name</span> <span class="ow">in</span> <span class="n">always_enabled</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">setTabEnabled</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">setTabEnabled</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">enable</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ColorReliefEdit.load_all_tabs">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.load_all_tabs">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_all_tabs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Have each tab load data when a project is opened.</span>
+<span class="sd">        If loading fails for any tab, update the project status, and halt further loading.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            bool: True if tabs are loaded successfully, False if any tab fails to load.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">count</span><span class="p">()):</span>
+            <span class="n">tab</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>  <span class="c1"># Retrieve the current tab widget</span>
+            <span class="n">success</span> <span class="o">=</span> <span class="n">tab</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="p">)</span>  <span class="c1"># Attempt to load project data into the tab</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">success</span><span class="p">:</span>
+                <span class="c1"># Update project status if loading fails for a specific tab</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">project</span><span class="o">.</span><span class="n">set_error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">tab</span><span class="o">.</span><span class="n">tab_name</span><span class="si">}</span><span class="s2"> File error&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># Stop loading further tabs if an error occurs</span>
+
+        <span class="k">return</span> <span class="kc">True</span>  <span class="c1"># All tabs loaded successfully</span></div>
+
+
+<div class="viewcode-block" id="ColorReliefEdit.on_tab_changed">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.on_tab_changed">[docs]</a>
+    <span class="k">def</span> <span class="nf">on_tab_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle tab change events by notifying the old tab of exit and the new tab of enter.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            index (int): The index of the newly selected tab.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_tab</span><span class="p">)</span><span class="o">.</span><span class="n">on_tab_exit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_tab</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_tab</span><span class="p">)</span><span class="o">.</span><span class="n">on_tab_enter</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="ColorReliefEdit.closeEvent">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.closeEvent">[docs]</a>
+    <span class="k">def</span> <span class="nf">closeEvent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Application close event - notify the current tab before the</span>
+<span class="sd">        application exits.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            event (QCloseEvent): The close event that triggers the application exit.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call on_tab_exit for the currently active tab</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tabs</span><span class="o">.</span><span class="n">widget</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_tab</span><span class="p">)</span><span class="o">.</span><span class="n">on_tab_exit</span><span class="p">()</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">closeEvent</span><span class="p">(</span><span class="n">event</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ColorReliefEdit.load_app_config">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.load_app_config">[docs]</a>
+    <span class="k">def</span> <span class="nf">load_app_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="c1"># Load the application settings</span>
+        <span class="n">app_path</span> <span class="o">=</span> <span class="n">app_files_path</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">app_config</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">app_path</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="c1"># Catch any error and create default configuration</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;App config load error: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. Creating app default config.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create_default_app_config</span><span class="p">(</span><span class="n">app_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">app_path</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="expanding_vertical_spacer">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.expanding_vertical_spacer">[docs]</a>
+<span class="k">def</span> <span class="nf">expanding_vertical_spacer</span><span class="p">(</span><span class="n">height</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a spacer that expands vertically to help align UI components.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        height (int): The minimum height for the spacer.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        QSpacerItem: A spacer that expands vertically</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">QSpacerItem</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Minimum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span class="n">Expanding</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="set_style">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.set_style">[docs]</a>
+<span class="k">def</span> <span class="nf">set_style</span><span class="p">(</span><span class="n">app</span><span class="p">):</span>
+    <span class="c1"># Set application styles</span>
+    <span class="n">colors</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;grid&quot;</span><span class="p">:</span> <span class="s2">&quot;#323232&quot;</span><span class="p">,</span> <span class="s2">&quot;highlight&quot;</span><span class="p">:</span> <span class="s2">&quot;lightslategray&quot;</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="s2">&quot;Crimson&quot;</span><span class="p">,</span> <span class="s2">&quot;normal&quot;</span><span class="p">:</span> <span class="s2">&quot;Silver&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;buttonBackground&quot;</span><span class="p">:</span> <span class="s2">&quot;#323232&quot;</span><span class="p">,</span> <span class="s2">&quot;background&quot;</span><span class="p">:</span> <span class="s2">&quot;#4b4b4b&quot;</span><span class="p">,</span> <span class="s2">&quot;readonly&quot;</span><span class="p">:</span> <span class="s2">&quot;#3a3a3a&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;lineedit&quot;</span><span class="p">:</span> <span class="s2">&quot;#202020&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span>
+    <span class="p">}</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">setStyleSheet</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">                QLineEdit </span><span class="se">{{</span>
+<span class="s2">                    background-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;lineedit&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">; </span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QTextEdit </span><span class="se">{{</span>
+<span class="s2">                    background-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;lineedit&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">; </span>
+<span class="s2">                    border: none;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QLineEdit:read-only </span><span class="se">{{</span>
+<span class="s2">                    color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;highlight&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">; </span>
+<span class="s2">                    background-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;readonly&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    outline:none; </span>
+<span class="s2">                    border:none;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QLabel </span><span class="se">{{</span>
+<span class="s2">                    color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">; </span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QTextBrowser </span><span class="se">{{</span>
+<span class="s2">                    background-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">; </span>
+<span class="s2">                    border:none;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QTableWidget </span><span class="se">{{</span>
+<span class="s2">                    gridline-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    background-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    outline:none; </span>
+<span class="s2">                    border:none;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QHeaderView::section </span><span class="se">{{</span>
+<span class="s2">                    background-color:</span><span class="si">{</span><span class="n">colors</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span><span class="si">}</span><span class="s2">;</span>
+<span class="s2">                    padding:3px;</span>
+<span class="s2">                </span><span class="se">}}</span><span class="s2">                  </span>
+<span class="s2">                QPlainTextEdit </span><span class="se">{{</span>
+<span class="s2">                    background-color: #4b4b4b;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                QScrollBar::handle:vertical </span><span class="se">{{</span>
+<span class="s2">                    background: white;</span>
+<span class="s2">                    min-height: 15px;</span>
+<span class="s2">                </span><span class="se">}}</span>
+<span class="s2">                &quot;&quot;&quot;</span>
+    <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="main">
+<a class="viewcode-back" href="../ColorReliefEdit.html#ColorReliefEdit.main">[docs]</a>
+<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Entry point for the application. Initializes the QApplication and shows the main window.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QApplication</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+    <span class="n">main_window</span> <span class="o">=</span> <span class="n">ColorReliefEdit</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">main_window</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">app</span><span class="o">.</span><span class="n">exec</span><span class="p">())</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, corb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

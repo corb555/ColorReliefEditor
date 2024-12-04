@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html class="writer-html5" data-content_root="../" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>preference_tab &mdash; Color Relief Editor 0.11 documentation</title>
+    <link href="../_static/pygments.css?v=80d5e7a1" rel="stylesheet" type="text/css"/>
+    <link href="../_static/css/theme.css?v=e59714d7" rel="stylesheet" type="text/css"/>
+
+
+    <script src="../_static/jquery.js?v=5d32c60e"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+    <script src="../_static/documentation_options.js?v=086c1757"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link href="../genindex.html" rel="index" title="Index"/>
+    <link href="../search.html" rel="search" title="Search"/>
+</head>
+
+<body class="wy-body-for-nav">
+<div class="wy-grid-for-nav">
+    <nav class="wy-nav-side" data-toggle="wy-nav-shift">
+        <div class="wy-side-scroll">
+            <div class="wy-side-nav-search">
+
+
+                <a class="icon icon-home" href="../index.html">
+                    Color Relief Editor
+                </a>
+                <div role="search">
+                    <form action="../search.html" class="wy-form" id="rtd-search-form" method="get">
+                        <input aria-label="Search docs" name="q" placeholder="Search docs" type="text"/>
+                        <input name="check_keywords" type="hidden" value="yes"/>
+                        <input name="area" type="hidden" value="default"/>
+                    </form>
+                </div>
+            </div>
+            <div aria-label="Navigation menu" class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation">
+                <!-- Local TOC -->
+                <div class="local-toc"></div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="wy-nav-content-wrap" data-toggle="wy-nav-shift">
+        <nav aria-label="Mobile navigation menu" class="wy-nav-top">
+            <i class="fa fa-bars" data-toggle="wy-nav-top"></i>
+            <a href="../index.html">Color Relief Editor</a>
+        </nav>
+
+        <div class="wy-nav-content">
+            <div class="rst-content">
+                <div aria-label="Page navigation" role="navigation">
+                    <ul class="wy-breadcrumbs">
+                        <li><a aria-label="Home" class="icon icon-home" href="../index.html"></a></li>
+                        <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+                        <li class="breadcrumb-item active">preference_tab</li>
+                        <li class="wy-breadcrumbs-aside">
+                        </li>
+                    </ul>
+                    <hr/>
+                </div>
+                <div class="document" itemscope="itemscope" itemtype="http://schema.org/Article" role="main">
+                    <div itemprop="articleBody">
+
+                        <h1>Source code for preference_tab</h1>
+                        <div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2024. Permission is hereby granted, free of charge, to any person obtaining a</span>
+<span class="c1">#  copy of this software and associated</span>
+<span class="c1">#  documentation files (the “Software”), to deal in the Software without restriction, including</span>
+<span class="c1">#  without limitation the</span>
+<span class="c1">#  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the</span>
+<span class="c1">#  Software, and to permit</span>
+<span class="c1">#  persons to whom the Software is furnished to do so, subject to the following conditions:</span>
+<span class="c1">#</span>
+<span class="c1">#  The above copyright notice and this permission notice shall be included in all copies or</span>
+<span class="c1">#  substantial portions of the</span>
+<span class="c1">#  Software.</span>
+<span class="c1">#</span>
+<span class="c1">#  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING</span>
+<span class="c1">#  BUT NOT LIMITED TO THE</span>
+<span class="c1">#  WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO</span>
+<span class="c1">#  EVENT SHALL THE AUTHORS OR</span>
+<span class="c1">#  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF</span>
+<span class="c1">#  CONTRACT, TORT OR</span>
+<span class="c1">#  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span>
+<span class="c1">#  DEALINGS IN THE SOFTWARE.</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtWidgets</span> <span class="kn">import</span> <span class="n">QSpacerItem</span><span
+                                class="p">,</span> <span class="n">QSizePolicy</span>
+
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.settings_widget</span> <span
+                                class="kn">import</span> <span class="n">SettingsWidget</span>
+<span class="kn">from</span> <span class="nn">ColorReliefEditor.tab_page</span> <span class="kn">import</span> <span
+                                class="n">TabPage</span><span class="p">,</span> <span class="n">get_instructions</span>
+
+
+<div class="viewcode-block" id="PreferenceTab">
+<a class="viewcode-back" href="../preference_tab.html#preference_tab.PreferenceTab">[docs]</a>
+<span class="k">class</span> <span class="nc">PreferenceTab</span><span class="p">(</span><span class="n">TabPage</span><span
+        class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Widget for editing preferences</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span
+        class="p">,</span> <span class="n">main</span><span class="p">,</span> <span class="n">name</span><span
+        class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            main (MainClass): Reference to the main application class.</span>
+<span class="sd">            name (str): Name of the widget.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set up display format for the config settings that this tab uses</span>
+        <span class="c1"># The config file is shared between all the tabs</span>
+        <span class="c1"># @LAYER in keys is replaced by the current value of LAYER</span>
+
+        <span class="n">formats</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;expert&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;LABELS.3&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;CONFIGURE DOWNLOAD BUTTONS:&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span
+        class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="mi">400</span><span
+        class="p">),</span>
+                <span class="s2">&quot;DOWNLOAD.US&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;US Download&quot;</span><span class="p">,</span> <span
+        class="s2">&quot;line_edit&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^(https?):\/\/.*\..+&#39;</span><span
+        class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+                <span class="s2">&quot;DOWNLOAD.US_HIGH&quot;</span><span class="p">:</span> <span
+        class="p">(</span><span class="s2">&quot;US High Res&quot;</span><span class="p">,</span> <span class="s2">&quot;line_edit&quot;</span><span
+        class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^(https?):\/\/.*\..+&#39;</span><span
+        class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+                <span class="s2">&quot;DOWNLOAD.GLOBAL&quot;</span><span class="p">:</span> <span
+        class="p">(</span><span class="s2">&quot;Global Download&quot;</span><span class="p">,</span> <span class="s2">&quot;line_edit&quot;</span><span
+        class="p">,</span> <span class="sa">r</span><span class="s1">&#39;^(https?):\/\/.*\..+&#39;</span><span
+        class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+                <span class="s2">&quot;LABELS.2&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span
+        class="kc">None</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span> <span
+        class="s2">&quot;VIEWER&quot;</span><span class="p">:</span> <span class="p">(</span><span class="s2">&quot;Viewer&quot;</span><span
+        class="p">,</span> <span class="s2">&quot;combo&quot;</span><span class="p">,</span>
+                                                                 <span class="p">[</span><span class="s2">&quot;QGIS&quot;</span><span
+        class="p">,</span> <span class="s1">&#39;GIMP&#39;</span><span class="p">,</span> <span class="s1">&#39;Firefox&#39;</span><span
+        class="p">,</span>
+                                                                  <span class="s1">&#39;Safari&#39;</span><span
+        class="p">,</span> <span class="s1">&#39;GwenView&#39;</span><span class="p">,</span>
+                                                                  <span class="s1">&#39;ImageMagick&#39;</span><span
+        class="p">],</span> <span class="mi">180</span><span class="p">),</span>
+                <span class="s2">&quot;LABELS.1&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span
+        class="kc">None</span><span class="p">,</span> <span class="mi">400</span><span class="p">),</span>
+                <span class="s2">&quot;MODE&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="s2">&quot;combo&quot;</span><span
+        class="p">,</span> <span class="p">[</span><span class="s2">&quot;basic&quot;</span><span
+        class="p">,</span> <span class="s1">&#39;expert&#39;</span><span class="p">],</span> <span class="mi">180</span><span
+        class="p">),</span>
+                <span class="s2">&quot;INSTRUCTIONS&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;Instructions&quot;</span><span class="p">,</span> <span
+        class="s2">&quot;combo&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;show&quot;</span><span
+        class="p">,</span> <span class="s1">&#39;hide&#39;</span><span class="p">],</span> <span
+        class="mi">180</span><span class="p">),</span>
+            <span class="p">},</span>
+
+            <span class="s2">&quot;basic&quot;</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s2">&quot;MODE&quot;</span><span class="p">:</span> <span class="p">(</span><span
+        class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="s2">&quot;combo&quot;</span><span
+        class="p">,</span> <span class="p">[</span><span class="s2">&quot;basic&quot;</span><span
+        class="p">,</span> <span class="s1">&#39;expert&#39;</span><span class="p">],</span> <span class="mi">180</span><span
+        class="p">),</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="c1"># Create widget to display and edit settings</span>
+        <span class="n">mode</span> <span class="o">=</span> <span class="n">main</span><span class="o">.</span><span
+        class="n">app_config</span><span class="p">[</span><span class="s2">&quot;MODE&quot;</span><span
+        class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">settings_widget</span> <span
+        class="o">=</span> <span class="n">SettingsWidget</span><span class="p">(</span><span class="n">main</span><span
+        class="o">.</span><span class="n">app_config</span><span class="p">,</span> <span class="n">formats</span><span
+        class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+
+        <span class="c1"># This tab uses app_config, not config for data</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span
+        class="fm">__init__</span><span class="p">(</span><span class="n">main</span><span class="p">,</span> <span
+        class="n">name</span><span class="p">,</span> <span class="n">on_save_callback</span><span
+        class="o">=</span><span class="n">main</span><span class="o">.</span><span class="n">app_config</span><span
+        class="o">.</span><span class="n">save</span><span class="p">,</span> <span class="n">on_display_callback</span><span
+        class="o">=</span><span class="bp">self</span><span class="o">.</span><span
+        class="n">settings_widget</span><span class="o">.</span><span class="n">display</span><span class="p">)</span>
+
+        <span class="c1"># Put a spacer at the bottom to push items up</span>
+        <span class="n">spacer</span> <span class="o">=</span> <span class="n">QSpacerItem</span><span
+        class="p">(</span>
+            <span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span
+        class="n">QSizePolicy</span><span class="o">.</span><span class="n">Policy</span><span class="o">.</span><span
+        class="n">Minimum</span><span class="p">,</span> <span class="n">QSizePolicy</span><span class="o">.</span><span
+        class="n">Policy</span><span class="o">.</span><span class="n">Expanding</span>
+        <span class="p">)</span>
+        <span class="n">instructions</span> <span class="o">=</span> <span class="n">get_instructions</span><span
+        class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tab_name</span><span
+        class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="n">widgets</span> <span class="o">=</span> <span class="p">[</span><span
+        class="bp">self</span><span class="o">.</span><span class="n">settings_widget</span><span
+        class="p">,</span> <span class="n">spacer</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">create_page</span><span
+        class="p">(</span><span class="n">widgets</span><span class="p">,</span> <span class="kc">None</span><span
+        class="p">,</span> <span class="n">instructions</span><span class="p">,</span> <span class="bp">self</span><span
+        class="o">.</span><span class="n">tab_name</span><span class="p">)</span></div>
+
+</pre>
+                        </div>
+
+                    </div>
+                </div>
+                <footer>
+
+                    <hr/>
+
+                    <div role="contentinfo">
+                        <p>&#169; Copyright 2024, corb.</p>
+                    </div>
+
+                    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+                    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+                    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+
+                </footer>
+            </div>
+        </div>
+    </section>
+</div>
+<script>
+    jQuery(function () {
+        SphinxRtdTheme.Navigation.enable(true);
+    });
+</script>
+
+</body>
+</html>

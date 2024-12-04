@@ -1,0 +1,293 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>make_process &mdash; Color Relief Editor 0.11 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=086c1757"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Module code</a></li>
+      <li class="breadcrumb-item active">make_process</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for make_process</h1><div class="highlight"><pre>
+<span></span><span class="c1">#  Copyright (c) 2024.</span>
+<span class="c1">#   Copyright (c) 2024. Permission is hereby granted, free of charge, to any person obtaining a</span>
+<span class="c1">#   copy of this software and associated documentation files (the “Software”), to deal in the</span>
+<span class="c1">#   Software without restriction,</span>
+<span class="c1">#   including without limitation the rights to use, copy, modify, merge, publish, distribute,</span>
+<span class="c1">#   sublicense, and/or sell copies</span>
+<span class="c1">#   of the Software, and to permit persons to whom the Software is furnished to do so, subject to</span>
+<span class="c1">#   the following conditions:</span>
+<span class="c1">#  #</span>
+<span class="c1">#   The above copyright notice and this permission notice shall be included in all copies or</span>
+<span class="c1">#   substantial portions of the Software.</span>
+<span class="c1">#  #</span>
+<span class="c1">#   THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING</span>
+<span class="c1">#   BUT NOT LIMITED TO THE</span>
+<span class="c1">#   WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO</span>
+<span class="c1">#   EVENT SHALL THE AUTHORS OR</span>
+<span class="c1">#   COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF</span>
+<span class="c1">#   CONTRACT, TORT OR</span>
+<span class="c1">#   OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER</span>
+<span class="c1">#   DEALINGS IN THE SOFTWARE.</span>
+<span class="c1">#  #</span>
+<span class="c1">#   This uses QT for some components which has the primary open-source license is the GNU Lesser General Public License v. 3 (“LGPL”).</span>
+<span class="c1">#   With the LGPL license option, you can use the essential libraries and some add-on libraries of Qt.</span>
+<span class="c1">#   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.</span>
+
+<span class="c1">#</span>
+<span class="c1">#</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+<span class="kn">from</span> <span class="nn">PyQt6.QtCore</span> <span class="kn">import</span> <span class="n">QObject</span><span class="p">,</span> <span class="n">pyqtSignal</span><span class="p">,</span> <span class="n">QProcess</span>
+<span class="kn">from</span> <span class="nn">PyQt6.QtGui</span> <span class="kn">import</span> <span class="n">QTextCursor</span>
+
+
+<div class="viewcode-block" id="MakeProcess">
+<a class="viewcode-back" href="../make_process.html#make_process.MakeProcess">[docs]</a>
+<span class="k">class</span> <span class="nc">MakeProcess</span><span class="p">(</span><span class="n">QObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Executes Makefile commands, streaming real-time output to an optional output window and</span>
+<span class="sd">    emitting a `make_finished` signal upon completion. Supports dry-run mode to preview actions</span>
+<span class="sd">    without execution and provides `build_required` to indicate if the dry-run determined that a</span>
+<span class="sd">    build</span>
+<span class="sd">    is required.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        make_finished (pyqtSignal): Signal emitted when the make process finishes, with</span>
+<span class="sd">            the job name and exit code.</span>
+<span class="sd">        job_name (str): Name of the current job being processed.</span>
+<span class="sd">        dry_run (bool): Specifies if the current process is a dry-run. Set to True if the</span>
+<span class="sd">            make command ends with &#39;-n&#39;. Runs the process synchronously for analysis</span>
+<span class="sd">            without actual execution.</span>
+<span class="sd">        build_required (bool): Indicates whether a build is required based on the output</span>
+<span class="sd">            of a dry-run. Set to True if any files or commands in the make process indicate</span>
+<span class="sd">            a build is necessary, or if there is error output.</span>
+
+<span class="sd">    **Methods**:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">make_finished</span> <span class="o">=</span> <span class="n">pyqtSignal</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize the MakeProcess object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_required</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span> <span class="o">=</span> <span class="n">QProcess</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_name</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">readyReadStandardOutput</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_standard_output</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">readyReadStandardError</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_standard_error</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">finished</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_process_finished</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MakeProcess.run_make">
+<a class="viewcode-back" href="../make_process.html#make_process.MakeProcess.run_make">[docs]</a>
+    <span class="k">def</span> <span class="nf">run_make</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">makefile_path</span><span class="p">,</span> <span class="n">project_directory</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">job_name</span><span class="p">,</span> <span class="n">output_window</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute the given Makefile command.</span>
+<span class="sd">        Runs synchronously if &#39;-n&#39; is in the command (fast dry-run),</span>
+<span class="sd">        otherwise runs the process asynchronously and emits the `make_finished` signal</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            makefile_path (str): The path to the Makefile file.</span>
+<span class="sd">            command (str): The make command to execute.</span>
+<span class="sd">            job_name (str): The name of the job for tracking purposes.</span>
+<span class="sd">            output_window (QPlainTextEdit, optional): The window to display process output.</span>
+<span class="sd">            project_directory (str): The path to the project directory.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            int: Exit code if running synchronously, 0 if running asynchronously.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span> <span class="o">=</span> <span class="n">output_window</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear_output</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">job_name</span> <span class="o">=</span> <span class="n">job_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">command</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">makefile_path</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">makefile_path</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">return_error</span><span class="p">(</span><span class="mi">103</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error: Makefile not found at: </span><span class="si">{</span><span class="n">makefile_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># chdir to the project directory</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">project_directory</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">return_error</span><span class="p">(</span><span class="mi">104</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Error: Unable to change directory to: </span><span class="si">{</span><span class="n">project_directory</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Start the make process</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_required</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">startCommand</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+
+        <span class="c1"># Check if this is a dry-run command</span>
+        <span class="k">if</span> <span class="n">command</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;-n&quot;</span><span class="p">):</span>
+            <span class="c1"># Run dry-run synchronously and scan output for &quot;.sh&quot; to determine if</span>
+            <span class="c1"># build_required</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">waitForFinished</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Run asynchronously and handle with signal</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="MakeProcess.return_error">
+<a class="viewcode-back" href="../make_process.html#make_process.MakeProcess.return_error">[docs]</a>
+    <span class="k">def</span> <span class="nf">return_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">error</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">error</span></div>
+
+
+<div class="viewcode-block" id="MakeProcess.clear_output">
+<a class="viewcode-back" href="../make_process.html#make_process.MakeProcess.clear_output">[docs]</a>
+    <span class="k">def</span> <span class="nf">clear_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Clear output window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MakeProcess.output">
+<a class="viewcode-back" href="../make_process.html#make_process.MakeProcess.output">[docs]</a>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Output the given text to the output window</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            text (str): The text to display in the output window.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="o">.</span><span class="n">appendPlainText</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MakeProcess.cancel">
+<a class="viewcode-back" href="../make_process.html#make_process.MakeProcess.cancel">[docs]</a>
+    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel the currently running make process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">kill</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span> <span class="nf">_on_standard_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle and display standard output from the make process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">readAllStandardOutput</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="o">.</span><span class="n">moveCursor</span><span class="p">(</span><span class="n">QTextCursor</span><span class="o">.</span><span class="n">MoveOperation</span><span class="o">.</span><span class="n">End</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="o">.</span><span class="n">insertPlainText</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_window</span><span class="o">.</span><span class="n">moveCursor</span><span class="p">(</span><span class="n">QTextCursor</span><span class="o">.</span><span class="n">MoveOperation</span><span class="o">.</span><span class="n">End</span><span class="p">)</span>
+
+        <span class="c1"># During dry run check if output contains &quot;.sh&quot; (indicating work to be done)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dry_run</span> <span class="ow">and</span> <span class="s2">&quot;.sh&quot;</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+            <span class="c1"># If there are script names in the dry run output, a build is required</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build_required</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">_on_standard_error</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle and display standard error output from the make process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_required</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">readAllStandardError</span><span class="p">()</span><span class="o">.</span><span class="n">data</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_on_process_finished</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handle the process finished event.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            exit_code (int): The exit code of the completed process.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">make_finished</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">job_name</span><span class="p">,</span> <span class="n">exit_code</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, corb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

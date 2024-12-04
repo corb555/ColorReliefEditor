@@ -1,0 +1,98 @@
+<!--
+  ~ Copyright (c) 2024.
+  ~ #  Copyright (c) 2024. Permission is hereby granted, free of charge, to any person obtaining a
+  ~ #  copy of this software and associated documentation files (the “Software”), to deal in the
+  ~ #  Software without restriction,
+  ~ #  including without limitation the rights to use, copy, modify, merge, publish, distribute,
+  ~ #  sublicense, and/or sell copies
+  ~ #  of the Software, and to permit persons to whom the Software is furnished to do so, subject to
+  ~ #  the following conditions:
+  ~ #
+  ~ #  The above copyright notice and this permission notice shall be included in all copies or
+  ~ #  substantial portions of the Software.
+  ~ #
+  ~ #  THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING
+  ~ #  BUT NOT LIMITED TO THE
+  ~ #  WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+  ~ #  EVENT SHALL THE AUTHORS OR
+  ~ #  COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+  ~ #  CONTRACT, TORT OR
+  ~ #  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+  ~ #  DEALINGS IN THE SOFTWARE.
+  ~ #
+  ~ #  This uses QT for some components which has the primary open-source license is the GNU Lesser General Public License v. 3 (“LGPL”).
+  ~ #  With the LGPL license option, you can use the essential libraries and some add-on libraries of Qt.
+  ~ #  See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
+  -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Project</title>
+    <style>
+        /* Apply custom styles to all h3 tags */
+        h3 {
+            color: lightslategray;
+            font-weight: bold;
+        }
+
+        /* Expert section is hidden by default but changed to show-expert-section in expert mode */
+        .expert-section {
+            color: #323232;
+            font-size: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<h3>Overview</h3>
+<p>This application uses Digital Elevation files and GDAL tools to create hillshade and color relief images which
+    are combined into a final relief image. All configurations, including colors and parameters, are
+    set directly in the app and GDAL utilities are automatically executed to
+    generate the images.</p>
+
+<h3>Creating a New Project</h3>
+<p>To start a new project, click <b>New</b>. A dialog will appear where you can specify the project folder
+    location. A sample color ramp and settings file will be automatically generated within this folder.</p>
+
+<h3>Buttons</h3>
+<p><b>Open:</b> Load an existing project previously created by this app.</p>
+<p><b>Open Recent:</b> Access a list of recently opened projects for quick loading.</p>
+<p><b>New:</b> Create a new project, generating all necessary files and folders.</p>
+
+<h3>Overview of Tabs</h3>
+<ul>
+    <li><b>Project:</b> Create or open projects.</li>
+    <li><b>Elevation Files:</b> Configure file names and settings for Digital Elevation files.</li>
+    <li><b>Hillshade:</b> Set hillshade parameters and preview hillshade images.</li>
+    <li><b>Color:</b> Set color parameters and preview color relief images.</li>
+    <li><b>Relief:</b> Build full-size hillshade and color images and merge them into a relief image.</li>
+    <li><b>Settings:</b> Update general application settings such as expert mode and instructions display.</li>
+</ul>
+<h3>Expert Mode</h3>
+<p>The app features two modes: Basic and Expert. You can switch between them in the <b>Settings</b> tab:</p>
+<ul>
+    <li><b>Basic Mode:</b> Simplified interface with minimal settings.</li>
+    <li><b>Expert Mode:</b> Expert mode offers control over all GDAL settings and supports the use of
+        multiple layers, each with its own elevation files but sharing hillshade and color relief settings.
+    </li>
+</ul>
+
+<!-- Expert Settings section is shown or hidden depending on the app mode -->
+<div class="expert-section">
+    <p>GDAL Settings</p>
+    <ul>
+        <li><b>Elevation:</b>The folder for elevation files.  If you change this, you will need to manually move any
+        files from the original folder. </li>
+        <li><b>CRS:</b> Define the gdalwarp -t_srs setting to configure the Coordinate Reference System (CRS).</li>
+        <li><b>gdalwarp:</b> Additional settings for gdalwarp.</li>
+        <li><b>Resampling:</b> Select the resampling method to use during the CRS transformation.</li>
+        <li><b>Performance:</b> Configure performance parameters such as multithreading and memory allocation.</li>
+        <li><b>gbuildvrt:</b> Settings for gbuildvrt.</li>
+    </ul>
+</div>
+
+</body>
+</html>
+

@@ -1,0 +1,257 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>elevation_tab module &mdash; Color Relief Editor 0.11 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=086c1757"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">elevation_tab module</a><ul>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab"><code class="docutils literal notranslate"><span class="pre">ElevationTab</span></code></a><ul>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.main"><code class="docutils literal notranslate"><span class="pre">ElevationTab.main</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.settings_widget"><code class="docutils literal notranslate"><span class="pre">ElevationTab.settings_widget</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.drop_widget"><code class="docutils literal notranslate"><span class="pre">ElevationTab.drop_widget</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.tab_name"><code class="docutils literal notranslate"><span class="pre">ElevationTab.tab_name</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.create_download_buttons"><code class="docutils literal notranslate"><span class="pre">ElevationTab.create_download_buttons()</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.load"><code class="docutils literal notranslate"><span class="pre">ElevationTab.load()</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">ElevationTab.on_tab_enter()</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.open_url"><code class="docutils literal notranslate"><span class="pre">ElevationTab.open_url()</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.update_files_list"><code class="docutils literal notranslate"><span class="pre">ElevationTab.update_files_list()</span></code></a></li>
+<li><a class="reference internal" href="#elevation_tab.ElevationTab.validate"><code class="docutils literal notranslate"><span class="pre">ElevationTab.validate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">elevation_tab module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/elevation_tab.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-elevation_tab">
+<span id="elevation-tab-module"></span><h1>elevation_tab module<a class="headerlink" href="#module-elevation_tab" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">elevation_tab.</span></span><span class="sig-name descname"><span class="pre">ElevationTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TabPage</span></code></p>
+<p>Widget for editing Digital Elevation Model (DEM) settings in the application.</p>
+<p>This tab allows users to define and configure DEM layers, set files for
+each layer, and specify GDAL settings to merge DEM files. The tab also supports drag-and-drop
+for adding elevation files and provides buttons for DEM download sites.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.main">
+<span class="sig-name descname"><span class="pre">main</span></span><a class="headerlink" href="#elevation_tab.ElevationTab.main" title="Link to this definition"></a></dt>
+<dd><p>Reference to the main application instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MainClass</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.settings_widget">
+<span class="sig-name descname"><span class="pre">settings_widget</span></span><a class="headerlink" href="#elevation_tab.ElevationTab.settings_widget" title="Link to this definition"></a></dt>
+<dd><p>Widget for displaying and editing DEM settings based on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SettingsWidget</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">the</span> <span class="pre">configuration.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.drop_widget">
+<span class="sig-name descname"><span class="pre">drop_widget</span></span><a class="headerlink" href="#elevation_tab.ElevationTab.drop_widget" title="Link to this definition"></a></dt>
+<dd><p>Widget for handling file drops for files with .tif extensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget" title="file_drop_widget.FileDropWidget">FileDropWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.tab_name">
+<span class="sig-name descname"><span class="pre">tab_name</span></span><a class="headerlink" href="#elevation_tab.ElevationTab.tab_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the tab in the UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Methods</strong>:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.create_download_buttons">
+<span class="sig-name descname"><span class="pre">create_download_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab.create_download_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab.create_download_buttons" title="Link to this definition"></a></dt>
+<dd><p>Creates download buttons and connects each button to open its respective URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>button_list</strong> (<em>list</em><em> of </em><em>tuple</em>) – List of tuples where each tuple contains:
+- label (str): The button label.
+- config_key (str): The configuration key to retrieve the URL.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A layout containing all the created download buttons.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QLayout</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab.load" title="Link to this definition"></a></dt>
+<dd><p>Load settings for the selected project and update the display.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project</strong> (<em>Project</em>) – The project instance to load settings from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if settings were loaded and displayed successfully.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.on_tab_enter">
+<span class="sig-name descname"><span class="pre">on_tab_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab.on_tab_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab.on_tab_enter" title="Link to this definition"></a></dt>
+<dd><p>Refreshes and validates settings when the tab is entered</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.open_url">
+<span class="sig-name descname"><span class="pre">open_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab.open_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab.open_url" title="Link to this definition"></a></dt>
+<dd><p>Opens the URL associated with the given configuration key in the default web browser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_key</strong> (<em>str</em>) – Key in the application configuration that maps to a URL.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Warning</strong> – Displays a warning message if the URL is empty, invalid, or cannot be opened.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.update_files_list">
+<span class="sig-name descname"><span class="pre">update_files_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab.update_files_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab.update_files_list" title="Link to this definition"></a></dt>
+<dd><p>Adds a new  file to the list of elevation files in the configuration, maintaining unique
+entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source_file</strong> (<em>str</em>) – The file path of the elevation file to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_tab.ElevationTab.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_tab.html#ElevationTab.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_tab.ElevationTab.validate" title="Link to this definition"></a></dt>
+<dd><p>todo: Validate the elevation files specified exist
+Not implemented yet.
+Validates the elevation files specified in the configuration to ensure they exist.</p>
+<p>If any files are missing, updates the status label to notify the user. The method does
+not take action if all files are present.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, corb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

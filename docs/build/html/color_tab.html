@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>color_tab module &mdash; Color Relief Editor 0.11 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=086c1757"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">color_tab module</a><ul>
+<li><a class="reference internal" href="#color_tab.ColorSampleWidget"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget</span></code></a><ul>
+<li><a class="reference internal" href="#color_tab.ColorSampleWidget.paintEvent"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.paintEvent()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSampleWidget.scale_color_bands"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.scale_color_bands()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget</span></code></a><ul>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.colors_updated"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.colors_updated</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.delete_row"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.delete_row()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.display"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.display()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.elevation_width"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.elevation_width()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.init_ui"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.init_ui()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.insert_row"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.insert_row()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.on_color_update"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.on_color_update()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.on_elevation_update"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.on_elevation_update()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.open_color_picker"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.open_color_picker()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.rescale"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.rescale()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.save"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.save()</span></code></a></li>
+<li><a class="reference internal" href="#color_tab.ColorSettingsWidget.undo"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.undo()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#color_tab.ColorTab"><code class="docutils literal notranslate"><span class="pre">ColorTab</span></code></a><ul>
+<li><a class="reference internal" href="#color_tab.ColorTab.load"><code class="docutils literal notranslate"><span class="pre">ColorTab.load()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#color_tab.scrollbar_width"><code class="docutils literal notranslate"><span class="pre">scrollbar_width()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">color_tab module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/color_tab.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-color_tab">
+<span id="color-tab-module"></span><h1>color_tab module<a class="headerlink" href="#module-color_tab" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="color_tab.ColorSampleWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_tab.</span></span><span class="sig-name descname"><span class="pre">ColorSampleWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color_ramp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSampleWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSampleWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Widget to display color bands with gradients between elevation levels.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSampleWidget.paintEvent">
+<span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSampleWidget.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSampleWidget.paintEvent" title="Link to this definition"></a></dt>
+<dd><p>Draw the color bands on the widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> – The paint event.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSampleWidget.scale_color_bands">
+<span class="sig-name descname"><span class="pre">scale_color_bands</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSampleWidget.scale_color_bands"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSampleWidget.scale_color_bands" title="Link to this definition"></a></dt>
+<dd><p>Scale each color band proportionally to its elevation range.</p>
+<p>This method calculates the parameters for rendering each color band,
+including its height and color gradient based on the elevation data. The result
+is used to create a visually accurate color gradient where each band represents a
+different elevation range.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><dl>
+<dt>A list of tuples, each containing:</dt><dd><ul class="simple">
+<li><p>color gradient (str): The color representation for the band.</p></li>
+<li><p>target_y (float): The vertical position where the band should start.</p></li>
+<li><p>band_height (float): The height of the band, indicating the elevation range it</p></li>
+</ul>
+<p>covers.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>list[tuple]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_tab.</span></span><span class="sig-name descname"><span class="pre">ColorSettingsWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_mgr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
+<p>Widget for editing elevation levels and colors and
+synchronizing changes to data_mgr</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.colors_updated">
+<span class="sig-name descname"><span class="pre">colors_updated</span></span><a class="headerlink" href="#color_tab.ColorSettingsWidget.colors_updated" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.delete_row">
+<span class="sig-name descname"><span class="pre">delete_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.delete_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.delete_row" title="Link to this definition"></a></dt>
+<dd><p>Delete the current row from the color table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.display">
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.display" title="Link to this definition"></a></dt>
+<dd><p>Populate the table with rows from the color data file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.elevation_width">
+<span class="sig-name descname"><span class="pre">elevation_width</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.elevation_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.elevation_width" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.init_ui" title="Link to this definition"></a></dt>
+<dd><p>Creates the color table  and adds row manipulation buttons.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.insert_row">
+<span class="sig-name descname"><span class="pre">insert_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.insert_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.insert_row" title="Link to this definition"></a></dt>
+<dd><p>Insert a new row by interpolating elevation and colors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.on_color_update">
+<span class="sig-name descname"><span class="pre">on_color_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.on_color_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.on_color_update" title="Link to this definition"></a></dt>
+<dd><p>Update the color button and data for the given index.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.on_elevation_update">
+<span class="sig-name descname"><span class="pre">on_elevation_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.on_elevation_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.on_elevation_update" title="Link to this definition"></a></dt>
+<dd><p>Update elevation data when UI changes and notify sample display.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.open_color_picker">
+<span class="sig-name descname"><span class="pre">open_color_picker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.open_color_picker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.open_color_picker" title="Link to this definition"></a></dt>
+<dd><p>Open color picker dialog and update data with result</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.rescale">
+<span class="sig-name descname"><span class="pre">rescale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.rescale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.rescale" title="Link to this definition"></a></dt>
+<dd><p>Rescale the elevations for each row.
+The scale is calculated using the current max elevation vs new_max elevation and applying
+the scale to all rows.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.save" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorSettingsWidget.undo">
+<span class="sig-name descname"><span class="pre">undo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorSettingsWidget.undo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorSettingsWidget.undo" title="Link to this definition"></a></dt>
+<dd><p>Undo - revert back to previous color settings</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="color_tab.ColorTab">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_tab.</span></span><span class="sig-name descname"><span class="pre">ColorTab</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorTab"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorTab" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TabPage</span></code></p>
+<p>Provides an editor for the color table used by gdaldem color-relief</p>
+<ol class="arabic simple">
+<li><p>Provides editing for colors and elevations including rescale, insert, and delete rows.</p></li>
+<li><p>Displays an elevation scaled sample of the color gradients</p></li>
+</ol>
+<p>3) Provides a preview of gdaldem color-relief with current settings.
+<strong>Methods</strong>:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="color_tab.ColorTab.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#ColorTab.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.ColorTab.load" title="Link to this definition"></a></dt>
+<dd><p>Load the color ramp file and update the display with its contents.
+Called when a new project is loaded</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="color_tab.scrollbar_width">
+<span class="sig-prename descclassname"><span class="pre">color_tab.</span></span><span class="sig-name descname"><span class="pre">scrollbar_width</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_tab.html#scrollbar_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_tab.scrollbar_width" title="Link to this definition"></a></dt>
+<dd><p>Calculate the width of the vertical scrollbar for the current style and environment.
+:returns: Width of the scrollbar in pixels.
+:rtype: int</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, corb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

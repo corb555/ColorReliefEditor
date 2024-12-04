@@ -1,0 +1,334 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>preview_widget module &mdash; Color Relief Editor 0.11 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=086c1757"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">preview_widget module</a><ul>
+<li><a class="reference internal" href="#preview_widget.MakeHandler"><code class="docutils literal notranslate"><span class="pre">MakeHandler</span></code></a><ul>
+<li><a class="reference internal" href="#preview_widget.MakeHandler.get_make_command"><code class="docutils literal notranslate"><span class="pre">MakeHandler.get_make_command()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.MakeHandler.make_clean"><code class="docutils literal notranslate"><span class="pre">MakeHandler.make_clean()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.MakeHandler.make_image"><code class="docutils literal notranslate"><span class="pre">MakeHandler.make_image()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.MakeHandler.output"><code class="docutils literal notranslate"><span class="pre">MakeHandler.output()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.MakeHandler.run_make"><code class="docutils literal notranslate"><span class="pre">MakeHandler.run_make()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.MakeHandler.up_to_date"><code class="docutils literal notranslate"><span class="pre">MakeHandler.up_to_date()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget"><code class="docutils literal notranslate"><span class="pre">PreviewWidget</span></code></a><ul>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.cancel_for_out_of_date"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.cancel_for_out_of_date()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.get_image_path"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.get_image_path()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.image_file"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.image_file</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.init_ui"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.init_ui()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.launch_viewer"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.launch_viewer()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.load_image"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.load_image()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.make_clean"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_clean()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.make_image"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_image()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.on_cancel_button"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.on_cancel_button()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.on_make_done"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.on_make_done()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.output"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.output()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.publish"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.publish()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.set_buttons_ready"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.set_buttons_ready()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.use_error_layout"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.use_error_layout()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.PreviewWidget.zoom_image"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.zoom_image()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#preview_widget.launch_app"><code class="docutils literal notranslate"><span class="pre">launch_app()</span></code></a></li>
+<li><a class="reference internal" href="#preview_widget.suppress_stderr"><code class="docutils literal notranslate"><span class="pre">suppress_stderr()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">preview_widget module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/preview_widget.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-preview_widget">
+<span id="preview-widget-module"></span><h1>preview_widget module<a class="headerlink" href="#module-preview_widget" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">preview_widget.</span></span><span class="sig-name descname"><span class="pre">MakeHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_window</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tab_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiprocess_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'</span> <span class="pre">-j</span> <span class="pre">'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Handles make process for generating, viewing, and publishing images.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler.get_make_command">
+<span class="sig-name descname"><span class="pre">get_make_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler.get_make_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler.get_make_command" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler.make_clean">
+<span class="sig-name descname"><span class="pre">make_clean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler.make_clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler.make_clean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler.make_image">
+<span class="sig-name descname"><span class="pre">make_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layers</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler.make_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler.make_image" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler.output">
+<span class="sig-name descname"><span class="pre">output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler.output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler.output" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler.run_make">
+<span class="sig-name descname"><span class="pre">run_make</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler.run_make"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler.run_make" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.MakeHandler.up_to_date">
+<span class="sig-name descname"><span class="pre">up_to_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#MakeHandler.up_to_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.MakeHandler.up_to_date" title="Link to this definition"></a></dt>
+<dd><p>Check if the project is up to date by running a dry-run of the make process.
+Returns True if the project is up to date, False otherwise.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">preview_widget.</span></span><span class="sig-name descname"><span class="pre">PreviewWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TabPage</span></code></p>
+<p>Widget for creating an image using a make process and (optionally) displaying it.
+Runs in two modes:</p>
+<ul class="simple">
+<li><p>Preview Mode:
+- Generates small images for quick review in a simple image viewer.</p></li>
+<li><p>Full Build Mode:
+- Generates large images.
+- Provides multiple features: “Create”, “View”, “Publish”, “Cancel”, “Clean”.
+- Uses external full-featured viewer due to large image size.
+- Large output window to monitor detailed build progress.</p></li>
+</ul>
+<p><strong>Methods</strong>:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.cancel_for_out_of_date">
+<span class="sig-name descname"><span class="pre">cancel_for_out_of_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.cancel_for_out_of_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.cancel_for_out_of_date" title="Link to this definition"></a></dt>
+<dd><p>Displays a confirmation dialog if the project is out of date.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>action</strong> (<em>str</em>) – The name of the action (e.g., ‘Publish’, ‘View’) to display in the dialog.</p></li>
+<li><p><strong>target</strong> (<em>str</em>) – The name of the target</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if out of date, and they cancel, False to proceed,</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.get_image_path">
+<span class="sig-name descname"><span class="pre">get_image_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.get_image_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.get_image_path" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.image_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">image_file</span></span><a class="headerlink" href="#preview_widget.PreviewWidget.image_file" title="Link to this definition"></a></dt>
+<dd><p>Get the path of the preview file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.init_ui" title="Link to this definition"></a></dt>
+<dd><p>Initialize UI components for the display</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.launch_viewer">
+<span class="sig-name descname"><span class="pre">launch_viewer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.launch_viewer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.launch_viewer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.load_image">
+<span class="sig-name descname"><span class="pre">load_image</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.load_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.load_image" title="Link to this definition"></a></dt>
+<dd><p>Load and display an image from the given file path. Adjust the zoom factor
+so the entire image fits within the self.image_label dimensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>file_path</strong> (<em>str</em>) – Path to the image file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True on success</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.make_clean">
+<span class="sig-name descname"><span class="pre">make_clean</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.make_clean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.make_clean" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.make_image">
+<span class="sig-name descname"><span class="pre">make_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.make_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.make_image" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.on_cancel_button">
+<span class="sig-name descname"><span class="pre">on_cancel_button</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.on_cancel_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.on_cancel_button" title="Link to this definition"></a></dt>
+<dd><p>Cancel the make process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.on_make_done">
+<span class="sig-name descname"><span class="pre">on_make_done</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exit_code</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.on_make_done"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.on_make_done" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.output">
+<span class="sig-name descname"><span class="pre">output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.output" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.publish">
+<span class="sig-name descname"><span class="pre">publish</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.publish"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.publish" title="Link to this definition"></a></dt>
+<dd><p>Copy the generated image to the directory specified in config.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>OSError</strong> – If there is an issue during the file copy operation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.set_buttons_ready">
+<span class="sig-name descname"><span class="pre">set_buttons_ready</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ready</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.set_buttons_ready"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.set_buttons_ready" title="Link to this definition"></a></dt>
+<dd><p>Enable or disable buttons based on the state.
+The cancel button takes the opposite state
+:param ready: Whether buttons should be enabled.
+:type ready: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.use_error_layout">
+<span class="sig-name descname"><span class="pre">use_error_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.use_error_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.use_error_layout" title="Link to this definition"></a></dt>
+<dd><p>Adjust image size and output size based on whether an error occurred</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.zoom_image">
+<span class="sig-name descname"><span class="pre">zoom_image</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.zoom_image"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.zoom_image" title="Link to this definition"></a></dt>
+<dd><p>Update the displayed image according to the current zoom factor.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preview_widget.launch_app">
+<span class="sig-prename descclassname"><span class="pre">preview_widget.</span></span><span class="sig-name descname"><span class="pre">launch_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#launch_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.launch_app" title="Link to this definition"></a></dt>
+<dd><p>Launches the specified application with the  file and brings the app to the front.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>app_name</strong> (<em>str</em>) – The name of the application to launch.</p></li>
+<li><p><strong>file_path</strong> (<em>str</em>) – The path to the file for the app</p></li>
+<li><p><strong>parent</strong> (<em>QWidget</em><em>, </em><em>optional</em>) – The parent widget for the error message dialog.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the file does not exist.</p></li>
+<li><p><strong>OSError</strong> – If the operating system is not supported.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="preview_widget.suppress_stderr">
+<span class="sig-prename descclassname"><span class="pre">preview_widget.</span></span><span class="sig-name descname"><span class="pre">suppress_stderr</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#suppress_stderr"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.suppress_stderr" title="Link to this definition"></a></dt>
+<dd><p>Context manager to suppress stderr output.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, corb.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
