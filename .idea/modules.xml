@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ColorRelief.iml" filepath="$PROJECT_DIR$/.idea/ColorRelief.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ColorReliefEditor.iml" filepath="$PROJECT_DIR$/.idea/ColorReliefEditor.iml" />
     </modules>
   </component>
 </project>

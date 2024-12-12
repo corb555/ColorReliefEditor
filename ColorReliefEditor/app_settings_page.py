@@ -25,12 +25,11 @@
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 
-from YMLEditor.settings_widget import SettingsWidget
-
 #
 #
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
+from YMLEditor.settings_widget import SettingsWidget
 
 
 class AppSettingsPage(TabPage):
@@ -45,8 +44,8 @@ class AppSettingsPage(TabPage):
             main (MainClass): Reference to the main application class.
             name (str): Name of the page.
         """
-        # Set up display format for the config settings that this tab uses
-        formats = {
+        # Set up display format for the app settings that this tab uses
+        app_formats = {
             "expert": {
                 "LABEL1": ("URLs:", "label", None, 400),
                 "DOWNLOAD.US": ("Download", "line_edit", r'^(https?):\/\/.*\..+', 400),
@@ -54,23 +53,22 @@ class AppSettingsPage(TabPage):
                 "LABEL2": ("", "label", None, 400),
                 "VIEWER": ("Viewer", "combo", ["QGIS", 'GIMP', 'ImageMagick'], 180),
                 "LABEL3": ("", "label", None, 400),
-                "MODE": ("Mode", "combo", ["basic", 'expert'], 180),
                 "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
+                "MULTI": ("Multiprocessor", "combo", ["multi", 'single'], 180),
             },
 
             "basic": {
-                "MODE": ("Mode", "combo", ["basic", 'expert'], 180),
             }
         }
 
         # Create widget to display and edit settings
         mode = main.app_config["MODE"]
-        self.settings_widget = SettingsWidget(main.app_config, formats, mode)
+        self.app_settings_widget = SettingsWidget(main.app_config, app_formats, mode, verbose=main.verbose)
 
         # This tab uses app_config, not config for data
         super().__init__(
             main, name, on_exit_callback=main.app_config.save,
-            on_enter_callback=self.settings_widget.display
+            on_enter_callback=self.app_settings_widget.display
         )
 
         # Instructions
@@ -79,5 +77,5 @@ class AppSettingsPage(TabPage):
         else:
             instructions = None
 
-        widgets = [self.settings_widget, expanding_vertical_spacer(10)]
+        widgets = [self.app_settings_widget, expanding_vertical_spacer(10)]
         self.create_page(widgets, None, instructions, self.tab_name)

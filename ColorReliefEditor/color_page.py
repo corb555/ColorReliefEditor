@@ -29,16 +29,15 @@
 #
 from pathlib import Path
 
-from PyQt6.QtCore import pyqtSignal, Qt
-from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
-from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QHBoxLayout,
-                             QColorDialog, QHeaderView, QMessageBox, QVBoxLayout, QInputDialog,
-                             QSizePolicy, QScrollBar)
-
 from ColorReliefEditor.color_config import ColorConfig
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
-from ColorReliefEditor.tab_page import TabPage, create_button
+from ColorReliefEditor.tab_page import TabPage, create_button, expanding_horizontal_spacer, \
+    expanding_vertical_spacer, create_hbox_layout, create_vbox_layout
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
+from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
+                             QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
 
 
 class ColorPage(TabPage):
@@ -61,27 +60,21 @@ class ColorPage(TabPage):
         self.data_mgr = ColorConfig()
 
         # Create color settings widget to edit the color table settings
-        self.settings_widget = ColorSettingsWidget(self.data_mgr)
+        self.color_settings_widget = ColorSettingsWidget(self.data_mgr)
 
         # Set up callbacks for tab entry and exit
         super().__init__(
             main, name, on_exit_callback=self.data_mgr.save,
-            on_enter_callback=self.settings_widget.display
+            on_enter_callback=self.color_settings_widget.display
         )
 
-        # Create a widget to display a scaled sample with color gradients
-        self.color_sample = ColorSampleWidget(self.data_mgr, self.settings_widget.table_height)
-
         # Create the main layout with color_sample and settings_widget
-        color_settings_pane = QHBoxLayout()
-        color_settings_pane.setAlignment(Qt.AlignmentFlag.AlignTop)  # Align both layouts to the top
-        color_settings_pane.addWidget(self.color_sample)
-        color_settings_pane.addWidget(self.settings_widget)
+        color_settings_pane = create_hbox_layout([self.color_settings_widget], 0, 0, 0, 0, 5)
 
         # Create a preview widget to run gdaldem color-relief and display result
         button_flags = ["make"]
         self.preview = PreviewWidget(
-            main, self.tab_name, self.settings_widget, True, self.data_mgr.save, button_flags
+            main, self.tab_name, self.color_settings_widget, True, self.data_mgr.save, button_flags,
         )
 
         # Determine whether we're in basic or expert mode
@@ -93,13 +86,19 @@ class ColorPage(TabPage):
         else:
             instructions = None
 
+        widgets = [color_settings_pane, self.preview]
+        stretch = [1, 3]
+
         # Create the page
         self.create_page(
-            [color_settings_pane, self.preview], None, instructions, self.tab_name
+            widgets, None, instructions,
+            self.tab_name, vertical=False, stretch=stretch,
         )
 
         # When color is updated, notify color_sample to redisplay
-        self.settings_widget.colors_updated.connect(self.color_sample.update)
+        self.color_settings_widget.colors_updated.connect(
+            self.color_settings_widget.color_sample.update
+            )
 
     def load(self, project):
         """
@@ -158,16 +157,16 @@ class ColorSettingsWidget(QWidget):
     def save(self):
         self.data_mgr.save()
 
-    def _sync_ui_to_config(self):
-        pass
-
     def init_ui(self):
         """
-        Creates the color table  and adds row manipulation buttons.
+        Create the color table and add row manipulation buttons.
         """
-        self.row_height = QFontMetrics(self.font()).height() + 9
+        self.row_height = QFontMetrics(self.font()).height() + 6
         self.table_height = self.row_height * self.initial_rows
         self.color_width = self.row_height * 2
+
+        # Create a widget to display a scaled sample with color gradients
+        self.color_sample = ColorSampleWidget(self.data_mgr, self.table_height)
 
         # Initialize the color table widget with a column for elevation and a column for color
         # button
@@ -191,24 +190,23 @@ class ColorSettingsWidget(QWidget):
         self.color_table.horizontalHeader().hide()
         self.color_table.verticalHeader().hide()
 
-        # Display the color table
-        self.display()
-
         # Add buttons for insert row, delete row, rescale, undo
-        button_panel = QHBoxLayout()
-        self.rescale_button = create_button('Rescale', self.rescale, False, self)
-        button_panel.addWidget(self.rescale_button)
-        self.undo_button = create_button('Undo', self.undo, False, self)
-        button_panel.addWidget(self.undo_button)
-        self.insert_button = create_button('Insert Row', self.insert_row, False, self)
-        button_panel.addWidget(self.insert_button)
-        self.delete_button = create_button('Delete Row', self.delete_row, False, self)
-        button_panel.addWidget(self.delete_button)
+        self.insert_button = create_button("Insert", self.insert_row, False, self)
+        self.delete_button = create_button("Delete", self.delete_row, False, self)
+        self.undo_button = create_button("Undo", self.undo, False, self)
+        self.rescale_button = create_button("Rescale", self.rescale, False, self)
+        buttons = [self.insert_button, self.delete_button, self.undo_button, self.rescale_button]
+        top_button_panel = create_hbox_layout(buttons, 0, 0, 0, 0)
 
-        # Set the layout of the widget
-        self.layout = QVBoxLayout(self)
-        self.layout.addWidget(self.color_table)
-        self.layout.addLayout(button_panel)
+        # Edit panel (horizontal) - Expander, Color_Sample, Color_Table
+        self.edit_panel = create_hbox_layout([self.color_sample, self.color_table], spacing=0)
+
+        # Main layout for ColorSettings widget
+        widgets = [top_button_panel, self.edit_panel, expanding_vertical_spacer(5)]
+        self.layout = create_vbox_layout(widgets)
+
+        # Set the layout
+        self.setLayout(self.layout)
 
     def display(self):
         """Populate the table with rows from the color data file."""
@@ -329,7 +327,7 @@ class ColorSettingsWidget(QWidget):
 
     def undo(self):
         """Undo - revert back to previous color settings"""
-        self.data_mgr.undo()
+        self.data_mgr.snapshot_undo()
         self.display()
         self.colors_updated.emit()
 
@@ -367,7 +365,7 @@ class ColorSampleWidget(QWidget):
         """
         super().__init__()
         self.color_ramp = color_ramp
-        self.setMinimumSize(180, height)
+        self.setMinimumSize(120, height)
         self.setSizePolicy(
             QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed
         )

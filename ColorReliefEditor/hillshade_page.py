@@ -29,11 +29,12 @@
 #
 from pathlib import Path
 
-from YMLEditor.settings_widget import SettingsWidget
-
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
-from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
+from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer, \
+    expanding_horizontal_spacer
+from PyQt6.QtWidgets import QVBoxLayout
+from YMLEditor.settings_widget import SettingsWidget
 
 
 class HillshadePage(TabPage):
@@ -67,11 +68,16 @@ class HillshadePage(TabPage):
             }
         }
 
-        # Create page
         mode = main.app_config["MODE"]
 
         # Widget for editing config settings
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode)
+        settings_layout = QVBoxLayout()
+        # Set margins (left, top, right, bottom) to 0 and spacing between widgets to 5
+        settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
+        settings_layout.setSpacing(5)  # Internal padding between widgets
+        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
+        settings_layout.addWidget(self.settings_widget)
+        settings_layout.addItem(expanding_vertical_spacer(1))
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save,
@@ -81,10 +87,11 @@ class HillshadePage(TabPage):
         # Widget for building and displaying a preview
         button_flags = {"make"}
         self.preview = PreviewWidget(
-            main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags
+            main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags,
         )
 
-        widgets = [self.settings_widget, expanding_vertical_spacer(20), self.preview]
+        widgets = [settings_layout, self.preview]
+        stretch = [1,3]
 
         # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":
@@ -93,7 +100,7 @@ class HillshadePage(TabPage):
             instructions = None
 
         # Create page with widgets vertically on left and instructions on right
-        self.create_page(widgets, None, instructions, self.tab_name)
+        self.create_page(widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch)
 
     def load(self, project):
         """

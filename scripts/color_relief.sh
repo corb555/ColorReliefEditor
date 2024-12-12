@@ -95,14 +95,18 @@ init() {
   check_command "yq" $ERROR_MISSING_UTILITY
   check_command "bc" $ERROR_MISSING_UTILITY
 
+  # Store the  working directory
+  original_dir=$(pwd)
+  echo "original dir: " $original_dir
+
   # Set key variables from parameters
   region=$1
   layer=$2
-  config="${region}_relief.cfg"
+  config="$(pwd)/${region}_relief.cfg"
 
   # Verify the config file exists
   if [ ! -f "$config" ]; then
-    echo "Error: Configuration file not found: $config" >&2
+    echo "Error: Configuration file not found: $config ❌" >&2
     exit $ERROR_CONFIG_NOT_FOUND
   fi
 
@@ -115,7 +119,7 @@ init() {
     quiet=$(optional_flag "$config" "QUIET")
   fi
 
-  # Some GDAL tools use a long quiet switch
+  # Some GDAL tools use a long version of the quiet switch
   long_quiet=""
   if [ "$quiet" = "-q" ]; then
     long_quiet="--quiet"
@@ -150,7 +154,7 @@ finished() {
 ##   $1: Command name to check
 check_command() {
   if ! command -v "$1" > /dev/null 2>&1; then
-    echo "Error: '$1' utility not found." >&2
+    echo "Error: '$1' utility not found. ❌" >&2
     current_shell=$(ps -p $$ -o comm=)
     echo "The shell is: $current_shell"
     exit $2
@@ -178,11 +182,14 @@ optional_flag() {
   # Run yq to extract YML key/value from config file
   yml_value=$(eval "yq \".${key}\" \"$config\"")
 
+  # Remove enclosing quotation marks if present
+  yml_value=$(echo "$yml_value" | sed 's/^["'\''\(]//;s/["'\''\)]$//')
+
   # If the result is null, set it to an empty string
   [ "$yml_value" = "null" ] && yml_value=""
 
   # Output the value to the command
-  echo "$yml_value"
+  echo $yml_value
 }
 
 
@@ -200,7 +207,7 @@ mandatory_flag() {
 
   # Check if flags are empty and output the error message
   if [ -z "$flags" ]; then
-    echo "Error: '$key' flags not found for layer '$layer' in config '$config'" >&2
+    echo "Error: '$key' flags not found for layer '$layer' in config '$config' ❌" >&2
     exit $ERROR_MANDATORY_FLAG_NOT_FOUND
   fi
 
@@ -222,6 +229,7 @@ get_flags() {
 
   for key in "$@"; do
     flag_value=$(optional_flag  "$config" "$key")
+
     flags="$flags $flag_value"
   done
 
@@ -237,7 +245,7 @@ get_flags() {
 ##   $@ (variable): List of file paths to check for existence
 verify_files() {
   for file in "$@"; do
-    [ ! -f "$file" ] && { echo "Error: File not found: $file" >&2; exit $ERROR_FILE_NOT_FOUND; }
+    [ ! -f "$file" ] && { echo "Error: File not found: $file ❌" >&2; exit $ERROR_FILE_NOT_FOUND; }
   done
   # Return success
   return 0
@@ -283,20 +291,26 @@ set_crs() {
   targ="$2"
   rm -f "${targ}"
 
+  echo "set crs" $1 $2
+  echo $config
+
   warp_flags=$(get_flags  "$config" "WARP1" "WARP2" "WARP3" "WARP4")
   echo "   Set CRS:" >&2
 
   if [ -z "$warp_flags" ]; then
     echo "No CRS flags provided. Renaming $input_file to $targ" >&2
     if ! mv "$input_file" "$targ"; then
-      echo "Error: Renaming failed." >&2
+      echo "Error: Renaming failed. ❌" >&2
       exit $ERROR_RENAMING_FAILED
     fi
   else
+    echo "quiet= $quiet"
+    echo "warp= warp_flags"
     echo "gdalwarp $warp_flags $quiet  $input_file $targ" >&2
+    ls $input_file
     echo >&2
     if ! gdalwarp $warp_flags $quiet  "$input_file" "$targ"; then
-      echo "Error: gdalwarp failed." >&2
+      echo "Error: gdalwarp failed. ❌" >&2
       exit $ERROR_GDALWARP_FAILED
     fi
   fi
@@ -323,6 +337,10 @@ create_preview_dem() {
   # Retrieve x_shift and y_shift.  Determines where preview is sliced from
   x_shift=$(optional_flag "$config" "X_SHIFT")
   y_shift=$(optional_flag "$config" "Y_SHIFT")
+
+  # Default to 0 if x_shift or y_shift is empty
+  x_shift=${x_shift:-0}
+  y_shift=${y_shift:-0}
 
   # Validate x_shift and y_shift are >= 0 and <= 1
   if [ "$(echo "$x_shift < 0 || $x_shift > 1" | bc)" -eq 1 ] || \
@@ -376,47 +394,54 @@ init_dem() {
   layer_id=$(mandatory_flag   "$config" "LAYER")
 
   file_list=$(mandatory_flag  "$config" FILES."$layer_id")
-  # Check if flags are empty and output the error message
+
+  # Check if flags are empty and output error message
   if [ -z "$file_list" ]; then
     echo >&2
-    echo "Error: Elevation Filename is blank for layer '$layer'" >&2
+    echo "Error: Elevation Filename is blank for layer '$layer' ❌" >&2
     echo >&2
     exit $ERROR_MISSING_FILE_PATTERN
   fi
 
-  # Folder for elevation DEM files
-  dem_folder=$(mandatory_flag   "$config" "DEM_FOLDER")
-  # Ensure dem_folder has a trailing slash
-  case "$dem_folder" in
-    */) ;;  # Already has a trailing slash
-    *) dem_folder="$dem_folder/" ;;
-  esac
+# Folder for elevation DEM files
+dem_folder=$(mandatory_flag "$config" "DEM_FOLDER")
 
-  # Loop through the filenames and prepend the dem_folder
-  new_file_list=""
-  for file in $file_list; do
-    new_file_list="${new_file_list}${dem_folder}${file} "
-  done
+# Change to the dem_folder
+cd "$dem_folder" || {
+  echo "Error: Failed to change to directory $dem_folder" >&2
+  exit 1
+}
+echo "current dir: $(pwd)"
 
-  # Temp vrt file
-  vrt_temp=${region}_tmp1.vrt
+# Temp vrt file
+vrt_temp="${region}_tmp1.vrt"
+echo "vrt temp $vrt_temp"
 
-  # Clean up old temp file
-  rm -f "${vrt_temp}"
-  echo "   Create DEM VRT: $dem_folder"  >&2
+# Clean up old temp file
+rm -f "$vrt_temp"
+echo "   Create DEM VRT: $dem_folder" >&2
 
-  # Create DEM VRT
-  echo "gdalbuildvrt $quiet $vrt_flag $vrt_temp $new_file_list" >&2
-  if ! gdalbuildvrt $quiet $vrt_flag $vrt_temp $new_file_list; then
-    echo "gdalbuildvrt error" >&2
-    exit $ERROR_GDALBUILDVRT
-  fi
+# Create DEM VRT
+echo gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list >&2
+if ! eval gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list; then
+  echo "gdalbuildvrt error ❌" >&2
+  exit $ERROR_GDALBUILDVRT
+fi
 
   # Set CRS if CRS flags are provided, otherwise just rename
-  set_crs "${vrt_temp}" "${dem_file}"
+  set_crs "${vrt_temp}" "../${dem_file}"
 
   # Clean up temp file
-  rm "${vrt_temp}"
+  #rm "${vrt_temp}"
+
+  # Change back to the original directory if needed
+  cd "$original_dir" || {
+  echo "Error: Failed to change back to original directory $original_dir" >&2
+  exit 1
+}
+
+echo "current dir: $(pwd)"
+echo "Vrt_temp $vrt_temp"
   finished "$dem_file"
 }
 
@@ -456,7 +481,7 @@ create_color_relief() {
 
   # Execute the command
   if ! eval "$cmd"; then
-      echo "Error: gdaldem color-relief failed." >&2
+      echo "Error: gdaldem color-relief failed. ❌" >&2
       exit $ERROR_GDAL_COLOR_RELIEF_FAILED
   fi
 
@@ -485,7 +510,7 @@ create_hillshade() {
 
   # Execute the command
   if ! eval "$cmd"; then
-      echo "Error: gdaldem hillshade failed." >&2
+      echo "Error: gdaldem hillshade failed. ❌" >&2
       exit $ERROR_GDAL_MERGE_FAILED
   fi
 
@@ -533,7 +558,7 @@ merge_hillshade() {
 
   # Execute the command
   if ! eval "$cmd"; then
-      echo "Error: gdal_merge.py failed." >&2
+      echo "Error: gdal_merge.py failed. ❌" >&2
       exit $ERROR_GDAL_MERGE_FAILED
   fi
 

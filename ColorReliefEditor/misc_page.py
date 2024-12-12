@@ -27,13 +27,10 @@
 
 #
 #
-from pathlib import Path
-
-from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.instructions import get_instructions
-from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
+from YMLEditor.settings_widget import SettingsWidget
 
 
 class MiscPage(TabPage):
@@ -53,25 +50,23 @@ class MiscPage(TabPage):
         # Set up display formats for the settings that this tab uses in basic and expert mode
         formats = {
             "expert": {
-                "DEM_FOLDER": ("Elevation Folder", "line_edit", None, 200),
-                "VRT": ("gbuildvrt", "line_edit", None, 500),
-                "LABEL4": ("", "label", None, 400),
-                "LABEL3": ("   gdal_warp:   ", "label", None, 400),
+                "LABEL4": ("", "label", None, 400), "LABEL3": ("gdal_warp:   ", "label", None, 400),
                 "WARP1": ("CRS", "line_edit", r'^\s*-t_srs\s+\S+$', 200),
                 "WARP2": ("gdalwarp", "line_edit", r"(?:-(?:\w+(?:\s+\w+=[\w/]+)?)\s*)+", 500),
-                "WARP4": ("Performance", "line_edit", None, 500),
-                "WARP3": ("Resampling", "combo",
-                          ["-r bilinear", '-r cubic', '-r cubicspline', '-r lanczos', " "], 200),
-                "LABEL5": ("", "label", None, 400),
-                "LABEL2": ("   gdaldem:   ", "label", None, 400),
+                "WARP4": ("Performance", "line_edit", None, 500), "WARP3": ("Resampling", "combo",
+                                                                            ["-r bilinear",
+                                                                             '-r cubic',
+                                                                             '-r cubicspline',
+                                                                             '-r lanczos', " "],
+                                                                            200),
+                "LABEL5": ("", "label", None, 400), "LABEL2": ("gdaldem:   ", "label", None, 400),
                 "EDGE": ("Edges", "combo", ["-compute_edges", " "], 180),
-                "LABEL6": ("", "label", None, 400),
-                "LABEL1": ("   gdal_calc:   ", "label", None, 400),
+                "LABEL6": ("", "label", None, 400), "LABEL1": ("gdal_calc:   ", "label", None, 400),
                 "MERGE1": ("gdal_calc", "line_edit", r"^(--[a-zA-Z0-9]+(=["
                                                      r"a-zA-Z0-9]+)?)(\s+--["
                                                      r"a-zA-Z0-9]+(=["
-                                                     r"a-zA-Z0-9]+)?)*$", 600),
-                "COMPRESS": ("Compress", "line_edit", None, 600),
+                                                     r"a-zA-Z0-9]+)?)*$", 500),
+                "COMPRESS": ("Compress", "line_edit", None, 500),
             }, "basic": {
             }
         }
@@ -80,14 +75,14 @@ class MiscPage(TabPage):
         mode = main.app_config["MODE"]
 
         # Widget for editing config settings
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode)
+        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save,
             on_enter_callback=self.settings_widget.display
         )
 
-        widgets = [self.settings_widget, expanding_vertical_spacer(20)]
+        widgets = [self.settings_widget, expanding_vertical_spacer(4)]
 
         # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":

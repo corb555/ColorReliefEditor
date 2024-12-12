@@ -24,14 +24,11 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-
-from YMLEditor.settings_widget import SettingsWidget
-
-#
-#
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
+from PyQt6.QtWidgets import QVBoxLayout
+from YMLEditor.settings_widget import SettingsWidget
 
 
 class ReliefPage(TabPage):
@@ -54,12 +51,11 @@ class ReliefPage(TabPage):
         formats = {
             "expert": {
                 "NAMES.@LAYER": ("Layer", "read_only", None, 180),
-                "MERGE_CALC": ("Calc ", "line_edit", None, 600),
-                "PUBLISH": ("Publish To", "line_edit", None, 600),
+                "MERGE_CALC": ("Calc ", "text_edit", None, 300),
+                "PUBLISH": ("Publish To", "text_edit", None, 300),
                 "QUIET": ("Quiet Mode", "combo", ["-q", " ", "--version"], 100),
-                "LABEL1": (" ", "label", None, 400),
             }, "basic": {
-                "PUBLISH": ("Publish To", "line_edit", None, 600),
+                "PUBLISH": ("Publish To", "text_edit", None, 300),
             },
         }
 
@@ -67,7 +63,13 @@ class ReliefPage(TabPage):
         mode = main.app_config["MODE"]
 
         # Widget for editing config settings
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode)
+        settings_layout = QVBoxLayout()
+        settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
+        settings_layout.setSpacing(5)  # Internal padding between widgets
+
+        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
+        settings_layout.addWidget(self.settings_widget)
+        settings_layout.addItem(expanding_vertical_spacer(10))
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save,
@@ -79,8 +81,12 @@ class ReliefPage(TabPage):
         self.preview = PreviewWidget(
             main, self.tab_name, self.settings_widget, False, main.proj_config.save, button_flags
         )
+        preview_panel = QVBoxLayout()
+        preview_panel.setContentsMargins(0, 0, 0, 0)
+        preview_panel.addWidget(self.preview)
 
-        widgets = [self.settings_widget, self.preview, expanding_vertical_spacer(20)]
+        widgets = [settings_layout, preview_panel]
+        stretch = [2,4]
 
         # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":
@@ -88,4 +94,4 @@ class ReliefPage(TabPage):
         else:
             instructions = None
 
-        self.create_page(widgets, None, instructions, self.tab_name)
+        self.create_page(widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch)

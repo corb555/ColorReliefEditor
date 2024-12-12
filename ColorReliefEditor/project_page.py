@@ -28,12 +28,13 @@
 #
 #
 
-from PyQt6.QtWidgets import QHBoxLayout, QMessageBox, QFileDialog
-from YMLEditor.settings_widget import SettingsWidget
-
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.project_config import ProjectConfig
-from ColorReliefEditor.tab_page import create_button, TabPage, expanding_vertical_spacer
+from ColorReliefEditor.tab_page import create_button, TabPage, expanding_vertical_spacer, \
+    create_hbox_layout
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
+from YMLEditor.settings_widget import SettingsWidget
+
 
 class ProjectPage(TabPage):
     """
@@ -49,17 +50,31 @@ class ProjectPage(TabPage):
     # Display formats for the Project settings
     project_formats = {
         "error": {
-            "STATUS": ("Status", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
             "PROJECT": ("Project", "read_only", None, 600),
+            "STATUS": ("Status", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
             "FOLDER": ("Folder", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
             "SETTINGS": ("Settings", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
             "COLORFILE": ("Color File", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
             "MAKEFILE": ("Makefile", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
             "SCRIPT": ("Script", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+            "MAKE": ("Make", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
         }, "success": {
-            "STATUS": ("Status", "read_only", None, 600),
             "PROJECT": ("Project", "read_only", None, 600),
+            "STATUS": ("Status", "read_only", None, 600),
             "FOLDER": ("Folder", "read_only", None, 600),
+        }
+    }
+
+    # Set up display format for the app settings that this tab uses
+    app_formats = {
+        "expert": {
+            "LABEL1": (" ", "label", None, 180),
+            "MODE": ("Mode", "combo", ["basic", "expert"], 180),
+        },
+
+        "basic": {
+            "LABEL1": (" ", "label", None, 180),
+            "MODE": ("Mode", "combo", ["basic", "expert"], 180),
         }
     }
 
@@ -71,29 +86,33 @@ class ProjectPage(TabPage):
             main (MainClass): Main application class reference.
             name (str): Name of the widget.
         """
+        # Initialize the parent TabPage with the display callback
+        super().__init__(
+            main, name, on_exit_callback=main.save_settings, on_enter_callback=self.display_settings
+        )
+
         # Buttons for creating, opening, and accessing recent projects
         self.new_button, self.recent_button, self.open_button = None, None, None
         self.status = ""
 
-        # Configure project status display
-        self.project_settings = SettingsWidget(main.project, self.project_formats, "success" )
         mode = main.app_config["MODE"]
 
-        # Initialize the parent TabPage with the display callback
-        super().__init__(
-            main, name, on_exit_callback=None, on_enter_callback=self.display_settings
-        )
+        # Configure project status display
+        self.project_settings = SettingsWidget(
+            main.project, self.project_formats, "success", verbose=main.verbose
+            )
+
+        # Configure application settings display
+        self.app_settings_widget = SettingsWidget(main.app_config, self.app_formats, mode, verbose=main.verbose)
 
         # Setup buttons for project actions
-        self.open_button = create_button("Open", self.open_project_dialog, True, self)
+        self.open_button = create_button("Open", self.open_project_dialog, False, self)
         self.recent_button = create_button("Open Recent", self.open_recent_dialog, False, self)
-        self.new_button = create_button("New", self.create_new_project, False, self)
+        self.new_button = create_button("New", self.create_new_project, True, self)
+        buttons = [self.open_button, self.recent_button, self.new_button, ]
 
         # Arrange buttons in a horizontal layout
-        button_layout = QHBoxLayout()
-        button_layout.addWidget(self.open_button)
-        button_layout.addWidget(self.recent_button)
-        button_layout.addWidget(self.new_button)
+        button_layout = create_hbox_layout(buttons, 0, 0, 0, 0, 5)
 
         # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":
@@ -102,12 +121,14 @@ class ProjectPage(TabPage):
             instructions = None
 
         # Create the tab page with widgets, buttons, and optional instructions
-        widgets = [self.project_settings, button_layout,
-                   expanding_vertical_spacer(20), ]
+        widgets = [button_layout, self.project_settings, self.app_settings_widget,
+                   expanding_vertical_spacer(4), ]
         self.create_page(widgets, None, instructions, self.tab_name)
+        self.app_settings_widget.display()
 
     def display_settings(self):
         self.project_settings.display()
+        self.app_settings_widget.display()
 
     def load_project(self, config_path):
         """
@@ -122,6 +143,10 @@ class ProjectPage(TabPage):
             # Attempt to load all tabs after project load
             if success:
                 success = self.main.load_all_tabs()
+                QMessageBox.information(
+                    self.main, "Success",
+                    f"Project Loaded\n\nUse Tabs to adjust settings and view previews. "
+                )
 
             # Update the page layout based on the load success
             self.set_project_status(success)
@@ -181,7 +206,7 @@ class ProjectPage(TabPage):
                 return
 
             self.status = "Project Created"
-            self.load_project(self.main.project.config_file_path)
+            self.load_project(self.main.proj_config.file_path)
 
     def show_file_dialog(self, dialog_type, title, file_type_filter=""):
         """

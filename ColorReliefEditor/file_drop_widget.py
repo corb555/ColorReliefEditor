@@ -65,6 +65,9 @@ class FileDropWidget(QWidget):
             self.status.setStyleSheet(status_style)
 
         layout = QVBoxLayout()
+        # Set margins (left, top, right, bottom) to 0 and spacing between widgets to 5
+        layout.setContentsMargins(20, 8, 20, 0)  # No external margins
+        layout.setSpacing(5)  # Internal padding between widgets
         layout.addWidget(self.drop_label)
         layout.addWidget(self.status)
         self.setLayout(layout)

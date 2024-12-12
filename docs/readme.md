@@ -29,15 +29,21 @@ explanation [here](https://medium.com/@robsimmon/a-gentle-introduction-to-gdal-p
 
 ## Initial Setup
 
-- **Install Dependencies**
-- [ ] **yq:** Install yq which is used to parse the config file. For MacOS you can use Homebrew:
+- **Dependencies**
+- [ ] **yq:** Used to parse the config file. 
+- [ ] **make:** Make, used to determine what needs to be built
+- [ ] **GDAL:** Install GDAL, the Geospatial Data Abstraction Library 
 
-```sh
-brew install yq
-```
+### Installing Dependencies on Mac:
 
-- [ ] **GDAL:** Install GDAL, the Geospatial Data Abstraction Library   
-  https://gdal.org/en/latest/download.html#binaries
+Homebrew and Anaconda are two popular Mac package managers.  
+You can use them to install the three above dependencies. Generally, you should use one or the other package manager
+and not both. Gdal is a LARGE package and will take a while to install.
+Note - this has not been tested with Anaconda.
+
+### Installing Dependencies on Linux / WSL:
+todo
+
 
 ## Create a Color Relief Image
 

@@ -21,12 +21,14 @@
 #  #
 #   This uses QT for some components which has the primary open-source license is the GNU Lesser
 #   General Public License v. 3 (“LGPL”).
-#   With the LGPL license option, you can use the essential libraries and some add-on libraries of Qt.
+#   With the LGPL license option, you can use the essential libraries and some add-on libraries
+#   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 
 #
 #
 import os
+import platform
 
 from PyQt6.QtCore import QObject, pyqtSignal, QProcess
 from PyQt6.QtGui import QTextCursor
@@ -70,6 +72,12 @@ class MakeProcess(QObject):
         self.process.readyReadStandardError.connect(self._on_standard_error)
         self.process.finished.connect(self._on_process_finished)
 
+        system = platform.system()
+        if system == "Darwin":
+            self.make = "gmake"
+        else:
+            self.make = "make"
+
     def run_make(self, makefile_path, project_directory, command, job_name, output_window=None):
         """
         Execute the given Makefile command.
@@ -92,17 +100,27 @@ class MakeProcess(QObject):
         self.output(f"{command}\n")
 
         if not makefile_path or not os.path.isfile(makefile_path):
-            self.return_error(103, f"Error: Makefile not found at: {makefile_path}")
+            self.return_error(103, f"Error: Makefile not found at: {makefile_path} ")
 
         # chdir to the project directory
         try:
             os.chdir(project_directory)
         except OSError as e:
-            self.return_error(104, f"Error: Unable to change directory to: {project_directory} {e}")
+            self.return_error(
+                104, f"Error: Unable to change directory to: {project_directory} {e} "
+                )
 
         # Start the make process
         self.build_required = False
-        self.process.startCommand(command)
+
+        # todo - can startCommand return an error?
+        # self.process.startCommand(command)
+
+        try:
+            self.process.startCommand(command)
+        except Exception as e:
+            print(f"Error: Unable to run Makefile command.\n{e}")
+            return self.return_error(105, f"Error: Unable to start process. {e}")
 
         # Check if this is a dry-run command
         if command.strip().endswith("-n"):
@@ -114,6 +132,15 @@ class MakeProcess(QObject):
         else:
             # Run asynchronously and handle with signal
             self.dry_run = False
+
+    def _on_process_finished(self, exit_code):
+        """
+        Handle the process finished event.
+
+        Args:
+            exit_code (int): The exit code of the completed process.
+        """
+        self.make_finished.emit(self.job_name, exit_code)
 
     def return_error(self, error, message):
         self.output(message)
@@ -167,12 +194,3 @@ class MakeProcess(QObject):
         self.build_required = True
         output = self.process.readAllStandardError().data().decode()
         self.output(output)
-
-    def _on_process_finished(self, exit_code):
-        """
-        Handle the process finished event.
-
-        Args:
-            exit_code (int): The exit code of the completed process.
-        """
-        self.make_finished.emit(self.job_name, exit_code)

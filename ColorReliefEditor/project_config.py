@@ -29,10 +29,9 @@ import os
 from pathlib import Path
 
 from appdirs import user_config_dir
-from YMLEditor.data_manager import DataManager
-
 from ColorReliefEditor import resources
 from ColorReliefEditor.recent_files import RecentFiles
+from YMLEditor.data_manager import DataManager
 
 
 class ProjectConfig(DataManager):
@@ -42,9 +41,7 @@ class ProjectConfig(DataManager):
 
     # Project file names are <region>_<suffix>
     file_suffix = {
-        "color_ramp": "_color_ramp.txt",
-        "config": "_relief.cfg",
-        "dem": "_DEM_trigger.cfg"
+        "color_ramp": "_color_ramp.txt", "config": "_relief.cfg", "dem": "_DEM_trigger.cfg"
     }
 
     def __init__(self, main):
@@ -65,13 +62,10 @@ class ProjectConfig(DataManager):
     def _load_data(self, _):
         """ Update project data and statuses."""
         data = {
-            "STATUS": "Project Opened",
-            "PROJECT": self.region,
-            "FOLDER": self.project_directory,
-            "SETTINGS": self.main.proj_config.file_path,
-            "COLORFILE": self.color_file_path,
-            "MAKEFILE": self.makefile_path,
-            "SCRIPT": 'color_relief.sh'
+            "STATUS": "Project Opened", "PROJECT": self.region, "FOLDER": self.project_directory,
+            "SETTINGS": self.main.proj_config.file_path, "COLORFILE": self.color_file_path,
+            "MAKEFILE": self.makefile_path, "SCRIPT": 'color_relief.sh',
+            "MAKE": self.main.make_process.make,
         }
         return data
 
@@ -94,13 +88,12 @@ class ProjectConfig(DataManager):
         try:
             self.main.proj_config.load(config_path)
         except Exception as e:
-            self.set_status( f"{e}")
+            self.set_status(f"{e}")
             return False
 
         self.region = os.path.basename(config_path).replace(ProjectConfig.file_suffix["config"], "")
         self.project_directory = os.path.dirname(config_path)
-        dem_path = self.main.proj_config["DEM_FOLDER"]
-        self.dem_directory = os.path.join(os.path.dirname(config_path), dem_path)
+
         self.color_file_path = os.path.join(
             self.project_directory, os.path.basename(config_path).replace(
                 ProjectConfig.file_suffix["config"], ProjectConfig.file_suffix["color_ramp"]
@@ -113,13 +106,24 @@ class ProjectConfig(DataManager):
 
         # Load and verify data
         self._data = self._load_data(None)
+
         self.print_project_files(config_path)
-        error = not self.verify(["SETTINGS", "COLORFILE", "MAKEFILE"], ["SCRIPT"], "FOLDER", )
+        error = not self.verify(
+            ["SETTINGS", "COLORFILE", "MAKEFILE"], ["SCRIPT", "MAKE"], "FOLDER", )
         if error:
-            self._data["STATUS"] = "Files missing"
+            self._data["STATUS"] = "Files missing \u274C"
             return False
         else:
-            self._data["STATUS"] = "Project loaded"
+            self._data["STATUS"] = "Loaded \u2705"
+
+            # Get name of folder for elevation files.  Create if necessary
+            dem_folder = self.main.proj_config._data["DEM_FOLDER"]
+            rel_path = os.path.join(self.project_directory, dem_folder)
+
+            # Create the folder if necessary
+            if not os.path.exists(rel_path):
+                os.mkdir(rel_path)
+            self.dem_directory = os.path.join(os.path.dirname(config_path), dem_folder)
             return True
 
     def print_project_files(self, config_path):
@@ -166,15 +170,15 @@ class ProjectConfig(DataManager):
         for name, value in self._data.items():
             if name in file_keys:
                 if not value or not os.path.isfile(value):
-                    self._data[name] = f"{value} is missing"
+                    self._data[name] = f"{value} is missing \u274C"
                     file_error = True
             elif name in folder_keys:
                 if not value or not os.path.isdir(value):
-                    self._data[name] = f"{value} is missing"
+                    self._data[name] = f"{value} is missing \u274C"
                     file_error = True
             elif name in script_keys:
                 if not script_available(value):
-                    self._data[name] = f"{value} script missing"
+                    self._data[name] = f"{value} is missing \u274C"
                     file_error = True
 
         return not file_error
@@ -244,7 +248,7 @@ class ProjectConfig(DataManager):
         touch_file(dem_proxy_path)
 
         # Return True, None if no errors occurred during the process
-        return True, None
+        return (True, None)
 
 
 def app_files_path(filename):

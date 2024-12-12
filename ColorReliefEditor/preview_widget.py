@@ -24,7 +24,7 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-
+from base64 import standard_b64decode
 #
 #
 from contextlib import contextmanager
@@ -35,11 +35,11 @@ import shutil
 import subprocess
 import sys
 
+from ColorReliefEditor.tab_page import TabPage, create_hbox_layout, create_button, \
+    create_readonly_window
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QLabel, QSizePolicy, QMessageBox
-
-from ColorReliefEditor.tab_page import TabPage, create_layout, create_button, create_readonly_window
 
 
 class PreviewWidget(TabPage):
@@ -77,10 +77,13 @@ class PreviewWidget(TabPage):
         self.button_definitions = [
             {"flag": "make", "label": "Create", "callback": self.make_image, "focus": True},
             {"flag": "view", "label": "View...", "callback": self.launch_viewer, "focus": False},
-            {"flag": "publish", "label": "Publish", "callback": self.publish, "focus": False},
-            {"flag": "clean", "label": "Delete temp files", "callback": self.make_clean,"focus": False},{
-            "flag": "cancel", "label": "Cancel", "callback": self.on_cancel_button, "focus": False},
-        ]
+            {"flag": "publish", "label": "Publish", "callback": self.publish, "focus": False}, {
+                "flag": "clean", "label": "Delete temp files", "callback": self.make_clean,
+                "focus": False
+            }, {
+                "flag": "cancel", "label": "Cancel", "callback": self.on_cancel_button,
+                "focus": False
+            }, ]
         self.preview_mode = preview_mode
         self.connected_to_make = False
         self.button_flags = button_flags
@@ -89,7 +92,6 @@ class PreviewWidget(TabPage):
         self._image_file = None
         self._pixmap = None
 
-        self.image_height = 800
         self.image_label = None
         self.zoom_factor = 1.0
 
@@ -103,23 +105,80 @@ class PreviewWidget(TabPage):
         self.view_button = None
 
         # Output window parameters
-        self.output_width = 800
-        self.output_max_height = 600
+        self.output_max_height = 400
         self.output_min_height = 80
         self.output_window = None
 
         self.init_ui()
-        self.make_handler = MakeHandler(main, self.output_window, self.tab_name)
+
+        # Run make in multiprocessor mode?
+        if self.main.app_config["MULTI"] == 'multi':
+            multi = ' -j '
+        else:
+            multi = ''
+        self.make_handler = MakeHandler(
+            main, self.output_window, self.tab_name, multiprocess_flag=multi
+            )
 
         if not self.connected_to_make:
             self.make_handler.make_process.make_finished.connect(self.on_make_done)
             self.connected_to_make = True
 
+    def init_ui(self):
+        """
+        Initialize UI components for the display
+        """
+        self.standard_stretch = [1, 2, 8]
+        self.error_stretch = [1, 5, 5]
+        self.full_stretch = [1, 8, 0]
+        if self.preview_mode:
+            # Preview Build Mode - create widget to display a preview image
+            self.image_label = QLabel(self)
+            self.image_label.setSizePolicy(
+                QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+                )
+            self.image_label.setMinimumSize(
+                400, 400
+                )  # Allow the QLabel to shrink to a reasonable minimum size
+
+            # Preview mode just has "Preview" button
+            self.make_button = create_button("Preview", self.make_image, True, self)
+            button_layout = create_hbox_layout([self.make_button])
+            height = self.output_min_height
+            stretch = self.standard_stretch
+        else:
+            # Full Build Mode
+            # Create the buttons in button_flags
+            buttons = []
+
+            # Create buttons that are in self.button_flags
+            for defn in self.button_definitions:
+                if defn["flag"] in self.button_flags:
+                    button = create_button(defn["label"], defn["callback"], defn["focus"], self)
+                    buttons.append(button)
+
+            button_layout = create_hbox_layout(buttons)
+            height = self.output_max_height
+            stretch = self.full_stretch
+
+        # Create window for process output
+        self.output_window = create_readonly_window()
+        self.output_window.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+            )
+
+        self.output_window.setMinimumSize(100,250)
+
+        widgets = [button_layout, self.output_window, self.image_label]
+        self.create_page(widgets, None, None, None, vertical=True, stretch=stretch)
+
     def make_image(self):
         self.on_save()
         self.set_buttons_ready(False)
         layer = self.main.project.get_layer()
-        self.image_file = self.make_handler.make_image(self.tab_name.lower(), self.preview_mode, [layer])
+        self.image_file = self.make_handler.make_image(
+            self.tab_name.lower(), self.preview_mode, [layer]
+            )
 
     def make_clean(self):
         self.set_buttons_ready(False)
@@ -133,7 +192,8 @@ class PreviewWidget(TabPage):
             if exit_code == 0:
                 # Only display "Done" if this wasn't a dry run
                 if not self.make_handler.dry_run:
-                    self.output("Done")
+                    msg = "Done ✅"
+                    self.output(msg)
 
                 # Success: Display image
                 if self.image_label:
@@ -142,10 +202,10 @@ class PreviewWidget(TabPage):
                     # Load the image into the label
                     success = self.load_image(self.image_file)
                     if not success:
-                        self.output(f"Error: cannot load {self.image_file}")
+                        self.output(f"Error: cannot load {self.image_file} ❌")
             else:
                 # Error: Display output window at full size
-                self.output(f"Error - exit={exit_code}")
+                self.output(f"Error - exit={exit_code} ❌")
 
                 if self.output_window:
                     self.use_error_layout(True)
@@ -168,7 +228,9 @@ class PreviewWidget(TabPage):
 
         # Check if the project is up to date and confirm action if needed
         layer = self.main.project.get_layer()
-        target = self.main.project.get_target_image_name(self.tab_name.lower(), self.preview_mode, layer)
+        target = self.main.project.get_target_image_name(
+            self.tab_name.lower(), self.preview_mode, layer
+            )
         if self.cancel_for_out_of_date("Publish", target):
             return
 
@@ -179,55 +241,18 @@ class PreviewWidget(TabPage):
         except OSError as e:
             QMessageBox.warning(self.main, "Error", f"Error copying image: {str(e)}")
 
-    def init_ui(self):
-        """
-        Initialize UI components for the display
-        """
-        if self.preview_mode:
-            # Preview Build Mode - create widget to display a preview image
-            self.image_label = QLabel(self)
-            self.image_label.setFixedSize(self.image_height, self.image_height)
-            self.image_label.setSizePolicy(QSizePolicy.Policy.Fixed, QSizePolicy.Policy.Fixed)
-
-            # Preview mode just has "Preview" button
-            self.make_button = create_button("Preview", self.make_image, True, self)
-            button_layout = create_layout([self.make_button])
-            height = self.output_min_height
-        else:
-            # Full Build Mode
-            # Create the buttons in button_flags
-            buttons = []
-
-            # Create buttons that are in self.button_flags
-            for defn in self.button_definitions:
-                if defn["flag"] in self.button_flags:
-                    button = create_button(defn["label"], defn["callback"], defn["focus"], self)
-                    buttons.append(button)
-
-            button_layout = create_layout(buttons)
-            height = self.output_max_height
-
-        # Create window for process output
-        self.output_window = create_readonly_window(height, self.output_width)
-
-        widgets = [self.output_window, self.image_label]
-        self.create_page(widgets, button_layout, None, None)
-
     def use_error_layout(self, error):
         """
         Adjust image size and output size based on whether an error occurred
         """
         if self.preview_mode:
             if error:
-                # On error - shrink image and expand output size
-                image_height = 1
+                # Error -  expand output size
                 output_height = self.output_max_height
             else:
-                # On no error - expand image and shrink output
-                image_height = self.image_height
+                # No error - expand image and shrink output
                 output_height = self.output_min_height
 
-            self.image_label.setFixedSize(image_height, image_height)
             self.output_window.setFixedHeight(output_height)
 
     def on_cancel_button(self):
@@ -249,16 +274,42 @@ class PreviewWidget(TabPage):
             if button:
                 button.setEnabled(state)
 
+
+    def resizeEvent(self, event):
+        """
+        This method is called whenever the window is resized.
+        """
+        super().resizeEvent(event)
+        self.zoom_image()
+
     def zoom_image(self):
         """
         Update the displayed image according to the current zoom factor.
         """
+        if not self._pixmap:
+            return
+
+        label_width = self.image_label.width()
+        label_height = self.image_label.height()
+
+        # Get dimensions of the pixmap and the image label
+        image_width = self._pixmap.width()
+        image_height = self._pixmap.height()
+
+        # Calculate the scaling factors for both width and height
+        width_factor = label_width / image_width
+        height_factor = label_height / image_height
+
+        # Use the smaller of the two scaling factors to fit the image
+        self.zoom_factor = min(width_factor, height_factor)
         if self._pixmap:
             scaled_pixmap = self._pixmap.scaled(
                 int(self._pixmap.width() * self.zoom_factor),
                 int(self._pixmap.height() * self.zoom_factor), Qt.AspectRatioMode.KeepAspectRatio
             )
             self.image_label.setPixmap(scaled_pixmap)
+
+        self.display()
 
     @property
     def image_file(self):
@@ -286,7 +337,9 @@ class PreviewWidget(TabPage):
 
         # Check if the project is up to date and confirm action if needed
         layer = self.main.project.get_layer()
-        target = self.main.project.get_target_image_name(self.tab_name.lower(), self.preview_mode, layer)
+        target = self.main.project.get_target_image_name(
+            self.tab_name.lower(), self.preview_mode, layer
+            )
         if self.cancel_for_out_of_date("View", target):
             return
 
@@ -324,13 +377,14 @@ class PreviewWidget(TabPage):
 
     def get_image_path(self):
         layer = self.main.project.get_layer()
-        target = self.main.project.get_target_image_name(self.tab_name.lower(), self.preview_mode, layer)
+        target = self.main.project.get_target_image_name(
+            self.tab_name.lower(), self.preview_mode, layer
+            )
         return str(Path(self.main.project.project_directory) / target)
 
     def load_image(self, file_path):
         """
-        Load and display an image from the given file path. Adjust the zoom factor
-        so the entire image fits within the self.image_label dimensions.
+        Load and display an image from the given file path.
 
         Args:
             file_path (str): Path to the image file.
@@ -352,16 +406,6 @@ class PreviewWidget(TabPage):
             print(f"ERROR: Image height={image_height}, width={image_width}")
             self.zoom_factor = 1
             return False
-        else:
-            label_width = self.image_label.width()
-            label_height = self.image_label.height()
-
-            # Calculate the scaling factors for both width and height
-            width_factor = label_width / image_width
-            height_factor = label_height / image_height
-
-            # Use the smaller of the two scaling factors to fit the image
-            self.zoom_factor = min(width_factor, height_factor)
 
         # Apply the zoom and display the image
         self.zoom_image()
@@ -447,6 +491,7 @@ class MakeHandler:
         self.multiprocess_flag = multiprocess_flag
         self.dry_run = False
         self.make_process = main.make_process
+        self.make = self.main.make_process.make
 
     def output(self, message):
         self.output_window.appendPlainText(message)
@@ -456,12 +501,12 @@ class MakeHandler:
         layer = self.main.project.get_layer()
 
         if not layer:
-            return f"make REGION={region} LAYER='' -f Makefile layer_not_set"
+            return f"{self.make} REGION={region} LAYER='' -f Makefile layer_not_set"
 
         dry_run = " -n" if dry_run_flag else ""
         self.dry_run = dry_run_flag
 
-        return (f"make {self.multiprocess_flag if not dry_run_flag else ''} REGION={region} "
+        return (f"{self.make} {self.multiprocess_flag if not dry_run_flag else ''} REGION={region} "
                 f"LAYER={layer} -f Makefile {base} {dry_run}")
 
     def make_image(self, base, preview_mode, layers):
@@ -474,8 +519,9 @@ class MakeHandler:
     def make_clean(self, layers):
         for layer in layers:
             if layer and self.main.project.region:
-                command = (f"make REGION={self.main.project.region} LAYER={layer} -f Makefile "
-                           f"clean")
+                command = (
+                    f"{self.make} REGION={self.main.project.region} LAYER={layer} -f Makefile "
+                    f"clean")
                 self.run_make(command)
             else:
                 self.output("Error: layer name is empty.")

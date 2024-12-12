@@ -30,15 +30,14 @@
 from functools import partial
 import os
 
+from ColorReliefEditor.file_drop_widget import FileDropWidget
+from ColorReliefEditor.instructions import get_instructions
+from ColorReliefEditor.tab_page import TabPage, create_button, create_hbox_layout, \
+    expanding_vertical_spacer
 from PyQt6.QtCore import QUrl
 from PyQt6.QtGui import QDesktopServices
 from PyQt6.QtWidgets import QMessageBox
 from YMLEditor.settings_widget import SettingsWidget
-
-from ColorReliefEditor.file_drop_widget import FileDropWidget
-from ColorReliefEditor.instructions import get_instructions
-from ColorReliefEditor.tab_page import TabPage, create_button, create_layout, \
-    expanding_vertical_spacer
 
 
 class ElevationPage(TabPage):
@@ -86,7 +85,7 @@ class ElevationPage(TabPage):
         # Create widget to display and edit settings
         # Redisplay if LAYER changes
 
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, ["LAYER"])
+        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, ["LAYER"], verbose=main.verbose)
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save,
@@ -121,7 +120,7 @@ class ElevationPage(TabPage):
 
         # Create Elevation Page
         widgets = [self.drop_widget, button_layout, self.settings_widget,
-                   expanding_vertical_spacer(20)]
+                   expanding_vertical_spacer(4)]
         self.create_page(widgets, None, instructions, self.tab_name)
 
     def load(self, project):
@@ -142,7 +141,7 @@ class ElevationPage(TabPage):
         # Update proxy file if WARP or FILES changes. This forces DEM rebuild
         self.main.proj_config.add_proxy(
             self.main.project.get_proxy_path(), ["WARP1", "WARP2", "WARP3", "WARP4", "FILES"]
-            )
+        )
 
         self.validate()
         self.settings_widget.display()
@@ -210,7 +209,7 @@ class ElevationPage(TabPage):
             buttons.append(button)
 
         # Create the layout with the buttons and return it
-        return create_layout(buttons)
+        return create_hbox_layout(buttons)
 
     def open_url(self, config_key):
         """
