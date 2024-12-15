@@ -71,12 +71,12 @@ class ElevationPage(TabPage):
                 "NAMES": ("Layers", "read_only", None, 680), "LAYER": (
                     "Active Layer", "combo", ["A", 'B', 'C', "D", 'E', 'F', "G", 'H', 'I'], 204),
                 "NAMES.@LAYER": ("Layer Name", "line_edit", r'^\w+$', 200),
-                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^[^/]*\.tif[^/]*$", 680),
+                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^([a-zA-Z0-9._-]+\.tif)( [a-zA-Z0-9._-]+\.tif)*$", 680),
                 "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
                 "LICENSES.@LAYER": ("License", "line_edit", None, 680),
                 "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
             }, "basic": {
-                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^[^/]*\.tif[^/]*$", 680),
+                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^([a-zA-Z0-9._-]+\.tif)( [a-zA-Z0-9._-]+\.tif)*$", 680),
                 "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
             }
         }
@@ -85,7 +85,9 @@ class ElevationPage(TabPage):
         # Create widget to display and edit settings
         # Redisplay if LAYER changes
 
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, ["LAYER"], verbose=main.verbose)
+        self.settings_widget = SettingsWidget(
+            main.proj_config, formats, mode, ["LAYER"], verbose=main.verbose
+            )
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save,
@@ -98,6 +100,7 @@ class ElevationPage(TabPage):
 
         button_layout = self.create_download_buttons(download_buttons)
 
+        # Styles for Drag and Drop box
         file_drop_style = """
              QLabel {
                  font-size: 18px;
@@ -105,11 +108,16 @@ class ElevationPage(TabPage):
                  padding: 40px;
              }
             """
+        status_style = """
+             QLabel {
+                 color: "orange";
+             }
+            """
 
         # Create drag and drop target for elevation files
         self.drop_widget = FileDropWidget(
             "Drag Elevation Files Here", r"^.*\.tif[i]?$", self.update_files_list, file_drop_style,
-            None
+            status_style
         )
 
         # Instructions
@@ -118,7 +126,7 @@ class ElevationPage(TabPage):
         else:
             instructions = None
 
-        # Create Elevation Page
+        # Create the Page
         widgets = [self.drop_widget, button_layout, self.settings_widget,
                    expanding_vertical_spacer(4)]
         self.create_page(widgets, None, instructions, self.tab_name)
@@ -161,9 +169,15 @@ class ElevationPage(TabPage):
         entries.
 
         Args:
-            source_file (str): The file path of the elevation file to add.
+            source_file (str): The file path of the  file to add.
         """
         file_name = os.path.basename(source_file)
+        if " " in file_name:
+            QMessageBox.warning(
+                self.main, "Note", f"File names cannot contain spaces. {file_name}"
+            )
+            return
+
         file_list = self.main.proj_config.get("FILES.@LAYER", "")
 
         # Add the new file to the file list and remove duplicates

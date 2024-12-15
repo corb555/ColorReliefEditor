@@ -1,20 +1,23 @@
-.. Color Relief Editor documentation master file, created by
-sphinx-quickstart on Sat Oct 26 17:08:58 2024.
-You can adapt this file completely to your liking, but it should at least
-contain the root `toctree` directive.
+ColorReliefEditor Documentation
+==========================
 
-Color Relief Editor documentation
-=================================
+The ColorReliefEditor  uses Digital Elevation files and GDAL tools to create hillshade and color relief images which
+are combined into a final relief image. All settings, including colors and parameters, are set directly
+in the app and GDAL utilities are automatically executed to generate the images.
 
-Add your content using ``reStructuredText`` syntax. See the
-`reStructuredText <https://www.sphinx-doc.org/en/master/usage/restructuredtext/index.html>`_
-documentation for details.
+Modules
+=======
 
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
 
+   modules
+   readme.md
 
-modules
+Indices and tables
+==================
 
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`

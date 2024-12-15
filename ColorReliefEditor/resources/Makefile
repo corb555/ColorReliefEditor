@@ -125,7 +125,7 @@ $(PRV_FINAL_TIF): $(PRV_COLOR_TIF) $(PRV_HILLSHADE_TIF) $(CONFIG_FILE) $(DEM_TRI
 
 # Clean up intermediate files
 clean:
-	rm -f $(DEM_TIF) $(COLOR_TIF) $(HILLSHADE_TIF)  $(PRV_COLOR_TIF) $(PRV_HILLSHADE_TIF) $(PRV_FINAL_TIF)
+	rm -f $(DEM_TIF) $(COLOR_TIF) $(HILLSHADE_TIF) $(PRV_DEM_TIF) $(PRV_COLOR_TIF) $(PRV_HILLSHADE_TIF) $(PRV_FINAL_TIF)
 
 # Cleanup everything including the final output and preview DEM
 distclean: clean
@@ -134,7 +134,7 @@ distclean: clean
 # Display help and other info.  Any comment with ## is displayed in help
 help:
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
-	@echo "Color Relief Makefile v0.1"
+	@echo "Color Relief Makefile v0.2"
 	@echo "Final target name: $(FINAL_TIF)"
 	@echo "Config file: $(CONFIG_FILE)"
 	@make --version

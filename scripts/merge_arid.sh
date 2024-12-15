@@ -72,8 +72,13 @@ run_gdal_calc() {
 set -e
 echo "------ merge_arid.sh --------------"
 pwd
-# Read the region prefix from the YAML config file using yq
-prefix=$(yq eval '.settings.region' config.yml)
+
+if [ "$#" -ne 1 ]; then
+    echo "Error - Usage: merge_arid.sh <region>"
+    exit 1
+fi
+# Read the region prefix from $1
+prefix=$1
 
 # Record the start time
 start_time=$(date +"%s")

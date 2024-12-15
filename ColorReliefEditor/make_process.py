@@ -58,11 +58,12 @@ class MakeProcess(QObject):
 
     make_finished = pyqtSignal(str, int)
 
-    def __init__(self):
+    def __init__(self, verbose=0):
         """
         Initialize the MakeProcess object.
         """
         super().__init__()
+        self.verbose = verbose
         self.dry_run = False
         self.build_required = False
         self.process = QProcess()
@@ -108,7 +109,7 @@ class MakeProcess(QObject):
         except OSError as e:
             self.return_error(
                 104, f"Error: Unable to change directory to: {project_directory} {e} "
-                )
+            )
 
         # Start the make process
         self.build_required = False
@@ -119,14 +120,16 @@ class MakeProcess(QObject):
         try:
             self.process.startCommand(command)
         except Exception as e:
-            print(f"Error: Unable to run Makefile command.\n{e}")
+            self.warn(f"Error: Unable to run Makefile command.\n{e}")
             return self.return_error(105, f"Error: Unable to start process. {e}")
+
+        # Log the make command being run
+        self.warn(command)
 
         # Check if this is a dry-run command
         if command.strip().endswith("-n"):
             # Run dry-run synchronously and scan output for ".sh" to determine if
-            # build_required
-            print(command)
+            # build is required
             self.dry_run = True
             self.process.waitForFinished()
         else:
@@ -194,3 +197,12 @@ class MakeProcess(QObject):
         self.build_required = True
         output = self.process.readAllStandardError().data().decode()
         self.output(output)
+
+    def warn(self, message):
+        if self.verbose > 0:
+            print(message)
+
+    def  info(self, message):
+        if self.verbose > 1:
+            print(message)
+

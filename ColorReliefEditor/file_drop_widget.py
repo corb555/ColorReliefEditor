@@ -44,7 +44,8 @@ class FileDropWidget(QWidget):
             title (str): The title for the widget.
             file_pattern (str): The file pattern to match against the file names.
             callback (function): A callback function that accepts a file name.
-            style (str): A QWidget style.
+            style (str): A QWidget style for the drop target.
+            status_style (str): A QWidget style for the status message.
         **Methods**:
         """
         super().__init__()

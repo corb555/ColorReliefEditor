@@ -61,12 +61,13 @@ class MiscPage(TabPage):
                                                                             200),
                 "LABEL5": ("", "label", None, 400), "LABEL2": ("gdaldem:   ", "label", None, 400),
                 "EDGE": ("Edges", "combo", ["-compute_edges", " "], 180),
+                "OUTPUT_TYPE": ("Output Type", "line_edit", r'^\s*-of\s+\S+$', 200),
                 "LABEL6": ("", "label", None, 400), "LABEL1": ("gdal_calc:   ", "label", None, 400),
                 "MERGE1": ("gdal_calc", "line_edit", r"^(--[a-zA-Z0-9]+(=["
                                                      r"a-zA-Z0-9]+)?)(\s+--["
                                                      r"a-zA-Z0-9]+(=["
                                                      r"a-zA-Z0-9]+)?)*$", 500),
-                "COMPRESS": ("Compress", "line_edit", None, 500),
+                "COMPRESS": ("Compress", "line_edit", r'^-co COMPRESS=.*', 500),
             }, "basic": {
             }
         }

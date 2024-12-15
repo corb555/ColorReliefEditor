@@ -41,17 +41,18 @@ class ProjectConfig(DataManager):
 
     # Project file names are <region>_<suffix>
     file_suffix = {
-        "color_ramp": "_color_ramp.txt", "config": "_relief.cfg", "dem": "_DEM_trigger.cfg"
+        "color_ramp": "_color_ramp.txt", "config": "_relief.cfg", "dem": "_DEM_trigger.cfg",
+        "app_config": "relief_editor.cfg",
     }
 
-    def __init__(self, main):
+    def __init__(self, main, verbose=1):
         """
         Initialize
 
         Args:
             main (MainClass): Main application class.
         """
-        super().__init__()
+        super().__init__(verbose=verbose)
         self.main = main
         self._data = {}
         self.project_directory, self.color_file_path, self.makefile_path = None, None, None,
@@ -62,9 +63,13 @@ class ProjectConfig(DataManager):
     def _load_data(self, _):
         """ Update project data and statuses."""
         data = {
-            "STATUS": "Project Opened", "PROJECT": self.region, "FOLDER": self.project_directory,
-            "SETTINGS": self.main.proj_config.file_path, "COLORFILE": self.color_file_path,
-            "MAKEFILE": self.makefile_path, "SCRIPT": 'color_relief.sh',
+            "STATUS": "Project Opened",
+            "PROJECT": self.region,
+            "FOLDER": self.project_directory,
+            "SETTINGS": self.main.proj_config.file_path,
+            "COLORFILE": self.color_file_path,
+            "MAKEFILE": self.makefile_path,
+            "SCRIPT": 'color_relief.sh',
             "MAKE": self.main.make_process.make,
         }
         return data
@@ -111,10 +116,10 @@ class ProjectConfig(DataManager):
         error = not self.verify(
             ["SETTINGS", "COLORFILE", "MAKEFILE"], ["SCRIPT", "MAKE"], "FOLDER", )
         if error:
-            self._data["STATUS"] = "Files missing \u274C"
+            self._data["STATUS"] = "Files missing ❌"
             return False
         else:
-            self._data["STATUS"] = "Loaded \u2705"
+            self._data["STATUS"] = "Loaded ✅"
 
             # Get name of folder for elevation files.  Create if necessary
             dem_folder = self.main.proj_config._data["DEM_FOLDER"]
@@ -130,10 +135,10 @@ class ProjectConfig(DataManager):
         """
         Print project file paths.
         """
-        print(f"\nProject config file: {config_path} ")
-        print(f"Color definition file: {self.color_file_path} ")
-        print(f"Makefile: {self.makefile_path} ")
-        print(f"Color relief script: color_relief.sh ")
+        self.main.warn(f"\nProject config file: {config_path} ")
+        self.main.warn(f"Color definition file: {self.color_file_path} ")
+        self.main.warn(f"Makefile: {self.makefile_path} ")
+        self.main.warn(f"Color relief script: color_relief.sh ")
 
     def get_target_image_name(self, basename, preview_mode, layer):
         """
@@ -170,15 +175,15 @@ class ProjectConfig(DataManager):
         for name, value in self._data.items():
             if name in file_keys:
                 if not value or not os.path.isfile(value):
-                    self._data[name] = f"{value} is missing \u274C"
+                    self._data[name] = f"{value} is missing ❌"
                     file_error = True
             elif name in folder_keys:
                 if not value or not os.path.isdir(value):
-                    self._data[name] = f"{value} is missing \u274C"
+                    self._data[name] = f"{value} is missing ❌"
                     file_error = True
             elif name in script_keys:
                 if not script_available(value):
-                    self._data[name] = f"{value} is missing \u274C"
+                    self._data[name] = f"{value} is missing ❌"
                     file_error = True
 
         return not file_error
@@ -293,11 +298,27 @@ def create_file_from_resource(
         target_path (str): The path where the file should be created.
         replace_text (str, optional): The text to be replaced in the resource.
         new_text (str, optional): The text to replace replace_text with.
+
+    Raises:
+        FileNotFoundError: If the resource cannot be read.
+        FileExistsError: If the target file already exists.
+        Exception: For other unexpected errors.
     """
-    file_data = _read_resource(resource_name)
-    if replace_text and new_text:
-        file_data = file_data.replace(replace_text, new_text)
-    _create_file(target_path, file_data)
+    try:
+        # Read resource content
+        file_data = _read_resource(resource_name)
+
+        # Replace text if required
+        if replace_text and new_text:
+            file_data = file_data.replace(replace_text, new_text)
+
+        # Create the file
+        _create_file(target_path, file_data)
+
+    except Exception as e:
+        raise Exception(
+            f"Failed to create file from resource '{resource_name}' to '{target_path}': {str(e)}"
+        )
 
 
 def _create_file(target_path, file_data):
@@ -307,22 +328,54 @@ def _create_file(target_path, file_data):
     Args:
         target_path (str): The path to the file to be created.
         file_data (str): The data to write to the file.
+
+    Raises:
+        FileExistsError: If the target file already exists.
+        IOError: If the file cannot be created or written.
     """
-    with open(target_path, 'w') as file:
-        file.write(file_data)
+    try:
+        if os.path.exists(target_path):
+            raise FileExistsError(f"File '{target_path}' already exists.")
+
+        with open(target_path, 'w') as file:
+            file.write(file_data)
+
+    except FileExistsError as e:
+        raise e  # Re-raise for higher-level handling
+
+    except IOError as e:
+        raise IOError(
+            f"Failed to write to file '{target_path}'. Check permissions or disk space. Details: "
+            f"{str(e)}"
+        )
 
 
 def _read_resource(resource_name):
     """
     Read the content of a resource file.
+
     Args:
         resource_name (str): The name of the resource to read.
 
     Returns:
         str: The content of the resource file.
+
+    Raises:
+        FileNotFoundError: If the resource is not available.
+        IOError: If the resource cannot be read.
     """
-    with pkg_resources.open_text(resources, resource_name) as resource:
-        return resource.read()
+    try:
+        with pkg_resources.open_text(resources, resource_name) as resource:
+            return resource.read()
+    except FileNotFoundError as e:
+        raise FileNotFoundError(
+            f"Resource '{resource_name}' not found. Ensure the resource is correctly packaged and "
+            f"accessible."
+        )
+    except IOError as e:
+        raise IOError(
+            f"Failed to read resource '{resource_name}'. Details: {str(e)}"
+        )
 
 
 def touch_file(filename):

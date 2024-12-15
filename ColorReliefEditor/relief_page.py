@@ -51,7 +51,7 @@ class ReliefPage(TabPage):
         formats = {
             "expert": {
                 "NAMES.@LAYER": ("Layer", "read_only", None, 180),
-                "MERGE_CALC": ("Calc ", "text_edit", None, 300),
+                "MERGE_CALC": ("Calc ", "text_edit", r"^--calc=[^ ]*(?=.*A)(?=.*B)[^ ]*$", 300),
                 "PUBLISH": ("Publish To", "text_edit", None, 300),
                 "QUIET": ("Quiet Mode", "combo", ["-q", " ", "--version"], 100),
             }, "basic": {
@@ -67,7 +67,8 @@ class ReliefPage(TabPage):
         settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
         settings_layout.setSpacing(5)  # Internal padding between widgets
 
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
+        self.settings_widget = SettingsWidget(main.proj_config, formats, mode,
+                                              verbose=main.verbose, text_edit_height=60)
         settings_layout.addWidget(self.settings_widget)
         settings_layout.addItem(expanding_vertical_spacer(10))
 
@@ -86,7 +87,7 @@ class ReliefPage(TabPage):
         preview_panel.addWidget(self.preview)
 
         widgets = [settings_layout, preview_panel]
-        stretch = [2,4]
+        stretch = [1, 8]
 
         # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":
@@ -94,4 +95,6 @@ class ReliefPage(TabPage):
         else:
             instructions = None
 
-        self.create_page(widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch)
+        self.create_page(
+            widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch
+            )

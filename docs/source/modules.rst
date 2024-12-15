@@ -5,18 +5,20 @@ ColorReliefEditor
    :maxdepth: 4
 
    ColorReliefEdit
-   app_settings
+   app_settings_page
    color_config
-   color_tab
-   elevation_tab
+   color_page
+   elevation_page
    file_drop_widget
-   hillshade_tab
+   hillshade_page
    instructions
    make_process
+   misc_page
    preview_widget
-   project_tab
+   project_config
+   project_page
    recent_files
-   relief_tab
+   relief_page
    tab_page
    color_relief
    makefile

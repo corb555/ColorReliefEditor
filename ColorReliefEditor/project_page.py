@@ -70,11 +70,14 @@ class ProjectPage(TabPage):
         "expert": {
             "LABEL1": (" ", "label", None, 180),
             "MODE": ("Mode", "combo", ["basic", "expert"], 180),
+            "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
+            "SHOW_TABS": ("Tabs", "combo", ["normal", 'extended'], 180),
         },
 
         "basic": {
             "LABEL1": (" ", "label", None, 180),
             "MODE": ("Mode", "combo", ["basic", "expert"], 180),
+            "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
         }
     }
 
@@ -100,10 +103,15 @@ class ProjectPage(TabPage):
         # Configure project status display
         self.project_settings = SettingsWidget(
             main.project, self.project_formats, "success", verbose=main.verbose
-            )
+        )
+
+        # If these keys change, notify user that restart is required
+        watch = ["MODE", "INSTRUCTIONS", "SHOW_TABS"]
 
         # Configure application settings display
-        self.app_settings_widget = SettingsWidget(main.app_config, self.app_formats, mode, verbose=main.verbose)
+        self.app_settings_widget = SettingsWidget(
+            main.app_config, self.app_formats, mode, verbose=main.verbose, trigger_keys=watch, callback=self.restart_dialog
+            )
 
         # Setup buttons for project actions
         self.open_button = create_button("Open", self.open_project_dialog, False, self)
@@ -143,13 +151,15 @@ class ProjectPage(TabPage):
             # Attempt to load all tabs after project load
             if success:
                 success = self.main.load_all_tabs()
-                QMessageBox.information(
-                    self.main, "Success",
-                    f"Project Loaded\n\nUse Tabs to adjust settings and view previews. "
-                )
 
             # Update the page layout based on the load success
             self.set_project_status(success)
+
+    def restart_dialog(self, key, value):
+        QMessageBox.information(
+            self.main, "Note",
+            f"You will need to restart for these changes to take effect."
+        )
 
     def set_project_status(self, success):
         """
@@ -169,7 +179,7 @@ class ProjectPage(TabPage):
             self.project_settings.set_layout("error")
 
             # Disable all tabs except Project Tab and Settings Tab
-            self.main.set_tabs_available(False, ["Project", "Settings"])
+            self.main.set_tabs_available(False, ["Project"])
 
     def open_project_dialog(self):
         """Open a file dialog to select a project configuration file."""

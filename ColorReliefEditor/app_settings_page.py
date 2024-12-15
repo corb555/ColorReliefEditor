@@ -53,8 +53,8 @@ class AppSettingsPage(TabPage):
                 "LABEL2": ("", "label", None, 400),
                 "VIEWER": ("Viewer", "combo", ["QGIS", 'GIMP', 'ImageMagick'], 180),
                 "LABEL3": ("", "label", None, 400),
-                "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
                 "MULTI": ("Multiprocessor", "combo", ["multi", 'single'], 180),
+                "VERBOSE": ("Verbose", "combo", ["0", '1', '2'], 180),
             },
 
             "basic": {
@@ -63,7 +63,9 @@ class AppSettingsPage(TabPage):
 
         # Create widget to display and edit settings
         mode = main.app_config["MODE"]
-        self.app_settings_widget = SettingsWidget(main.app_config, app_formats, mode, verbose=main.verbose)
+        self.app_settings_widget = SettingsWidget(
+            main.app_config, app_formats, mode, verbose=main.verbose
+            )
 
         # This tab uses app_config, not config for data
         super().__init__(

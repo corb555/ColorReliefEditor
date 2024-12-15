@@ -24,7 +24,6 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-from base64 import standard_b64decode
 #
 #
 from contextlib import contextmanager
@@ -37,7 +36,7 @@ import sys
 
 from ColorReliefEditor.tab_page import TabPage, create_hbox_layout, create_button, \
     create_readonly_window
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QLabel, QSizePolicy, QMessageBox
 
@@ -118,7 +117,7 @@ class PreviewWidget(TabPage):
             multi = ''
         self.make_handler = MakeHandler(
             main, self.output_window, self.tab_name, multiprocess_flag=multi
-            )
+        )
 
         if not self.connected_to_make:
             self.make_handler.make_process.make_finished.connect(self.on_make_done)
@@ -136,10 +135,10 @@ class PreviewWidget(TabPage):
             self.image_label = QLabel(self)
             self.image_label.setSizePolicy(
                 QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-                )
+            )
             self.image_label.setMinimumSize(
                 400, 400
-                )  # Allow the QLabel to shrink to a reasonable minimum size
+            )  # Allow the QLabel to shrink to a reasonable minimum size
 
             # Preview mode just has "Preview" button
             self.make_button = create_button("Preview", self.make_image, True, self)
@@ -165,9 +164,9 @@ class PreviewWidget(TabPage):
         self.output_window = create_readonly_window()
         self.output_window.setSizePolicy(
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
-            )
+        )
 
-        self.output_window.setMinimumSize(100,250)
+        self.output_window.setMinimumSize(100, 250)
 
         widgets = [button_layout, self.output_window, self.image_label]
         self.create_page(widgets, None, None, None, vertical=True, stretch=stretch)
@@ -178,7 +177,7 @@ class PreviewWidget(TabPage):
         layer = self.main.project.get_layer()
         self.image_file = self.make_handler.make_image(
             self.tab_name.lower(), self.preview_mode, [layer]
-            )
+        )
 
     def make_clean(self):
         self.set_buttons_ready(False)
@@ -218,9 +217,13 @@ class PreviewWidget(TabPage):
             OSError: If there is an issue during the file copy operation.
         """
         image_path = self.get_image_path()
-        destination_folder = Path(self.main.proj_config.get("PUBLISH"))  # Convert to Path object
+        dest = self.main.proj_config.get("PUBLISH") or ""
+        if dest != "":
+            destination_folder = Path(dest)  # Convert to Path object
+        else:
+            destination_folder = ""
 
-        if not destination_folder.is_dir():
+        if destination_folder == "" or not destination_folder.is_dir():
             QMessageBox.warning(
                 self.main, "Error", f"Publish directory '{destination_folder}' does not exist."
             )
@@ -230,7 +233,7 @@ class PreviewWidget(TabPage):
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
             self.tab_name.lower(), self.preview_mode, layer
-            )
+        )
         if self.cancel_for_out_of_date("Publish", target):
             return
 
@@ -274,43 +277,6 @@ class PreviewWidget(TabPage):
             if button:
                 button.setEnabled(state)
 
-
-    def resizeEvent(self, event):
-        """
-        This method is called whenever the window is resized.
-        """
-        super().resizeEvent(event)
-        self.zoom_image()
-
-    def zoom_image(self):
-        """
-        Update the displayed image according to the current zoom factor.
-        """
-        if not self._pixmap:
-            return
-
-        label_width = self.image_label.width()
-        label_height = self.image_label.height()
-
-        # Get dimensions of the pixmap and the image label
-        image_width = self._pixmap.width()
-        image_height = self._pixmap.height()
-
-        # Calculate the scaling factors for both width and height
-        width_factor = label_width / image_width
-        height_factor = label_height / image_height
-
-        # Use the smaller of the two scaling factors to fit the image
-        self.zoom_factor = min(width_factor, height_factor)
-        if self._pixmap:
-            scaled_pixmap = self._pixmap.scaled(
-                int(self._pixmap.width() * self.zoom_factor),
-                int(self._pixmap.height() * self.zoom_factor), Qt.AspectRatioMode.KeepAspectRatio
-            )
-            self.image_label.setPixmap(scaled_pixmap)
-
-        self.display()
-
     @property
     def image_file(self):
         """
@@ -339,11 +305,11 @@ class PreviewWidget(TabPage):
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
             self.tab_name.lower(), self.preview_mode, layer
-            )
+        )
         if self.cancel_for_out_of_date("View", target):
             return
 
-        self.output(f"Launched {app}")
+        self.output(f"Launched {app} ✅")
         launch_app(app, image_path)
 
     def cancel_for_out_of_date(self, action, target):
@@ -379,7 +345,7 @@ class PreviewWidget(TabPage):
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
             self.tab_name.lower(), self.preview_mode, layer
-            )
+        )
         return str(Path(self.main.project.project_directory) / target)
 
     def load_image(self, file_path):
@@ -394,22 +360,51 @@ class PreviewWidget(TabPage):
         if not file_path:
             raise ValueError("Image file path is empty.")
 
-        # Use suppress_stderr to hide erroneous errors from libTiff
-        # with suppress_stderr():
         self._pixmap = QPixmap(file_path)
+
+        if self._pixmap.width() == 0:
+            self.zoom_factor = 1
+            return False
+
+        # Use a single-shot timer to defer zoom until geometry is set
+        QTimer.singleShot(0, self.zoom_image)
+        return True
+
+    def zoom_image(self):
+        """
+        Update the displayed image according to the current zoom factor.
+        """
+        if not self._pixmap:
+            return
+
+        label_width = self.image_label.width()
+        label_height = self.image_label.height()
 
         # Get dimensions of the pixmap and the image label
         image_width = self._pixmap.width()
         image_height = self._pixmap.height()
+        if image_width == 0:
+            return
 
-        if image_height == 0 or image_width == 0:
-            print(f"ERROR: Image height={image_height}, width={image_width}")
-            self.zoom_factor = 1
-            return False
+        # Calculate the scaling factors for both width and height
+        width_factor = label_width / image_width
+        height_factor = label_height / image_height
 
-        # Apply the zoom and display the image
+        # Use the smaller of the two scaling factors to fit the image
+        self.zoom_factor = min(width_factor, height_factor)
+        scaled_pixmap = self._pixmap.scaled(
+            int(self._pixmap.width() * self.zoom_factor),
+            int(self._pixmap.height() * self.zoom_factor), Qt.AspectRatioMode.KeepAspectRatio
+        )
+        self.image_label.setPixmap(scaled_pixmap)
+        self.display()
+
+    def resizeEvent(self, event):
+        """
+        This method is called whenever the window is resized.
+        """
+        super().resizeEvent(event)
         self.zoom_image()
-        return True
 
 
 @contextmanager
@@ -555,5 +550,5 @@ class MakeHandler:
             self.output("The image is out of date.  Click Create to build the image.")
             return False
         else:
-            self.output("Image is up to date.")
+            self.output("Image is up to date. ✅")
             return True

@@ -120,7 +120,9 @@ class TabPage(QWidget):
         self.on_enter_callback = on_enter_callback
         self.right_layout, self.left_layout, self.page_layout = None, None, None
 
-    def create_page(self, widgets, buttons, instructions=None, title=None, vertical=True, stretch=None):
+    def create_page(
+            self, widgets, buttons, instructions=None, title=None, vertical=True, stretch=None
+            ):
         """
         Set up a page layout with widgets, buttons, instructions, and a title.
 
@@ -145,7 +147,9 @@ class TabPage(QWidget):
         # Create Left Panel - with Widgets and Buttons
         if widgets or buttons:
             widget_panel = QWidget(self)
-            widget_panel_layout = QVBoxLayout(widget_panel) if vertical else QHBoxLayout(widget_panel)
+            widget_panel_layout = QVBoxLayout(widget_panel) if vertical else QHBoxLayout(
+                widget_panel
+                )
             widget_panel.setLayout(widget_panel_layout)
             widget_panel_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
             widget_panel_layout.setSpacing(5)  # Internal padding between widgets
@@ -327,7 +331,7 @@ def create_button(text, callback=None, focus=False, parent=None):
 def create_vbox_layout(
         widgets, margin_top=None, margin_bottom=None, margin_left=None, margin_right=None,
         spacing=None
-        ):
+):
     """
     Create a QVBoxLayout with optional margins and spacing and add supplied widgets to it.
 
@@ -345,13 +349,13 @@ def create_vbox_layout(
     """
     return _create_layout(
         QVBoxLayout, widgets, margin_top, margin_bottom, margin_left, margin_right, spacing
-        )
+    )
 
 
 def create_hbox_layout(
         widgets, margin_top=None, margin_bottom=None, margin_left=None, margin_right=None,
         spacing=None
-        ):
+):
     """
     Create a QHBoxLayout with optional margins and spacing and add supplied widgets to it.
 
@@ -367,13 +371,13 @@ def create_hbox_layout(
     """
     return _create_layout(
         QHBoxLayout, widgets, margin_top, margin_bottom, margin_left, margin_right, spacing
-        )
+    )
 
 
 def _create_layout(
         layout_class, widgets, margin_top=None, margin_bottom=None, margin_left=None,
         margin_right=None, spacing=None
-        ):
+):
     """
     Helper function to create a layout with optional margins and spacing. Add widgets to it.
 

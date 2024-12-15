@@ -28,13 +28,14 @@
 #
 #
 from pathlib import Path
-
+import os
 from ColorReliefEditor.color_config import ColorConfig
+from ColorReliefEditor.file_drop_widget import FileDropWidget
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
-from ColorReliefEditor.tab_page import TabPage, create_button, expanding_horizontal_spacer, \
-    expanding_vertical_spacer, create_hbox_layout, create_vbox_layout
-from PyQt6.QtCore import pyqtSignal, Qt
+from ColorReliefEditor.tab_page import TabPage, create_button, expanding_vertical_spacer, \
+    create_hbox_layout, create_vbox_layout
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
 from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
                              QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
@@ -68,14 +69,40 @@ class ColorPage(TabPage):
             on_enter_callback=self.color_settings_widget.display
         )
 
-        # Create the main layout with color_sample and settings_widget
-        color_settings_pane = create_hbox_layout([self.color_settings_widget], 0, 0, 0, 0, 5)
+        # Styles for Drag and Drop box
+        file_drop_style = """
+             QLabel {
+                 font-size: 16px;
+                 background-color: slategray;
+                 padding: 30px;
+             }
+            """
+        status_style = """
+             QLabel {
+                 color: "orange";
+             }
+            """
+
+        # Create drag and drop target for elevation files
+        self.drop_widget = FileDropWidget(
+            "Drag GDAL Color File Here", r"^.*\.txt[i]?$", self.update_color_file, file_drop_style,
+            status_style
+        )
+
+        # If expert mode, add drag and drop for Color File to display
+        if main.app_config["MODE"] == 'expert':
+            widgets = [self.color_settings_widget, self.drop_widget]
+        else:
+            widgets = [self.color_settings_widget]
+
+        # Create the main layout with color_sample and settings_widget plus drop target in expert mode
+        color_settings_pane = create_vbox_layout(widgets, 0, 0, 0, 0, 5)
 
         # Create a preview widget to run gdaldem color-relief and display result
         button_flags = ["make"]
         self.preview = PreviewWidget(
-            main, self.tab_name, self.color_settings_widget, True, self.data_mgr.save, button_flags,
-        )
+            main, self.tab_name, self.color_settings_widget, True, self.data_mgr.save,
+            button_flags, )
 
         # Determine whether we're in basic or expert mode
         mode = self.main.app_config["MODE"]
@@ -91,14 +118,12 @@ class ColorPage(TabPage):
 
         # Create the page
         self.create_page(
-            widgets, None, instructions,
-            self.tab_name, vertical=False, stretch=stretch,
-        )
+            widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch, )
 
         # When color is updated, notify color_sample to redisplay
         self.color_settings_widget.colors_updated.connect(
             self.color_settings_widget.color_sample.update
-            )
+        )
 
     def load(self, project):
         """
@@ -112,6 +137,7 @@ class ColorPage(TabPage):
         self.preview.target = self.main.project.get_target_image_name(self.tab_name, True, layer)
         project_dir = Path(self.main.project.project_directory)
         self.preview.image_file = str(project_dir / self.preview.target)
+        self.drop_widget.target_path = self.main.project.project_directory
 
         try:
             res = self.data_mgr.load(self.main.project.color_file_path)
@@ -120,6 +146,63 @@ class ColorPage(TabPage):
             QMessageBox.warning(self, "Error", f"Color File error: {str(e)}")
             return False
 
+    def update_color_file(self, dropped_file):
+        """
+        Import a color file to this project
+
+        Args:
+            dropped_file (str): The file path of the file to add.
+        """
+        dropped_filename = os.path.basename(dropped_file)
+        target_filename = os.path.basename(self.main.project.color_file_path)
+        target_path = self.main.project.color_file_path
+
+        # Display a dialog with this warning
+        warning = f"Info: {target_filename} will be overwritten by {dropped_filename}."
+        dialog = QMessageBox(self.main)
+        dialog.setIcon(QMessageBox.Icon.Warning)
+        dialog.setWindowTitle("Overwrite Confirmation")
+        dialog.setText(warning)
+
+        # Add custom buttons
+        overwrite_button = dialog.addButton("Overwrite", QMessageBox.ButtonRole.AcceptRole)
+        dialog.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+
+        # Show the dialog and get the result
+        dialog.exec()
+
+        # Check if user chose to overwrite the file
+        if dialog.clickedButton() == overwrite_button:
+            try:
+                # Load the new color file
+                success = self.data_mgr.load(dropped_file)
+                if success:
+                    # Rename dropped file to the target filename
+                    os.rename(dropped_file, target_path)
+                    self.drop_widget.set_status("Imported Color File")
+                    touch_file(target_path)
+                    self.display()
+            except OSError as e:
+                success = False
+                QMessageBox.critical(
+                    self.main, "Error", f"Unable to use the file: {e}"
+                )
+
+            if not success:
+                self.drop_widget.set_status(self.data_mgr.error)
+        else:
+            print("Operation canceled by the user.")
+
+def touch_file(filename):
+    """
+    Set the file's modification and access time to the current time.
+
+    Args:
+        filename (str): Path to the file.
+    """
+    with open(filename, 'a'):
+        print(f"touch {filename}")
+        os.utime(filename, None)
 
 def scrollbar_width():
     """
@@ -147,7 +230,7 @@ class ColorSettingsWidget(QWidget):
         """
         super().__init__()
         self.table_width = 200  # the  width for the table
-        self.initial_rows = 11
+        self.initial_rows = 15
         self.row_height, self.color_table = None, None
         self.insert_button, self.delete_button, self.rescale_button, self.layout = (
             None, None, None, None)
@@ -185,6 +268,12 @@ class ColorSettingsWidget(QWidget):
         self.color_table.horizontalHeader().setSectionResizeMode(
             1, QHeaderView.ResizeMode.ResizeToContents
         )
+
+        # Disable grid lines
+        self.color_table.setShowGrid(False)
+
+        # Adjust cell spacing to zero
+        self.color_table.setContentsMargins(0, 0, 0, 0)
 
         # Hide the headers
         self.color_table.horizontalHeader().hide()
@@ -227,7 +316,6 @@ class ColorSettingsWidget(QWidget):
                 # When clicked, it opens a color picker dialog for color modification
                 color_button = self._create_color_button(row_idx, r, g, b, a)
                 self.color_table.setCellWidget(row_idx, 1, color_button)
-
                 self.color_table.setRowHeight(row_idx, self.row_height)
 
     def rescale(self):
@@ -263,7 +351,7 @@ class ColorSettingsWidget(QWidget):
         elevation_edit = QLineEdit(str(value))
         elevation_edit.setFixedHeight(self.row_height)
         elevation_edit.setFixedWidth(self.elevation_width())
-        elevation_edit.setAlignment(Qt.AlignmentFlag.AlignBottom)
+        # elevation_edit.setAlignment(Qt.AlignmentFlag.AlignBottom)
         elevation_edit.editingFinished.connect(lambda: self.on_elevation_update(row_idx))
         return elevation_edit
 

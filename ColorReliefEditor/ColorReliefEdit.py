@@ -35,11 +35,11 @@ from ColorReliefEditor.elevation_page import ElevationPage
 from ColorReliefEditor.hillshade_page import HillshadePage
 from ColorReliefEditor.make_process import MakeProcess
 from ColorReliefEditor.misc_page import MiscPage
-from ColorReliefEditor.project_config import ProjectConfig, app_files_path
+from ColorReliefEditor.project_config import ProjectConfig, app_files_path, \
+    create_file_from_resource
 from ColorReliefEditor.project_page import ProjectPage
 from ColorReliefEditor.relief_page import ReliefPage
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, \
-    QSpacerItem, QSizePolicy
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout
 from YMLEditor.yaml_config import YamlConfig
 
 
@@ -61,49 +61,62 @@ class ColorReliefEdit(QMainWindow):
     - tabs (QTabWidget): A tab widget that contains the tabs for project
       settings, color ramps, and makefile operations.
     - current_tab (int): The index of the currently selected tab in the QTabWidget.
+    - verbose (int): The verbosity level. 0=quiet, 1=error, 2=info.
     **Methods**:
     """
-
     def __init__(self, app) -> None:
         super().__init__()
         self.verbose = 0
-
-        # Manage opening projects and keeping paths to key project files
-        self.project: ProjectConfig = ProjectConfig(self)
-        self.make_process = MakeProcess()  # Manage Makefile operations to build images
-        self.proj_config: YamlConfig = YamlConfig()  # Manage project settings (loaded by Project
-        # tab)
+        self.app: QApplication = app.instance()
 
         # Load general application settings
         self.app_config: YamlConfig = YamlConfig()  # Manage general application settings
         app_path = self.load_app_config("relief_editor.cfg")
-        print(f"App config file: {app_path}")
+        self.verbose = int(self.app_config["VERBOSE"]) or 0
+        self.warn(f"App config file: {app_path}")
+
+        self.make_process = MakeProcess(verbose=self.verbose)  # Manage Makefile operations to build images
+
+        # Manage opening projects and keeping paths to key project files
+        self.project: ProjectConfig = ProjectConfig(self, verbose=self.verbose)
+
+        # Manage project settings (loaded by Project tab)
+        self.proj_config: YamlConfig = YamlConfig(verbose=self.verbose)
 
         self.current_tab = None
         self.tabs = QTabWidget()  # Tab for each feature
 
-        # The features to launch in each tab for basic mode and expert mode
+        # The tabs to launch for basic mode and expert mode
         if self.app_config["MODE"] == "basic":
             tab_classes = {
                 "Project": ProjectPage, "Elevation Files": ElevationPage,
                 "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
             }
         else:
-            tab_classes = {
-                "Project": ProjectPage, "Elevation Files": ElevationPage,
-                "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
-                "Misc": MiscPage, "Settings": AppSettingsPage
-            }
+            if self.app_config["SHOW_TABS"] == "normal":
+                # Expert Mode with SHOW_TABS="normal"
+                tab_classes = {
+                    "Project": ProjectPage, "Elevation Files": ElevationPage,
+                    "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
+                }
+            else:
+                # Expert Mode with SHOW_TABS="extended" - Adds Misc and Settings Tab
+                tab_classes = {
+                    "Project": ProjectPage, "Elevation Files": ElevationPage,
+                    "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
+                    "Misc": MiscPage, "Settings": AppSettingsPage
+                }
 
         self.init_ui(tab_classes, app)
 
     def save_settings(self):
+        # Save App Settings and Project Settings
         try:
             self.app_config.save()
             if self.proj_config.file_path is not None:
                 self.proj_config.save()
         except Exception as e:
-            print(e)
+            self.warn(e)
 
     def init_ui(self, tab_classes, app) -> None:
         """
@@ -117,7 +130,7 @@ class ColorReliefEdit(QMainWindow):
         tab_section = QVBoxLayout(central_widget)
         # Set margins around the tab section (left, top, right, bottom)
         tab_section.setContentsMargins(15, 15, 15, 15)
-        tab_section.setSpacing(3)
+        tab_section.setSpacing(0)
         tab_section.addWidget(self.tabs)
 
         # Instantiate tabs
@@ -127,26 +140,24 @@ class ColorReliefEdit(QMainWindow):
 
         # Note: when a project is loaded, all tabs will have load() called
 
-        # Notify on tab changes
+        # Notify when user changes tabs
         self.tabs.currentChanged.connect(self.on_tab_changed)
         self.current_tab: int = self.tabs.currentIndex()  # Index of the current tab
 
         # Disable all tabs except Project  until a project has been loaded
-        self.set_tabs_available(False, ["Project", "Settings"])
+        self.set_tabs_available(False, ["Project"])
 
     def create_default_app_config(self, app_path):
         """
         Create default config file for app settings if none exists.
         """
-        print("Creating default app config")
-        default_config = {
-            "DOWNLOAD": {
-                "US": "https://earthexplorer.usgs.gov/",
-                "US_HIGH": "https://apps.nationalmap.gov/downloader/"
-            }, "MODE": "basic", "VIEWER": "QGIS", "INSTRUCTIONS": "show",
-        }
+        self.warn("Creating default app config")
         self.app_config.file_path = app_path
-        self.app_config.create(default_config)
+
+        # Create the default app config file from resources
+        create_file_from_resource(
+            f"{ProjectConfig.file_suffix['app_config']}", app_path
+        )
 
     def set_tabs_available(self, enable, always_enabled):
         """
@@ -205,32 +216,45 @@ class ColorReliefEdit(QMainWindow):
         self.tabs.widget(self.current_tab).on_tab_exit()
         super().closeEvent(event)
 
+
     def load_app_config(self, name):
-        # Load the application settings.  Create if it doesn't exist
+        """
+        Load the application settings. Create default configuration if it doesn't exist or fails to
+        load.
+
+        Args:
+            name (str): The name of the application configuration file.
+
+        Returns:
+            str: The path to the application configuration file.
+        """
         app_path = app_files_path(name)
+
         try:
+            # Attempt to load the configuration
             success = self.app_config.load(app_path)
             if not success:
-                self.create_default_app_config(app_path)
+                # Handle unsuccessful load explicitly
+                self.warn(f"App config load failed. {self.app_config._data['STATUS']}")
         except Exception as e:
-            # Catch any error and create default configuration
-            print(f"App config load error: {e}. Creating app default config.")
-            self.create_default_app_config(app_path)
+            # Handle exceptions during load
+            success = False
+            self.warn(f"App config load error: {e}. ")
 
-        return app_path
+        if success:
+            return app_path
+        else:
+            self.warn(f"Creating default config.")
+            try:
+                self.create_default_app_config(app_path)
+                self.app_config.load(app_path)
+            except Exception as e:
+                # Handle exceptions during creation
+                self.warn(f"Error creating default config: {e}. ")
 
-
-def Zexpanding_vertical_spacer(height):
-    """
-    Create a spacer that expands vertically to help align UI components.
-
-    Args:
-        height (int): The minimum height for the spacer.
-
-    Returns:
-        QSpacerItem: A spacer that expands vertically
-    """
-    return QSpacerItem(0, height, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+    def warn(self, message):
+        if self.verbose > 0:
+            print(message)
 
 
 def set_style(app):
@@ -266,11 +290,17 @@ def set_style(app):
                     background-color:{colors["grid"]}; 
                     border:none;
                 }}
+                QTableWidget::item {{
+                    margin: 0px;  /* Remove margin inside the cells */
+                    padding: 0px; /* Remove padding inside the cells */
+                }}
                 QTableWidget {{
-                    gridline-color:{colors["grid"]};
+                    gridline-color:{"red"};
                     background-color:{colors["grid"]};
                     outline:none; 
                     border:none;
+                    margin: 0px;  /* Remove any margin inside the cells */
+                    padding: 0px; /* Remove any padding around cell content */
                 }}
                 QHeaderView::section {{
                     background-color:{colors["grid"]};

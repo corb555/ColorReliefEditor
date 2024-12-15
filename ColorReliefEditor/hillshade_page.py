@@ -31,8 +31,7 @@ from pathlib import Path
 
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
-from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer, \
-    expanding_horizontal_spacer
+from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
 from PyQt6.QtWidgets import QVBoxLayout
 from YMLEditor.settings_widget import SettingsWidget
 
@@ -87,11 +86,10 @@ class HillshadePage(TabPage):
         # Widget for building and displaying a preview
         button_flags = {"make"}
         self.preview = PreviewWidget(
-            main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags,
-        )
+            main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags, )
 
         widgets = [settings_layout, self.preview]
-        stretch = [1,3]
+        stretch = [1, 3]
 
         # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":
@@ -100,7 +98,9 @@ class HillshadePage(TabPage):
             instructions = None
 
         # Create page with widgets vertically on left and instructions on right
-        self.create_page(widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch)
+        self.create_page(
+            widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch
+            )
 
     def load(self, project):
         """

@@ -45,18 +45,25 @@
     </style>
 </head>
 <body>
-<p>This tab manages advanced GDAL settings in expert mode. You generally will not need to change these.</p>
-
-<!-- Expert Settings section is shown or hidden depending on the app mode -->
-<div class="expert-section">
-    <p>Expert Settings</p>
-    <ul>
-        <li><b>Edges:</b> Enable edge processing.</li>
-    </ul>
-    <br>
-</div>
-
-<h3>Notes</h3>
-<p>Not all parameter combinations are valid. Refer to the <i>gdaldem</i> documentation for more details.</p>
+<p>This tab manages advanced GDAL settings. You generally will not need to change these. See
+    <a href="https://gdal.org/en/stable/programs/index.html">GDAL Documentation</a> for details.
+</p>
+<h3>gdal_warp settings - Used to create initial DEM elevation image used for other steps</h3>
+<ul>
+    <li><b>CRS:</b> -t_srs Set coordinate reference system</li>
+    <li><b>gdalwarp:</b> general gdalwarp settings</li>
+    <li><b>Performance:</b> Performance settings</li>
+    <li><b>Resampling:</b> Type of resampling to use</li>
+</ul>
+<h3>gdaldem settings - Used for hillshade and color</h3>
+<ul>
+    <li><b>Edges:</b> -compute_edges</li>
+    <li><b>Output Type:</b> </li>
+</ul>
+<h3>gdal_calc settings - Used to merge hillshade and color for final image</h3>
+<ul>
+    <li><b>gdal_calc:</b> General gdal_calc settings</li>
+    <li><b>Compress:</b> Compression type. NOTE: it is easy to misconfigure this!</li>
+</ul>
 </body>
 </html>

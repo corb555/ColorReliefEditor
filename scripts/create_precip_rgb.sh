@@ -15,15 +15,16 @@
 # OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #
 
-if [ "$#" -ne 2 ]; then
-    echo "Error - Usage: create_precip_out_file.sh <min value> <max value>"
+if [ "$#" -ne 3 ]; then
+    echo "Error - Usage: create_precip_out_file.sh <min_value> <max_value> <region>"
     exit 1
 fi
 
 echo
 pwd
-# Read the region prefix from the YAML config file using yq
-prefix=$(yq eval '.settings.region' config.yml)
+
+# Get the region prefix from $3
+prefix=$3
 
 precip_file="$prefix"_precip_ext.tif
 precip_out_file="$prefix"_precip_rgb.tif
