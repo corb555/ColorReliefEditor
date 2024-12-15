@@ -39,7 +39,7 @@ from ColorReliefEditor.project_config import ProjectConfig, app_files_path, \
     create_file_from_resource
 from ColorReliefEditor.project_page import ProjectPage
 from ColorReliefEditor.relief_page import ReliefPage
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QStyleFactory
 from YMLEditor.yaml_config import YamlConfig
 
 
@@ -67,13 +67,22 @@ class ColorReliefEdit(QMainWindow):
     def __init__(self, app) -> None:
         super().__init__()
         self.verbose = 0
-        self.app: QApplication = app.instance()
 
         # Load general application settings
         self.app_config: YamlConfig = YamlConfig()  # Manage general application settings
         app_path = self.load_app_config("relief_editor.cfg")
         self.verbose = int(self.app_config["VERBOSE"]) or 0
         self.warn(f"App config file: {app_path}")
+
+        # Set Application style
+        styles = QStyleFactory.keys()
+        print(f"Available Styles: {styles}")
+        style = self.app_config["STYLE"]
+        if style in styles:
+            app.setStyle(style)
+
+        # Font size
+        self.font_size = int(self.app_config["FONT_SIZE"])
 
         self.make_process = MakeProcess(verbose=self.verbose)  # Manage Makefile operations to build images
 
@@ -109,20 +118,11 @@ class ColorReliefEdit(QMainWindow):
 
         self.init_ui(tab_classes, app)
 
-    def save_settings(self):
-        # Save App Settings and Project Settings
-        try:
-            self.app_config.save()
-            if self.proj_config.file_path is not None:
-                self.proj_config.save()
-        except Exception as e:
-            self.warn(e)
-
     def init_ui(self, tab_classes, app) -> None:
         """
         The UI is a tab control with a tab per feature
         """
-        set_style(app)
+        set_style(app, self.font_size)
         self.setWindowTitle("Color Relief")
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -146,6 +146,15 @@ class ColorReliefEdit(QMainWindow):
 
         # Disable all tabs except Project  until a project has been loaded
         self.set_tabs_available(False, ["Project"])
+
+    def save_settings(self):
+        # Save App Settings and Project Settings
+        try:
+            self.app_config.save()
+            if self.proj_config.file_path is not None:
+                self.proj_config.save()
+        except Exception as e:
+            self.warn(e)
 
     def create_default_app_config(self, app_path):
         """
@@ -257,7 +266,7 @@ class ColorReliefEdit(QMainWindow):
             print(message)
 
 
-def set_style(app):
+def set_style(app, font_size):
     # Set application Widget styles
     colors = {
         "grid": "#323232", "highlight": "lightslategray", "error": "Crimson", "normal": "Silver",
@@ -268,7 +277,7 @@ def set_style(app):
     app.setStyleSheet(
         f"""
                 QWidget {{
-                    font-size: 12px;  /* Default font size */
+                    font-size: {font_size}px;  /* Default font size */
                 }}
                 QLineEdit {{
                     background-color:{colors["lineedit"]}; 

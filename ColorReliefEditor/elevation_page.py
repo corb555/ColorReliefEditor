@@ -71,7 +71,7 @@ class ElevationPage(TabPage):
                 "NAMES": ("Layers", "read_only", None, 680), "LAYER": (
                     "Active Layer", "combo", ["A", 'B', 'C', "D", 'E', 'F', "G", 'H', 'I'], 204),
                 "NAMES.@LAYER": ("Layer Name", "line_edit", r'^\w+$', 200),
-                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^([a-zA-Z0-9._-]+\.tif)( [a-zA-Z0-9._-]+\.tif)*$", 680),
+                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$", 680),
                 "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
                 "LICENSES.@LAYER": ("License", "line_edit", None, 680),
                 "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
@@ -101,12 +101,12 @@ class ElevationPage(TabPage):
         button_layout = self.create_download_buttons(download_buttons)
 
         # Styles for Drag and Drop box
-        file_drop_style = """
-             QLabel {
-                 font-size: 18px;
+        file_drop_style = f"""
+             QLabel {{
+                 font-size: {main.font_size + 2}px;
                  background-color: slategray;
                  padding: 40px;
-             }
+             }}
             """
         status_style = """
              QLabel {

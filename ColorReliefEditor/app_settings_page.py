@@ -44,7 +44,7 @@ class AppSettingsPage(TabPage):
             main (MainClass): Reference to the main application class.
             name (str): Name of the page.
         """
-        # Set up display format for the app settings that this tab uses
+        # Set up display format for the app settings that this tab uses  "FONT_SIZE"
         app_formats = {
             "expert": {
                 "LABEL1": ("URLs:", "label", None, 400),
@@ -55,8 +55,9 @@ class AppSettingsPage(TabPage):
                 "LABEL3": ("", "label", None, 400),
                 "MULTI": ("Multiprocessor", "combo", ["multi", 'single'], 180),
                 "VERBOSE": ("Verbose", "combo", ["0", '1', '2'], 180),
+                "STYLE": ("Style", "line_edit", None, 400),
+                "FONT_SIZE": ("Font Size", "line_edit", r"^\d{1,2}$", 400),
             },
-
             "basic": {
             }
         }

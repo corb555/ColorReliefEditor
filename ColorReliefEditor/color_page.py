@@ -70,12 +70,12 @@ class ColorPage(TabPage):
         )
 
         # Styles for Drag and Drop box
-        file_drop_style = """
-             QLabel {
-                 font-size: 16px;
+        file_drop_style = f"""
+             QLabel {{
+                 font-size: {main.font_size + 2}px;
                  background-color: slategray;
                  padding: 30px;
-             }
+             }}
             """
         status_style = """
              QLabel {
