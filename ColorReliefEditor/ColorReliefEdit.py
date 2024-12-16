@@ -76,7 +76,7 @@ class ColorReliefEdit(QMainWindow):
         self.warn(f"App config file: {app_path}")   # Log path for config file
 
         # Set Application style
-        self.font_size = int(self.app_config["FONT_SIZE"])
+        self.font_size = int(self.app_config["FONT_SIZE"] or "12")
         available_styles = QStyleFactory.keys()
         style = self.app_config["STYLE"]
         if platform.system() == "Linux" and style == "default":
