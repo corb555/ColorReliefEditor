@@ -1,6 +1,8 @@
 # Color Relief Editor
-## Overview
 
+<img width="622" alt="sample" src="https://github.com/corb555/ColorReliefEditor/blob/main/docs/images/color%20sample.png?raw=true">
+
+## Overview
 This application uses Digital Elevation files and GDAL tools to create hillshade and color relief images which 
 are combined into a final relief image. All settings, including colors and parameters, are set directly 
 in the app and the app executes GDAL utilities to generate the images.  
