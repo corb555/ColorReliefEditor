@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ColorReliefEdit module &mdash; Color Relief Editor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="app_settings_page module" href="app_settings_page.html" />
+    <link rel="prev" title="ColorReliefEditor" href="modules.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ColorReliefEdit module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.closeEvent"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.closeEvent()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.create_default_app_config"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.create_default_app_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.init_ui"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.init_ui()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.load_all_tabs"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.load_all_tabs()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.load_app_config"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.load_app_config()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.on_tab_changed"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.on_tab_changed()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.save_settings"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.save_settings()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.set_tabs_available"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.set_tabs_available()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ColorReliefEdit.ColorReliefEdit.warn"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.warn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ColorReliefEdit.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ColorReliefEdit.set_style"><code class="docutils literal notranslate"><span class="pre">set_style()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ColorReliefEditor</a></li>
+      <li class="breadcrumb-item active">ColorReliefEdit module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/ColorReliefEdit.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-ColorReliefEdit">
+<span id="colorreliefedit-module"></span><h1>ColorReliefEdit module<a class="headerlink" href="#module-ColorReliefEdit" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ColorReliefEdit.</span></span><span class="sig-name descname"><span class="pre">ColorReliefEdit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QMainWindow</span></code></p>
+<p>Main window for the app. This uses Digital Elevation files and GDAL tools to create hillshade
+and color
+relief images which are combined into a final relief image. All configurations, including
+colors and
+parameters, are set directly in the app. GDAL utilities are automatically executed to
+generate the color relief images.</p>
+<p>Attributes:
+- make (QProcess or None): A QProcess object that handles GDAL makefile operations.
+- project (ProjectData): An instance of the ProjectData class, which handles the</p>
+<blockquote>
+<div><p>management of project data.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>config (ConfigFile): An instance of the ConfigFile class, which manages configuration
+settings.</p></li>
+<li><p>tabs (QTabWidget): A tab widget that contains the tabs for project
+settings, color ramps, and makefile operations.</p></li>
+<li><p>current_tab (int): The index of the currently selected tab in the QTabWidget.</p></li>
+<li><p>verbose (int): The verbosity level. 0=quiet, 1=error, 2=info.</p></li>
+</ul>
+<p><strong>Methods</strong>:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.closeEvent">
+<span class="sig-name descname"><span class="pre">closeEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.closeEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.closeEvent" title="Link to this definition"></a></dt>
+<dd><p>Application close event - notify the current tab before the
+application exits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event</strong> (<em>QCloseEvent</em>) – The close event that triggers the application exit.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.create_default_app_config">
+<span class="sig-name descname"><span class="pre">create_default_app_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.create_default_app_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.create_default_app_config" title="Link to this definition"></a></dt>
+<dd><p>Create default config file for app settings if none exists.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.init_ui">
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tab_classes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.init_ui" title="Link to this definition"></a></dt>
+<dd><p>The UI is a tab control with a tab per feature</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.load_all_tabs">
+<span class="sig-name descname"><span class="pre">load_all_tabs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.load_all_tabs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.load_all_tabs" title="Link to this definition"></a></dt>
+<dd><p>Have each tab load data when a project is opened.
+If loading fails for any tab, update the project status, and halt further loading.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if tabs are loaded successfully, False if any tab fails to load.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.load_app_config">
+<span class="sig-name descname"><span class="pre">load_app_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.load_app_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.load_app_config" title="Link to this definition"></a></dt>
+<dd><p>Load the application settings. Create default configuration if it doesn’t exist or fails to
+load.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>str</em>) – The name of the application configuration file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The path to the application configuration file.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.on_tab_changed">
+<span class="sig-name descname"><span class="pre">on_tab_changed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.on_tab_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.on_tab_changed" title="Link to this definition"></a></dt>
+<dd><p>Handle tab change events by notifying the old tab of exit and the new tab of enter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>int</em>) – The index of the newly selected tab.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.save_settings">
+<span class="sig-name descname"><span class="pre">save_settings</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.save_settings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.save_settings" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.set_tabs_available">
+<span class="sig-name descname"><span class="pre">set_tabs_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">enable</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_enabled</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.set_tabs_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.set_tabs_available" title="Link to this definition"></a></dt>
+<dd><p>Enable or disable tabs based on enable flag. Tabs in “always_enabled”
+are always enabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enable</strong> (<em>bool</em>) – Whether to enable or disable tabs.</p></li>
+<li><p><strong>always_enabled</strong> (<em>list</em>) – tabs that are always enabled.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="ColorReliefEdit.ColorReliefEdit.warn">
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#ColorReliefEdit.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.ColorReliefEdit.warn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ColorReliefEdit.main">
+<span class="sig-prename descclassname"><span class="pre">ColorReliefEdit.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.main" title="Link to this definition"></a></dt>
+<dd><p>Entry point for the application. Initializes the QApplication and shows the main window.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="ColorReliefEdit.set_style">
+<span class="sig-prename descclassname"><span class="pre">ColorReliefEdit.</span></span><span class="sig-name descname"><span class="pre">set_style</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">app</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ColorReliefEdit.html#set_style"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ColorReliefEdit.set_style" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="modules.html" class="btn btn-neutral float-left" title="ColorReliefEditor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="app_settings_page.html" class="btn btn-neutral float-right" title="app_settings_page module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

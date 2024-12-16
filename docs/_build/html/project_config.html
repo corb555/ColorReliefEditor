@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>project_config module &mdash; Color Relief Editor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="project_page module" href="project_page.html" />
+    <link rel="prev" title="preview_widget module" href="preview_widget.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">project_config module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#project_config.ProjectConfig"><code class="docutils literal notranslate"><span class="pre">ProjectConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.create_new_project"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.create_new_project()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.file_suffix"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.file_suffix</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_layer"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_proxy_path"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_proxy_path()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_target_image_name"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_target_image_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.load"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.print_project_files"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.print_project_files()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.set_status"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.set_status()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.verify"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.verify()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#project_config.app_files_path"><code class="docutils literal notranslate"><span class="pre">app_files_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project_config.create_file_from_resource"><code class="docutils literal notranslate"><span class="pre">create_file_from_resource()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project_config.script_available"><code class="docutils literal notranslate"><span class="pre">script_available()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#project_config.touch_file"><code class="docutils literal notranslate"><span class="pre">touch_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ColorReliefEditor</a></li>
+      <li class="breadcrumb-item active">project_config module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/project_config.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-project_config">
+<span id="project-config-module"></span><h1>project_config module<a class="headerlink" href="#module-project_config" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="project_config.ProjectConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">ProjectConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataManager</span></code></p>
+<p>Manage project config, including opening a project and storing paths to all project files</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.create_new_project">
+<span class="sig-name descname"><span class="pre">create_new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.create_new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.create_new_project" title="Link to this definition"></a></dt>
+<dd><p>Creates a new project directory and initializes it with necessary files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>directory</strong> (<em>str</em>) – Path to existing project directory to initialize.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>(success, error_message)</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li><p>The function creates the following files using templates in the project resources:
+1. Config file for the region (if not already present).
+2. Color ramp file for rendering.
+3. A Makefile if it doesn’t exist in the parent directory.</p></li>
+<li><p>Creates an empty DEM proxy file.</p></li>
+<li><p>The function ensures no existing config or ramp file is overwritten.</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.file_suffix">
+<span class="sig-name descname"><span class="pre">file_suffix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'app_config':</span> <span class="pre">'relief_editor.cfg',</span> <span class="pre">'color_ramp':</span> <span class="pre">'_color_ramp.txt',</span> <span class="pre">'config':</span> <span class="pre">'_relief.cfg',</span> <span class="pre">'dem':</span> <span class="pre">'_DEM_trigger.cfg'}</span></em><a class="headerlink" href="#project_config.ProjectConfig.file_suffix" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.get_layer">
+<span class="sig-name descname"><span class="pre">get_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_layer" title="Link to this definition"></a></dt>
+<dd><p>Get the name for the currently selected layer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.get_proxy_path">
+<span class="sig-name descname"><span class="pre">get_proxy_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_proxy_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_proxy_path" title="Link to this definition"></a></dt>
+<dd><p>Return path for Config file proxy</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.get_target_image_name">
+<span class="sig-name descname"><span class="pre">get_target_image_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_target_image_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_target_image_name" title="Link to this definition"></a></dt>
+<dd><p>Get target image name - &lt;region&gt;_&lt;layer&gt;_&lt;basename&gt;_&lt;prv&gt;.tif
+:param basename: The basename for the target image (hillshade, relief, etc.)
+:param preview_mode: True if we are in preview mode.False for normal mode
+:type preview_mode: bool
+:param layer: The layer name</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>target image name</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.load" title="Link to this definition"></a></dt>
+<dd><p>Load project data and update internal data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_path</strong> (<em>str</em>) – Path to the project configuration file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True on success, False on failure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.print_project_files">
+<span class="sig-name descname"><span class="pre">print_project_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.print_project_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.print_project_files" title="Link to this definition"></a></dt>
+<dd><p>Print project file paths.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.set_status">
+<span class="sig-name descname"><span class="pre">set_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.set_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.set_status" title="Link to this definition"></a></dt>
+<dd><p>Set Project error message</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.verify">
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.verify" title="Link to this definition"></a></dt>
+<dd><p>Verify the presence of required files and scripts and update status accordingly.
+:returns: True if the files are present, False otherwise.
+:rtype: bool</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="project_config.app_files_path">
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">app_files_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#app_files_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.app_files_path" title="Link to this definition"></a></dt>
+<dd><p>Determine the platform-appropriate path for app files.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="project_config.create_file_from_resource">
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">create_file_from_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#create_file_from_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.create_file_from_resource" title="Link to this definition"></a></dt>
+<dd><p>Create a file from a resource template, optionally replacing text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>resource_name</strong> (<em>str</em>) – The name of the resource to read.</p></li>
+<li><p><strong>target_path</strong> (<em>str</em>) – The path where the file should be created.</p></li>
+<li><p><strong>replace_text</strong> (<em>str</em><em>, </em><em>optional</em>) – The text to be replaced in the resource.</p></li>
+<li><p><strong>new_text</strong> (<em>str</em><em>, </em><em>optional</em>) – The text to replace replace_text with.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>FileNotFoundError</strong> – If the resource cannot be read.</p></li>
+<li><p><strong>FileExistsError</strong> – If the target file already exists.</p></li>
+<li><p><strong>Exception</strong> – For other unexpected errors.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="project_config.script_available">
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">script_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#script_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.script_available" title="Link to this definition"></a></dt>
+<dd><p>Check if a script file is available on the user’s PATH.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>script_name</strong> (<em>str</em>) – Name of the script file.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if the script is available, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="project_config.touch_file">
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">touch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#touch_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.touch_file" title="Link to this definition"></a></dt>
+<dd><p>Set the file’s modification and access time to the current time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – Path to the file.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="preview_widget.html" class="btn btn-neutral float-left" title="preview_widget module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="project_page.html" class="btn btn-neutral float-right" title="project_page module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

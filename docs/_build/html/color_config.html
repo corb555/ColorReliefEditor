@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>color_config module &mdash; Color Relief Editor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="color_page module" href="color_page.html" />
+    <link rel="prev" title="app_settings_page module" href="app_settings_page.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">color_config module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#color_config.ColorConfig"><code class="docutils literal notranslate"><span class="pre">ColorConfig</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#color_config.ColorConfig.format_gdal_line"><code class="docutils literal notranslate"><span class="pre">ColorConfig.format_gdal_line()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color_config.ColorConfig.interpolate"><code class="docutils literal notranslate"><span class="pre">ColorConfig.interpolate()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color_config.ColorConfig.update_line"><code class="docutils literal notranslate"><span class="pre">ColorConfig.update_line()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#color_config.clip"><code class="docutils literal notranslate"><span class="pre">clip()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#color_config.extrap"><code class="docutils literal notranslate"><span class="pre">extrap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#color_config.interp"><code class="docutils literal notranslate"><span class="pre">interp()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ColorReliefEditor</a></li>
+      <li class="breadcrumb-item active">color_config module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/color_config.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-color_config">
+<span id="color-config-module"></span><h1>color_config module<a class="headerlink" href="#module-color_config" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="color_config.ColorConfig">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_config.</span></span><span class="sig-name descname"><span class="pre">ColorConfig</span></span><a class="reference internal" href="_modules/color_config.html#ColorConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.ColorConfig" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataManager</span></code></p>
+<p>Extends DataManager with functionality for managing GDALDEM color text files,
+which are used to define color reliefs for elevation data. These files
+consist of lines specifying color mappings for elevation levels. This class adds
+support for GDALDEM color files: load, save, update elevation-color.</p>
+<p>Color File Format:
+- Each line in the file can be one of the following:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>A metadata line, beginning with “#” (comment) or “nv” (no-data value).</p></li>
+<li><p>A color mapping line, with the format:
+“&lt;elevation&gt; &lt;red&gt; &lt;green&gt; &lt;blue&gt; [&lt;alpha&gt;]”
+- <cite>&lt;elevation&gt;</cite>: Integer or float representing the elevation level.
+- <cite>&lt;red&gt;</cite>, <cite>&lt;green&gt;</cite>, <cite>&lt;blue&gt;</cite>: Integers (0-255) representing the RGB color.
+- <cite>&lt;alpha&gt;</cite> (optional): Integer (0-255) representing the opacity.</p></li>
+</ol>
+</div></blockquote>
+<p>Attributes:
+- misc_lines: A list to store metadata lines such as comments or ‘nv’ lines.
+- _data: A list of tuples, where each tuple represents an elevation level and its
+associated color values.</p>
+<p>Methods:
+- load(path): Loads and parses the GDAL color text file, storing color mappings in
+<cite>_data</cite> and metadata in <cite>misc_lines</cite>.
+- save(): Saves the current state  to the GDAL color text file, including both color
+mappings and metadata.
+- update(): Marks the file as having unsaved changes.
+- interpolate(idx): Return an interpolated color row for insertion above row_idx.
+- delete(idx): Removes the color mapping row at the specified index in <cite>_data</cite>.</p>
+<p>Notes:
+- Comment line position is not preserved</p>
+<p>Subclass of <cite>DataManager</cite>:
+- Inherits base file handling functionality, such as file loading, saving, and change
+tracking.
+- Implements methods specific to the GDALDEM color text file format, including custom
+parsing and saving logic.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="color_config.ColorConfig.format_gdal_line">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">format_gdal_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">elevation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_config.html#ColorConfig.format_gdal_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.ColorConfig.format_gdal_line" title="Link to this definition"></a></dt>
+<dd><p>Format the elevation and colors into a tuple</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>elevation</strong> (<em>int</em><em> or </em><em>float</em>) – Elevation value</p></li>
+<li><p><strong>r</strong> (<em>int</em>) – Red color value</p></li>
+<li><p><strong>g</strong> (<em>int</em>) – Green color value</p></li>
+<li><p><strong>b</strong> (<em>int</em>) – Blue color value</p></li>
+<li><p><strong>a</strong> (<em>int</em><em>, </em><em>optional</em>) – Alpha (opacity) value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A tuple containing elevation and color: r, g, b, a.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_config.ColorConfig.interpolate">
+<span class="sig-name descname"><span class="pre">interpolate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_config.html#ColorConfig.interpolate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.ColorConfig.interpolate" title="Link to this definition"></a></dt>
+<dd><p>Return an interpolated color row for insertion above row_idx.
+1) If there is only one row, return a duplicate of that row.
+2) If inserting before the first row, extrapolate using the first and next row.
+3) To insert between two rows, interpolate between the current and previous row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>row_idx</strong> (<em>int</em>) – Interpolate/extrapolate a new row above row_idx.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A new interpolated/extrapolated row containing elevation and color values.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="color_config.ColorConfig.update_line">
+<span class="sig-name descname"><span class="pre">update_line</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_config.html#ColorConfig.update_line"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.ColorConfig.update_line" title="Link to this definition"></a></dt>
+<dd><p>Update a line in _data with a new elevation and/or new colors.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<em>int</em>) – Index of the line to update.</p></li>
+<li><p><strong>elevation</strong> (<em>int</em><em>, </em><em>optional</em>) – New elevation value.</p></li>
+<li><p><strong>colors</strong> (<em>list</em><em>, </em><em>optional</em>) – List of new RGB(A) color values.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="color_config.clip">
+<span class="sig-prename descclassname"><span class="pre">color_config.</span></span><span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_config.html#clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.clip" title="Link to this definition"></a></dt>
+<dd><p>Clamp a value between min_value and max_value.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="color_config.extrap">
+<span class="sig-prename descclassname"><span class="pre">color_config.</span></span><span class="sig-name descname"><span class="pre">extrap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">minv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_config.html#extrap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.extrap" title="Link to this definition"></a></dt>
+<dd><p>Perform integer linear extrapolation using a and b. Clip to min and max.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="color_config.interp">
+<span class="sig-prename descclassname"><span class="pre">color_config.</span></span><span class="sig-name descname"><span class="pre">interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_config.html#interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_config.interp" title="Link to this definition"></a></dt>
+<dd><p>Perform integer linear interpolation between a and b.</p>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="app_settings_page.html" class="btn btn-neutral float-left" title="app_settings_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="color_page.html" class="btn btn-neutral float-right" title="color_page module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

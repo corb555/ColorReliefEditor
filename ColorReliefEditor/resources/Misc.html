@@ -46,21 +46,25 @@
 </head>
 <body>
 <p>This tab manages advanced GDAL settings. You generally will not need to change these. See
-    <a href="https://gdal.org/en/stable/programs/index.html">GDAL Documentation</a> for details.
+     GDAL Documentation for details - https://gdal.org/en/stable/programs/index.html.
 </p>
-<h3>gdal_warp settings - Used to create initial DEM elevation image used for other steps</h3>
+<h3>gdal_warp settings</h3>
+<p>Used to create initial DEM elevation image used for other steps</p>
 <ul>
     <li><b>CRS:</b> -t_srs Set coordinate reference system</li>
     <li><b>gdalwarp:</b> general gdalwarp settings</li>
     <li><b>Performance:</b> Performance settings</li>
     <li><b>Resampling:</b> Type of resampling to use</li>
 </ul>
-<h3>gdaldem settings - Used for hillshade and color</h3>
+<h3>gdaldem settings</h3>
+<p>Used for both hillshade and color</p>
 <ul>
     <li><b>Edges:</b> -compute_edges</li>
-    <li><b>Output Type:</b> </li>
+    <li><b>Output Type:</b> -of Short Format name such as GTiff</li>
+    <li><b>Nearest Color:</b> Blank or -nearest_color_entry.</li>
 </ul>
-<h3>gdal_calc settings - Used to merge hillshade and color for final image</h3>
+<h3>gdal_calc settings</h3>
+<p>Used to merge hillshade and color for final image</p>
 <ul>
     <li><b>gdal_calc:</b> General gdal_calc settings</li>
     <li><b>Compress:</b> Compression type. NOTE: it is easy to misconfigure this!</li>

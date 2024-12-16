@@ -24,10 +24,11 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-
+import platform
 #
 #
 import sys
+from zoneinfo import available_timezones
 
 from ColorReliefEditor.app_settings_page import AppSettingsPage
 from ColorReliefEditor.color_page import ColorPage
@@ -72,17 +73,18 @@ class ColorReliefEdit(QMainWindow):
         self.app_config: YamlConfig = YamlConfig()  # Manage general application settings
         app_path = self.load_app_config("relief_editor.cfg")
         self.verbose = int(self.app_config["VERBOSE"]) or 0
-        self.warn(f"App config file: {app_path}")
+        self.warn(f"App config file: {app_path}")   # Log path for config file
 
         # Set Application style
-        styles = QStyleFactory.keys()
-        print(f"Available Styles: {styles}")
-        style = self.app_config["STYLE"]
-        if style in styles:
-            app.setStyle(style)
-
-        # Font size
         self.font_size = int(self.app_config["FONT_SIZE"])
+        available_styles = QStyleFactory.keys()
+        style = self.app_config["STYLE"]
+        if platform.system() == "Linux" and style == "default":
+            # Use Fusion for Linux instead of ugly default
+            style = "Fusion"
+
+        if style in available_styles:
+            app.setStyle(style)
 
         self.make_process = MakeProcess(verbose=self.verbose)  # Manage Makefile operations to build images
 

@@ -1,0 +1,280 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>elevation_page module &mdash; Color Relief Editor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="file_drop_widget module" href="file_drop_widget.html" />
+    <link rel="prev" title="color_page module" href="color_page.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">elevation_page module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#elevation_page.ElevationPage"><code class="docutils literal notranslate"><span class="pre">ElevationPage</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.main"><code class="docutils literal notranslate"><span class="pre">ElevationPage.main</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.settings_widget"><code class="docutils literal notranslate"><span class="pre">ElevationPage.settings_widget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.drop_widget"><code class="docutils literal notranslate"><span class="pre">ElevationPage.drop_widget</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.tab_name"><code class="docutils literal notranslate"><span class="pre">ElevationPage.tab_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.create_download_buttons"><code class="docutils literal notranslate"><span class="pre">ElevationPage.create_download_buttons()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.load"><code class="docutils literal notranslate"><span class="pre">ElevationPage.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">ElevationPage.on_tab_enter()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.open_url"><code class="docutils literal notranslate"><span class="pre">ElevationPage.open_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.update_files_list"><code class="docutils literal notranslate"><span class="pre">ElevationPage.update_files_list()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.validate"><code class="docutils literal notranslate"><span class="pre">ElevationPage.validate()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ColorReliefEditor</a></li>
+      <li class="breadcrumb-item active">elevation_page module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/elevation_page.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-elevation_page">
+<span id="elevation-page-module"></span><h1>elevation_page module<a class="headerlink" href="#module-elevation_page" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">elevation_page.</span></span><span class="sig-name descname"><span class="pre">ElevationPage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TabPage</span></code></p>
+<p>Widget for editing Digital Elevation Model (DEM) settings in the application.</p>
+<p>This tab allows users to define and configure DEM layers, set files for
+each layer, and specify GDAL settings to merge DEM files. The tab also supports drag-and-drop
+for adding elevation files and provides buttons for DEM download sites.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.main">
+<span class="sig-name descname"><span class="pre">main</span></span><a class="headerlink" href="#elevation_page.ElevationPage.main" title="Link to this definition"></a></dt>
+<dd><p>Reference to the main application instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>MainClass</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.settings_widget">
+<span class="sig-name descname"><span class="pre">settings_widget</span></span><a class="headerlink" href="#elevation_page.ElevationPage.settings_widget" title="Link to this definition"></a></dt>
+<dd><p>Widget for displaying and editing DEM settings based on</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>SettingsWidget</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">the</span> <span class="pre">configuration.</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.drop_widget">
+<span class="sig-name descname"><span class="pre">drop_widget</span></span><a class="headerlink" href="#elevation_page.ElevationPage.drop_widget" title="Link to this definition"></a></dt>
+<dd><p>Widget for handling file drops for files with .tif extensions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget" title="file_drop_widget.FileDropWidget">FileDropWidget</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.tab_name">
+<span class="sig-name descname"><span class="pre">tab_name</span></span><a class="headerlink" href="#elevation_page.ElevationPage.tab_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the page.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Methods</strong>:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.create_download_buttons">
+<span class="sig-name descname"><span class="pre">create_download_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.create_download_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.create_download_buttons" title="Link to this definition"></a></dt>
+<dd><p>Creates download buttons and connects each button to open its respective URL.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>button_list</strong> (<em>list</em><em> of </em><em>tuple</em>) – List of tuples where each tuple contains:
+- label (str): The button label.
+- config_key (str): The configuration key to retrieve the URL.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>A layout containing all the created download buttons.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>QLayout</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.load" title="Link to this definition"></a></dt>
+<dd><p>Load settings for the selected project and update the display.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>project</strong> (<em>Project</em>) – The project instance to load settings from.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if settings were loaded and displayed successfully.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.on_tab_enter">
+<span class="sig-name descname"><span class="pre">on_tab_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.on_tab_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.on_tab_enter" title="Link to this definition"></a></dt>
+<dd><p>Refreshes and validates settings when the tab is entered</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.open_url">
+<span class="sig-name descname"><span class="pre">open_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.open_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.open_url" title="Link to this definition"></a></dt>
+<dd><p>Opens the URL associated with the given configuration key in the default web browser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>config_key</strong> (<em>str</em>) – Key in the application configuration that maps to a URL.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Warning</strong> – Displays a warning message if the URL is empty, invalid, or cannot be opened.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.update_files_list">
+<span class="sig-name descname"><span class="pre">update_files_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.update_files_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.update_files_list" title="Link to this definition"></a></dt>
+<dd><p>Adds a new DEM file to the list of elevation files maintaining unique
+entries.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>source_file</strong> (<em>str</em>) – The file path of the  file to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.validate" title="Link to this definition"></a></dt>
+<dd><p>todo: Validate the elevation files specified exist
+Not implemented.
+Validates the elevation files specified in the configuration to ensure they exist.</p>
+<p>If any files are missing, updates the status label to notify the user.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="color_page.html" class="btn btn-neutral float-left" title="color_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="file_drop_widget.html" class="btn btn-neutral float-right" title="file_drop_widget module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -29,6 +29,8 @@
 #
 from functools import partial
 import os
+import platform
+import subprocess
 
 from ColorReliefEditor.file_drop_widget import FileDropWidget
 from ColorReliefEditor.instructions import get_instructions
@@ -227,7 +229,7 @@ class ElevationPage(TabPage):
 
     def open_url(self, config_key):
         """
-        Opens the URL associated with the given configuration key in the default web browser.
+        Opens the URL from the configuration file in the default web browser.
 
         Args:
             config_key (str): Key in the application configuration that maps to a URL.
@@ -236,25 +238,46 @@ class ElevationPage(TabPage):
             Warning: Displays a warning message if the URL is empty, invalid, or cannot be opened.
         """
 
-        # Dynamically fetch the URL from the app config using config_key
+        # Fetch the URL from the app config using config_key
         url = self.main.app_config.get(config_key)
 
         # Check if URL is None or empty
         if not url:
-            QMessageBox.warning(self, "File Not Found", f"Empty or invalid URL for: {config_key}")
+            QMessageBox.warning(
+                self.main, "File Not Found", f"Empty or invalid URL for: {config_key}"
+                )
             print(f"Empty or invalid URL for: {config_key}")
             return
 
         # Trim whitespace from front and back of URL
         trimmed_url = url.strip()
 
-        # Create a QUrl object
-        qurl = QUrl(trimmed_url)
+        success = True
+        if platform.system() == "Linux":
+            try:
+                # Use xdg-open to open URL
+                result = subprocess.run(
+                    ["xdg-open", trimmed_url], check=True, stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE
+                )
 
-        # Try to open the URL
-        try:
-            res = QDesktopServices.openUrl(qurl)
-            if not res:
-                QMessageBox.warning(self, "URL Error", f"Error opening URL: {trimmed_url}")
-        except Exception as e:
-            QMessageBox.warning(self, "URL Error", f"Error opening URL: {e}")
+                success = result.returncode == 0
+
+            except subprocess.CalledProcessError as e:
+                success = False
+                error_message = e.stderr.decode("utf-8")
+                print(f"Error opening URL with xdg-open: {error_message}")
+        else:
+            # Create a QUrl object
+            qurl = QUrl(trimmed_url)
+
+            # Try to open the URL
+            try:
+                success = QDesktopServices.openUrl(qurl)
+            except Exception as e:
+                success = False
+                print(f"Error opening URL: {e}")
+
+        if not success:
+            QMessageBox.warning(self.main, "URL Error", f"Error opening website: {trimmed_url}")
+            print(f"Error opening website: {trimmed_url}")

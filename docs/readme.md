@@ -3,47 +3,52 @@
 
 This application uses Digital Elevation files and GDAL tools to create hillshade and color relief images which 
 are combined into a final relief image. All settings, including colors and parameters, are set directly 
-in the app and GDAL utilities are automatically executed to generate the images.  
+in the app and the app executes GDAL utilities to generate the images.  
 
-Key Features:
+**Features**:
 
-* Color editor for color relief settings:
-  * Fast preview.
-  * Undo to back out unwanted changes.
+* **Color editor for color relief settings:**
+  * Edit settings and see fast preview 
+  * Color palette selector for each color
+  * Undo to back out unwanted changes
   * Insert row with interpolation
   * Rescale to rescale all elevations
-* Hillshade Settings editor with fast preview
-* Final relief build:
+  * Import any standard GDAL color setting file 
+* **Hillshade Settings editor:**
+  * Edit settings and see fast preview
+* **Final relief build:**
   * Uses composite multiply to cleanly merge the hillshade and color relief for the final image.
-  * Stores all settings, including DEM file sources, in a single configuration file.
-  * Rebuilds only the necessary parts when settings are updated.
+  * All settings are stored in a configuration file.
+  * Does the minimum steps needed to generate the image (only rebuilds items with config changes).
   * Uses multiple processors in parallel to boost performance.
   * Links to external viewer (QGIS or GIMP)
   * Copy file to map server
-* Elevation Files
-  * Download files and simply drop and drop them to Elevation Tab to add to configuration
-  * Optionally sets the Coordinate Reference System (CRS).
+* **Elevation Files**
+  * Download files and simply drop and drop them to Elevation Tab
+  * Optionally sets the Coordinate Reference System (CRS)
+  * Store their source URL and License
 
  For a great introduction to GDAL and shaded relief, see Robert Simmons'
 explanation [here](https://medium.com/@robsimmon/a-gentle-introduction-to-gdal-part-5-shaded-relief-ec29601db654).
 
-## Initial Setup
+## Installation
 
-- **Dependencies**
-- [ ] **yq:** Used to parse the config file. 
-- [ ] **make:** Make, used to determine what needs to be built
-- [ ] **GDAL:** Install GDAL, the Geospatial Data Abstraction Library 
+### Mac - Install Dependencies
+Use  Homebrew or Anaconda to install these items (whichever your system normally uses).
+Note - this has not been tested with the Anaconda package manager.
+- [ ] **yq:** Used to parse the config file.
+- [ ] **gdal:** Install GDAL, the Geospatial Data Abstraction Library 
+- [ ] **gmake:** Make, used to determine what needs to be built
 
-### Installing Dependencies on Mac:
+### Linux Install Dependencies
+Use whichever package manager your system has to install these:
+- [ ] **yq:** Used to parse the config file.
+- [ ] **gdal-bin:** Install GDAL, the Geospatial Data Abstraction Library 
 
-Homebrew and Anaconda are two popular Mac package managers.  
-You can use them to install the three above dependencies. Generally, you should use one or the other package manager
-and not both. Gdal is a LARGE package and will take a while to install.
-Note - this has not been tested with Anaconda.
-
-### Installing Dependencies on Linux / WSL:
-todo
-
+### Install ColorReliefEditor
+   ```shell
+   pip install ColorReliefEditor
+   ```
 
 ## Create a Color Relief Image
 
@@ -52,24 +57,10 @@ todo
    ```shell
    ColorReliefEditor
    ```
-2. **Project Tab** - Create New Project:
-   - To start a new project, click New in the Project Tab. A dialog will appear where you can specify the project folder
-   location. A sample color ramp and settings file will be automatically generated within this folder.
-3. **Elevation Tab** - Add Digital Elevation files:
-   - Click on **Download**.  This will bring you to the EarthExplorer
-   - Select Digital Elevation under the Data Sets tab and choose GMTED2010. Download  gmted_mea files for your area.
-   - In your system's Finder/File Manager, go to Downloads, drag and drop the TIF files to the blue box labelled _Drag Elevation 
-     File Here_.
-4. **Hillshade Tab** - Tune Hillshade parameters:
-    - Try different Shading Algorithms and Z Factor settings. 
-    - Click Preview to see a preview.  The first time this is run may take a long time.
-5. **Color Tab** - Tune color parameters:
-    - Try different Color and Elevations settings. 
-    - Click Preview to see a preview.
-6. **Relief Tab** - Generate final full size image:
-    - Click Create to generate a full size image
-    - Click View to view the image in QGIS or GIMP
-    - Click Publish to copy the file to "Publish To" destination
+   - Click on New to create a new project
+   - In Elevation tab: download elevation files and drag and drop them here
+   - In Hillshade and Color tab: Edit settings and click Preview to review
+   - In Relief tab:  click Create to create a full size merge of hillshade and color relief
 
 ## License
 

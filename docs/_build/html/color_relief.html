@@ -1,0 +1,363 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>color_relief.sh &mdash; Color Relief Editor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="tab_page module" href="tab_page.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">color_relief.sh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#main-functions">Main Functions:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-naming-standards">File Naming Standards:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gdal-commands-run">GDAL commands run:</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-file">YAML File:</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ColorReliefEditor</a></li>
+      <li class="breadcrumb-item active">color_relief.sh</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/color_relief.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="color-relief-sh">
+<h1>color_relief.sh<a class="headerlink" href="#color-relief-sh" title="Link to this heading"></a></h1>
+<p>This shell script provides utilities for processing DEM files using GDAL tools.
+All gdal flags are pulled from a YAML file.</p>
+<section id="main-functions">
+<h2>Main Functions:<a class="headerlink" href="#main-functions" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>The following options run GDAL utilities using parameters from a YAML config file:</p></li>
+<li><p>–init_dem &lt;region&gt;: Merges multiple DEM files into a single output DEM for the specified region.</p></li>
+<li><p>–create_color_relief &lt;region&gt;: Generates a color relief image from a DEM file using a specified color ramp.</p></li>
+<li><p>–create_hillshade &lt;region&gt;: Produces a hillshade image from a DEM file with configurable parameters.</p></li>
+<li><p>–merge_hillshade &lt;region&gt;: Combines color relief and hillshade images into a single relief image.</p></li>
+<li><p>–preview_dem &lt;region&gt;: Extracts a small section from the merged DEM file for preview generation.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="file-naming-standards">
+<h2>File Naming Standards:<a class="headerlink" href="#file-naming-standards" title="Link to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p>ending defaults to “tif”</p></li>
+<li><p>suffix is “_prv” or blank depending on preview mode</p></li>
+<li><p>config “${region}_relief.cfg”</p></li>
+<li><p>dem_file “${region}_${layer}_DEM${suffix}.${ending}”</p></li>
+<li><p>color_relief “${region}_${layer}_color${suffix}.${ending}”</p></li>
+<li><p>hillshade “${region}_${layer}$_hillshade${suffix}.${ending}”</p></li>
+<li><p>final “${region}_${layer}$_relief${suffix}.${ending}”</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="gdal-commands-run">
+<h2>GDAL commands run:<a class="headerlink" href="#gdal-commands-run" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>gdalbuildvrt  $vrt_flag “$target” $file_list</p></li>
+<li><p>gdalwarp $warp_flags “$input_file” “$target”</p></li>
+<li><p>gdaldem color-relief $gdaldem_flags “$dem_file” “${region}_color_ramp.txt” “$target”</p></li>
+<li><p>gdaldem hillshade $gdaldem_flags $hillshade_flags $quiet “$dem_file” “$target”</p></li>
+<li><p>gdal_calc.py -A “$color_file” -B “$hillshade_file” –A_band=”$band” —B_band=1 –calc=“$merge_calc” $merge_flags –overwrite —outfile=”$target”</p></li>
+<li><p>gdal_merge.py $compress -separate -o “$target” $rgb_bands</p></li>
+</ul>
+<p>def  init():</p>
+<blockquote>
+<div><p>Initializes essential variables for the region and layer.
+Verifies the config file exists and key utilities are available (yq, gdal)
+Sets quiet mode, file ending, and dem_file name</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>$1:</dt><dd><p>Region</p>
+</dd>
+<dt>$2:</dt><dd><p>Layer</p>
+</dd>
+<dt>$3:</dt><dd><p>Blank or “preview” to indicate preview generation or full file generation</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+</div></blockquote>
+<p>def  finished():</p>
+<p>Called after function finished. If TIMING is enabled, displays
+elapsed time since the script started.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>$1:</dt><dd><p>File name of the created target</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p>def  check_command():</p>
+<p>Verifies if a required command is available in the environment.
+Exit script with error if the command is not found.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>$1:</dt><dd><p>Command name to check</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p>def  optional_flag
+Retrieve an optional flag from the YAML configuration file.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>$1: Configuration file path
+$2: Key to search for in the YAML file</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>def  mandatory_flag
+Retrieves a mandatory flag from the YAML configuration file.
+Exits with an error if the key is not found.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><p>$1: Configuration file path
+$2: Key to search for in the YAML file</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>def  get_flags
+Retrieves multiple flags from the YAML configuration file.</p>
+<blockquote>
+<div><dl class="simple">
+<dt>Args:</dt><dd><dl class="simple">
+<dt>$1:</dt><dd><p>Region name</p>
+</dd>
+<dt>$2:</dt><dd><p>Configuration file path</p>
+</dd>
+<dt>$3:</dt><dd><p>List of keys to search for in the YAML file</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</div></blockquote>
+<p>def  verify_files
+Verifies that each file passed exists.
+If any file is missing exit with an error.
+Args:</p>
+<blockquote>
+<div><p>$&#64; (variable): List of file paths to check for existence</p>
+</div></blockquote>
+<p>def  run_gdal_calc
+Runs gdal_calc.py to merge bands from two files using a calculation specified in the YAML config.
+Args:</p>
+<blockquote>
+<div><p>$1: Band number to merge
+$2: Target output file</p>
+</div></blockquote>
+<dl class="simple">
+<dt>Shell variables:</dt><dd><p>merge_calc: Calculation for merging A and B bands
+merge_flags: Flags for running gdal_calc
+color_file: RGB color relief file
+hillshade_file: Grayscale Hillshade</p>
+</dd>
+</dl>
+<p>def  set_crs
+Applies CRS to the input file if provided. If no WARP flags exist, the input file is
+renamed to the target.
+Args:</p>
+<blockquote>
+<div><p>$1: Input file path
+$2: Target file path</p>
+</div></blockquote>
+<dl class="simple">
+<dt>YML Config Settings:</dt><dd><p>WARP1 through WARP4 - used for gdalwarp flags</p>
+</dd>
+</dl>
+<p>def  create_preview_dem
+Creates a smaller DEM file as a preview image. The Preview location
+is controlled by x_shift, y_shift
+Args:</p>
+<blockquote>
+<div><p>$1: Input file path (DEM)
+$2: Target output file path for preview DEM</p>
+</div></blockquote>
+<dl class="simple">
+<dt>YML Config Settings:</dt><dd><p>X_SHIFT - 0 is left, 0.5 is middle, 1 is right
+Y_SHIFT - 0 is top, 0.5 is middle, 1 is bottom
+PREVIEW - pixel size of preview DEM.  Default is 1000</p>
+</dd>
+<dt>–init_DEM - Create a merged DEM file and a truncated DEM preview file.  Optionally set CRS</dt><dd><p>$1 is region name
+$2 is layer name</p>
+</dd>
+<dt>YML Config Settings:</dt><dd><p>LAYER - The active layer_id (A-G).  (Different from layer name)
+FILES.layer_id - The file names for the active layer</p>
+</dd>
+<dt>–preview_dem -  Create a truncated DEM file to build fast previews</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
+</dd>
+<dt>–create_color_relief -  gdaldem color-relief</dt><dd><p>$1 is region name $2 is layer name $3 preview flag</p>
+</dd>
+<dt>YML Config Settings:</dt><dd><p>OUTPUT_TYPE  -of GTiff
+EDGE -compute_edges</p>
+</dd>
+<dt>–hillshade -  gdaldem hillshade</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
+</dd>
+<dt>YML Config Settings:</dt><dd><p>OUTPUT_TYPE  -of GTiff
+HILLSHADE1-5 gdaldem hillshade hillshade flags</p>
+</dd>
+<dt>–merge - merge hillshade with color relief</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
+</dd>
+<dt>YML Config Settings:</dt><dd><p>MERGE1-4 - gdal_calc.py flags
+COMPRESS - compression type.  –co=COMPRESS=ZSTD
+MERGE_CALC - calculation to run in gdal_calc.py</p>
+</dd>
+<dt>–dem_trigger - create dem_trigger file if it doesnt exist</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
+</dd>
+</dl>
+<p>–doc - create rst documentation for this shell script</p>
+</section>
+<section id="yaml-file">
+<h2>YAML File:<a class="headerlink" href="#yaml-file" title="Link to this heading"></a></h2>
+<p>The YAML file contains the values for the GDAL switches.
+These are mapped to shell script variables as below:</p>
+<ul class="simple">
+<li><p>$vrt_flag=</p></li>
+</ul>
+<p>VRT: -strict</p>
+<ul class="simple">
+<li><p>$warp_flags=</p></li>
+</ul>
+<p>WARP1: -t_srs epsg:3857
+WARP2: -wo INIT_DEST=NO_DATA  -overwrite
+WARP3: -r bilinear
+WARP4: -multi -wo NUM_THREADS=val/ALL_CPUS –config GDAL_CACHEMAX 30%</p>
+<ul class="simple">
+<li><p>$gdaldem_flags=</p></li>
+</ul>
+<p>OUTPUT_TYPE:
+EDGE: -compute_edges</p>
+<ul class="simple">
+<li><p>$hillshade_flags=</p></li>
+</ul>
+<p>HILLSHADE1: -alg ZevenbergenThorne
+HILLSHADE2: -z  2
+HILLSHADE3: ‘’
+HILLSHADE4: ‘’</p>
+<ul class="simple">
+<li><p>$merge_flags=</p></li>
+</ul>
+<p>MERGE1: –extent=intersect —type=Byte</p>
+<ul class="simple">
+<li><p>$merge_calc=</p></li>
+</ul>
+<p>MERGE_CALC: –calc=(A/255.0) * B</p>
+<ul class="simple">
+<li><p>$compress=</p></li>
+</ul>
+<p>COMPRESS: -co COMPRESS=JPEG</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tab_page.html" class="btn btn-neutral float-left" title="tab_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

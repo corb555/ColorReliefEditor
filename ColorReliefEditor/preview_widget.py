@@ -455,14 +455,11 @@ def launch_app(app_name, file_path, parent=None):
             subprocess.run(
                 ['xdotool', 'search', '--onlyvisible', '--name', app_name, 'windowactivate']
             )
-
         elif system == "Darwin":  # macOS
             subprocess.run(["open", "-a", app_name, file_path], check=True)
             subprocess.run(['osascript', '-e', f'tell application "{app_name}" to activate'])
-
         elif system == "Windows":
             subprocess.run([app_name, file_path], check=True)
-
         else:
             raise OSError(f"Unsupported operating system: {system}")
 

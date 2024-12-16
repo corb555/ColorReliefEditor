@@ -36,7 +36,7 @@ ERROR_GDALBUILDVRT=115
 ## color_relief.sh
 ## =========================
 ## This shell script provides utilities for processing DEM files using GDAL tools.
-## All gdal flags are pulled from a YAML file.
+## All gdal switches are pulled from a YAML file.
 ##
 ## Main Functions:
 ## ---------------
@@ -139,6 +139,7 @@ init() {
 
   # Start timing
   SECONDS=0
+  echo >&2
 }
 ##
 ## Function: finished():
@@ -318,7 +319,7 @@ run_gdal_calc() {
 ##   $1: Input file path
 ##   $2: Target file path
 ## YML Config Settings:
-##   WARP1 through WARP4 - used for gdalwarp flags
+##   WARP1 through WARP4 - used for gdalwarp switches
 ##
 set_crs() {
   input_file="$1"
@@ -328,6 +329,7 @@ set_crs() {
   echo "set crs" $1 $2
   echo $config
 
+  # Get GDAL switches from YML config
   warp_flags=$(get_flags  "$config" "WARP1" "WARP2" "WARP3" "WARP4")
   echo "= Set CRS =" >&2
 
@@ -422,6 +424,9 @@ create_preview_dem() {
 ##
 init_dem() {
   init "$@"
+  echo "= Create DEM file =" >&2
+
+  # Get GDAL switches from YML config
   vrt_flag=$(optional_flag   "$config" "VRT")
 
   # Get file list for DEM files.  layer_id is (A-G) not the layer text name
@@ -450,7 +455,6 @@ vrt_temp="${region}_tmp1.vrt"
 
 # Remove old temp file
 rm -f "$vrt_temp"
-echo "= Create DEM file =" >&2
 
 # Create DEM VRT
 echo gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list >&2
@@ -498,15 +502,16 @@ preview_dem() {
 ##
 create_color_relief() {
   init "$@"
+  echo "= Create Color Relief =" >&2
 
   target="${region}_${layer}_color${suffix}.${ending}"
   rm -f "${target}"
 
   verify_files "${dem_file}" "${region}_color_ramp.txt"
-  echo "= Create Color Relief =" >&2
 
   # Build the gdaldem color-relief command
-  cmd="gdaldem color-relief $gdaldem_flags $quiet \"$dem_file\" \"${region}_color_ramp.txt\" \"$target\""
+  color_flags=$(get_flags "$config" "COLOR1" "COLOR2" )
+  cmd="gdaldem color-relief $gdaldem_flags $color_flags $quiet \"$dem_file\" \"${region}_color_ramp.txt\" \"$target\""
   echo "$cmd"  >&2
   echo >&2
 
@@ -534,9 +539,9 @@ create_hillshade() {
   rm -f "${target}"
 
   verify_files "${dem_file}"
-  hillshade_flags=$(get_flags "$config" "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
 
   # Build the gdaldem hillshade command
+  hillshade_flags=$(get_flags "$config" "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
   cmd="gdaldem hillshade $gdaldem_flags $hillshade_flags $quiet \"$dem_file\" \"$target\""
   echo "$cmd"  >&2
   echo >&2
@@ -559,7 +564,9 @@ create_hillshade() {
 ##
 merge_hillshade() {
   init "$@"
-  # Get merge flags from YML config
+  echo "= Merge Hillshade and Color Relief =" >&2
+
+  # Get GDAL switches from YML config
   merge_flags=$(get_flags "$config" "MERGE1" "MERGE2" "MERGE3" "MERGE4")
   compress=$(get_flags "$config" "COMPRESS")
 
@@ -572,8 +579,6 @@ merge_hillshade() {
 
   rm -f "${target}"
 
-  echo
-  echo "= Merge Hillshade and Color Relief =" >&2
   rgb_bands=""
   pids=""
 
@@ -605,7 +610,7 @@ merge_hillshade() {
 
   echo >&2
   if [ "$quiet" != "-q" ]; then
-    echo "color_relief.sh v0.6" >&2
+    echo "color_relief.sh $version" >&2
   fi
 
   rm -f $rgb_bands
@@ -674,7 +679,7 @@ case "$1" in
 esac
 
 # Shift the positional parameters and call the corresponding function
-version="0.1.09"
+version="0.1.10"
 shift
 $command "$@"
 

@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>make_process module &mdash; Color Relief Editor  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="misc_page module" href="misc_page.html" />
+    <link rel="prev" title="instructions module" href="instructions.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Color Relief Editor
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">make_process module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#make_process.MakeProcess"><code class="docutils literal notranslate"><span class="pre">MakeProcess</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.make_finished"><code class="docutils literal notranslate"><span class="pre">MakeProcess.make_finished</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.job_name"><code class="docutils literal notranslate"><span class="pre">MakeProcess.job_name</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.dry_run"><code class="docutils literal notranslate"><span class="pre">MakeProcess.dry_run</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.build_required"><code class="docutils literal notranslate"><span class="pre">MakeProcess.build_required</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.cancel"><code class="docutils literal notranslate"><span class="pre">MakeProcess.cancel()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.clear_output"><code class="docutils literal notranslate"><span class="pre">MakeProcess.clear_output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.info"><code class="docutils literal notranslate"><span class="pre">MakeProcess.info()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">MakeProcess.make_finished</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.output"><code class="docutils literal notranslate"><span class="pre">MakeProcess.output()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.return_error"><code class="docutils literal notranslate"><span class="pre">MakeProcess.return_error()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.run_make"><code class="docutils literal notranslate"><span class="pre">MakeProcess.run_make()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.warn"><code class="docutils literal notranslate"><span class="pre">MakeProcess.warn()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Color Relief Editor</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="modules.html">ColorReliefEditor</a></li>
+      <li class="breadcrumb-item active">make_process module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/make_process.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-make_process">
+<span id="make-process-module"></span><h1>make_process module<a class="headerlink" href="#module-make_process" title="Link to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="make_process.MakeProcess">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">make_process.</span></span><span class="sig-name descname"><span class="pre">MakeProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
+<p>Executes Makefile commands, streaming real-time output to an optional output window and
+emitting a <cite>make_finished</cite> signal upon completion. Supports dry-run mode to preview actions
+without execution and provides <cite>build_required</cite> to indicate if the dry-run determined that a
+build
+is required.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="make_process.MakeProcess.make_finished">
+<span class="sig-name descname"><span class="pre">make_finished</span></span><a class="headerlink" href="#make_process.MakeProcess.make_finished" title="Link to this definition"></a></dt>
+<dd><p>Signal emitted when the make process finishes, with
+the job name and exit code.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="make_process.MakeProcess.job_name">
+<span class="sig-name descname"><span class="pre">job_name</span></span><a class="headerlink" href="#make_process.MakeProcess.job_name" title="Link to this definition"></a></dt>
+<dd><p>Name of the current job being processed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="make_process.MakeProcess.dry_run">
+<span class="sig-name descname"><span class="pre">dry_run</span></span><a class="headerlink" href="#make_process.MakeProcess.dry_run" title="Link to this definition"></a></dt>
+<dd><p>Specifies if the current process is a dry-run. Set to True if the
+make command ends with ‘-n’. Runs the process synchronously for analysis
+without actual execution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="make_process.MakeProcess.build_required">
+<span class="sig-name descname"><span class="pre">build_required</span></span><a class="headerlink" href="#make_process.MakeProcess.build_required" title="Link to this definition"></a></dt>
+<dd><p>Indicates whether a build is required based on the output
+of a dry-run. Set to True if any files or commands in the make process indicate
+a build is necessary, or if there is error output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p><strong>Methods</strong>:</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.cancel" title="Link to this definition"></a></dt>
+<dd><p>Cancel the currently running make process.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.clear_output">
+<span class="sig-name descname"><span class="pre">clear_output</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.clear_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.clear_output" title="Link to this definition"></a></dt>
+<dd><p>Clear output window</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.info" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">make_finished</span></span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd><p>int = …, arguments: Sequence = …) -&gt; PYQT_SIGNAL</p>
+<p>types is normally a sequence of individual types.  Each type is either a
+type object or a string that is the name of a C++ type.  Alternatively
+each type could itself be a sequence of types each describing a different
+overloaded signal.
+name is the optional C++ name of the signal.  If it is not specified then
+the name of the class attribute that is bound to the signal is used.
+revision is the optional revision of the signal that is exported to QML.
+If it is not specified then 0 is used.
+arguments is the optional sequence of the names of the signal’s arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>pyqtSignal(<a href="#id1"><span class="problematic" id="id2">*</span></a>types, name</p>
+</dd>
+<dt class="field-even">Type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str = …, revision</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.output">
+<span class="sig-name descname"><span class="pre">output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.output" title="Link to this definition"></a></dt>
+<dd><p>Output the given text to the output window</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – The text to display in the output window.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.return_error">
+<span class="sig-name descname"><span class="pre">return_error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">error</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.return_error"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.return_error" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.run_make">
+<span class="sig-name descname"><span class="pre">run_make</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">makefile_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_window</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.run_make"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.run_make" title="Link to this definition"></a></dt>
+<dd><p>Execute the given Makefile command.
+Runs synchronously if ‘-n’ is in the command (fast dry-run),
+otherwise runs the process asynchronously and emits the <cite>make_finished</cite> signal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>makefile_path</strong> (<em>str</em>) – The path to the Makefile file.</p></li>
+<li><p><strong>command</strong> (<em>str</em>) – The make command to execute.</p></li>
+<li><p><strong>job_name</strong> (<em>str</em>) – The name of the job for tracking purposes.</p></li>
+<li><p><strong>output_window</strong> (<em>QPlainTextEdit</em><em>, </em><em>optional</em>) – The window to display process output.</p></li>
+<li><p><strong>project_directory</strong> (<em>str</em>) – The path to the project directory.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Exit code if running synchronously, 0 if running asynchronously.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="make_process.MakeProcess.warn">
+<span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.warn" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="instructions.html" class="btn btn-neutral float-left" title="instructions module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="misc_page.html" class="btn btn-neutral float-right" title="misc_page module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright .</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
