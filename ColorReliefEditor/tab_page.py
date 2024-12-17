@@ -405,19 +405,19 @@ def _create_layout(
 
     # Add items to the layout
     for item in widgets:
-        match item:
-            case 'stretch':
-                layout.addStretch()
-            case QWidget():
-                layout.addWidget(item)
-            case QSpacerItem():
-                layout.addSpacerItem(item)
-            case QVBoxLayout() | QHBoxLayout():
-                layout.addLayout(item)
-            case _:
-                raise TypeError(
-                    f"Unsupported item type: {type(item)}. Only QWidget, QSpacerItem, "
-                    f"QLayoutItem, or 'stretch' are allowed."
-                )
+        if item == 'stretch':
+            layout.addStretch()
+        elif isinstance(item, QWidget):
+            layout.addWidget(item)
+        elif isinstance(item, QSpacerItem):
+            layout.addSpacerItem(item)
+        elif isinstance(item, (QVBoxLayout, QHBoxLayout)):
+            layout.addLayout(item)
+        else:
+            raise TypeError(
+                f"Unsupported item type: {type(item)}. Only QWidget, QSpacerItem, "
+                f"QLayoutItem, or 'stretch' are allowed."
+            )
 
     return layout
+

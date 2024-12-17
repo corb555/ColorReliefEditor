@@ -1,6 +1,1 @@
-pytest~=8.3.3
-ColorReliefEditor~=0.1.11
-setuptools~=75.6.0
-PyQt6~=6.7.1
-YMLEditor~=0.1.11
-appdirs~=1.4.4
+setuptools~=56.0.0

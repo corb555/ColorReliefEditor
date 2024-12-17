@@ -253,7 +253,7 @@ class ProjectConfig(DataManager):
         touch_file(dem_proxy_path)
 
         # Return True, None if no errors occurred during the process
-        return (True, None)
+        return True, None
 
 
 def app_files_path(filename):

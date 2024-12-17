@@ -45,7 +45,7 @@ class AppSettingsPage(TabPage):
             main (MainClass): Reference to the main application class.
             name (str): Name of the page.
         """
-        styles = QStyleFactory.keys() + ["default"]
+        styles = [style.lower() for style in QStyleFactory.keys()] + ["default"]
 
         # Set up display format for the app settings that this tab uses
         app_formats = {
@@ -54,12 +54,12 @@ class AppSettingsPage(TabPage):
                 "DOWNLOAD.US": ("Download", "line_edit", r'^(https?):\/\/.*\..+', 400),
                 "DOWNLOAD.US_HIGH": ("US High Res", "line_edit", r'^(https?):\/\/.*\..+', 400),
                 "LABEL2": ("", "label", None, 400),
-                "VIEWER": ("Viewer", "combo", ["QGIS", 'GIMP', 'ImageMagick'], 180),
+                "VIEWER": ("Viewer", "combo", ['default', "QGIS", 'GIMP','Firefox',], 180),
                 "LABEL3": ("", "label", None, 400),
                 "MULTI": ("Multiprocessor", "combo", ["multi", 'single'], 180),
                 "VERBOSE": ("Verbose", "combo", ["0", '1', '2'], 180),
                 "STYLE": ("Style", "combo", styles, 400),
-                "FONT_SIZE": ("Font Size", "line_edit", r"^\d{1,2}$", 400),
+                "FONT_SIZE": ("Font Size", "line_edit", r"^\d{1,2}$", 90),
             },
             "basic": {
             }

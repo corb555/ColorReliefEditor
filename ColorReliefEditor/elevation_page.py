@@ -255,7 +255,7 @@ class ElevationPage(TabPage):
         success = True
         if platform.system() == "Linux":
             try:
-                # Use xdg-open to open URL
+                # Use xdg-open to open item
                 result = subprocess.run(
                     ["xdg-open", trimmed_url], check=True, stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE
@@ -266,7 +266,7 @@ class ElevationPage(TabPage):
             except subprocess.CalledProcessError as e:
                 success = False
                 error_message = e.stderr.decode("utf-8")
-                print(f"Error opening URL with xdg-open: {error_message}")
+                print(f"Error opening item with xdg-open: {error_message}")
         else:
             # Create a QUrl object
             qurl = QUrl(trimmed_url)

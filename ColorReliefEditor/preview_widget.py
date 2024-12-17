@@ -298,10 +298,14 @@ class PreviewWidget(TabPage):
         self.output_window.appendPlainText(message)
 
     def launch_viewer(self):
-        image_path = self.get_image_path()
-        app = self.main.app_config["VIEWER"]
+        """
+        Launch an external viewer for a very large image
+        Returns:
 
-        # Check if the project is up to date and confirm action if needed
+        """
+        image_path = self.get_image_path()
+
+        # Check if the project is up to date and confirm action if build needed
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
             self.tab_name.lower(), self.preview_mode, layer
@@ -309,8 +313,47 @@ class PreviewWidget(TabPage):
         if self.cancel_for_out_of_date("View", target):
             return
 
+        # Get user preferred viewer app from config
+        app = self.main.app_config["VIEWER"]
         self.output(f"Launched {app} ✅")
-        launch_app(app, image_path)
+        system = platform.system()
+
+        # On Mac/Darwin use Preview as the default viewer
+        if system == "Darwin" and app == "default":
+            app = "Preview"
+
+        # On Linux, use xdg-open to bring up the default viewer
+        if system == "Linux" and app == "default":
+            # Linux: Use xdg-open to launch the default viewer
+            try:
+                subprocess.Popen(
+                    ["xdg-open", image_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+                    )
+            except Exception as e:
+                self._handle_viewer_error(e, "xdg-open", image_path)
+
+            except subprocess.CalledProcessError as e:
+                success = False
+                error_message = e.stderr.decode("utf-8")
+                print(f"Error opening item with xdg-open: {error_message}")
+        else:
+            launch_app(app, image_path)
+
+    def _handle_viewer_error(self, error, app_name, file_path):
+        """
+        Handles errors when launching a viewer application.
+
+        Args:
+            error (Exception): Exception that occurred.
+            app_name (str): Name of the viewer application.
+            file_path (str): Path to the file attempted to open.
+
+        Returns:
+            None
+        """
+        error_message = f"Failed to launch '{app_name}' for file '{file_path}'.\nError: {str(error)}"
+        print(error_message)
+        QMessageBox.critical(self, "Viewer Error", error_message)
 
     def cancel_for_out_of_date(self, action, target):
         """

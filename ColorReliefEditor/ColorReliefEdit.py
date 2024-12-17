@@ -25,10 +25,8 @@
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 import platform
-#
-#
+from importlib.metadata import version, PackageNotFoundError
 import sys
-from zoneinfo import available_timezones
 
 from ColorReliefEditor.app_settings_page import AppSettingsPage
 from ColorReliefEditor.color_page import ColorPage
@@ -76,15 +74,17 @@ class ColorReliefEdit(QMainWindow):
         self.warn(f"App config file: {app_path}")   # Log path for config file
 
         # Set Application style
-        self.font_size = int(self.app_config["FONT_SIZE"] or "12")
-        available_styles = QStyleFactory.keys()
-        style = self.app_config["STYLE"]
-        if platform.system() == "Linux" and style == "default":
-            # Use Fusion for Linux instead of ugly default
-            style = "Fusion"
+        self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
 
-        if style in available_styles:
-            app.setStyle(style)
+        if platform.system() == "Linux":
+            style_name = "fusion"  # Use Fusion for Linux instead of default
+            self.warn(f"Setting style: {style_name}")
+            app.setStyle(QStyleFactory.create(style_name))
+        else:
+            style_name = "default"
+
+        self.warn(f"App style is {app.style().objectName()}")
+        set_style(app, self.font_size, style_name)
 
         self.make_process = MakeProcess(verbose=self.verbose)  # Manage Makefile operations to build images
 
@@ -124,7 +124,6 @@ class ColorReliefEdit(QMainWindow):
         """
         The UI is a tab control with a tab per feature
         """
-        set_style(app, self.font_size)
         self.setWindowTitle("Color Relief")
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
@@ -147,7 +146,7 @@ class ColorReliefEdit(QMainWindow):
         self.current_tab: int = self.tabs.currentIndex()  # Index of the current tab
 
         # Disable all tabs except Project  until a project has been loaded
-        self.set_tabs_available(False, ["Project"])
+        self.set_tabs_available(False, ["Project", "Settings"])
 
     def save_settings(self):
         # Save App Settings and Project Settings
@@ -268,7 +267,7 @@ class ColorReliefEdit(QMainWindow):
             print(message)
 
 
-def set_style(app, font_size):
+def set_style(app, font_size, style_name):
     # Set application Widget styles
     colors = {
         "grid": "#323232", "highlight": "lightslategray", "error": "Crimson", "normal": "Silver",
@@ -276,8 +275,21 @@ def set_style(app, font_size):
         "lineedit": "#202020", "label": "white"
     }
 
-    app.setStyleSheet(
-        f"""
+    dark_style =  f"""
+                QWidget {{
+                    background-color: #353535;
+                    color: #FFFFFF;
+                }}
+                QTabBar::tab:selected {{
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, stop:1 #005F9E);
+                    border-radius: 4px;
+                }}
+                QTabBar::tab:disabled {{          /* Disabled tab */
+                    color: gray;                 /* Text color for disabled tab */
+                }}
+                """
+
+    main_style =  f"""
                 QWidget {{
                     font-size: {font_size}px;  /* Default font size */
                 }}
@@ -325,7 +337,26 @@ def set_style(app, font_size):
                     min-height: 15px;
                 }}
                 """
-    )
+    if style_name == "fusion":
+        main_style += dark_style
+        print("dark style")
+
+    app.setStyleSheet(main_style)
+
+def get_version(package_name: str) -> str:
+    """
+    Retrieves the version of the installed package.
+
+    Args:
+        package_name (str): Name of the installed package.
+
+    Returns:
+        str: Version string or an error message.
+    """
+    try:
+        return version(package_name)
+    except PackageNotFoundError:
+        return "Package not found or not installed."
 
 
 def main():
@@ -333,6 +364,8 @@ def main():
     Entry point for the application. Initializes the QApplication and shows the main window.
     """
     app = QApplication(sys.argv)
+    app_version = get_version("ColorReliefEditor")
+    print(f"Version: {app_version}")
     main_window = ColorReliefEdit(app)
     main_window.show()
     sys.exit(app.exec())
