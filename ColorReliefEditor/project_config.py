@@ -193,7 +193,7 @@ class ProjectConfig(DataManager):
         Return path for Config file proxy
         """
         layer = self.main.project.get_layer()
-        target = f"{self.main.project.region}_{layer}_DEM_trigger.cfg"
+        target = f"{self.main.project.region}_{layer}{ProjectConfig.file_suffix['dem']}"
         return str(Path(self.main.project.project_directory) / target)
 
     def create_new_project(self, directory):
@@ -221,7 +221,7 @@ class ProjectConfig(DataManager):
         config_file_path = os.path.join(
             directory, f"{region}{ProjectConfig.file_suffix['config']}"
         )
-        dem_proxy_path = os.path.join(directory, f"{region}{ProjectConfig.file_suffix['dem']}")
+        #dem_proxy_path = os.path.join(directory, f"{region}{ProjectConfig.file_suffix['dem']}")
         ramp_file_path = os.path.join(
             directory, f"{region}{ProjectConfig.file_suffix['color_ramp']}"
         )
@@ -250,7 +250,7 @@ class ProjectConfig(DataManager):
         )
 
         # Create an empty DEM proxy file as a placeholder
-        touch_file(dem_proxy_path)
+        #touch_file(dem_proxy_path)
 
         # Return True, None if no errors occurred during the process
         return True, None

@@ -35,7 +35,7 @@ from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, create_button, expanding_vertical_spacer, \
     create_hbox_layout, create_vbox_layout
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QTimer
 from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
 from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
                              QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
@@ -85,7 +85,7 @@ class ColorPage(TabPage):
 
         # Create drag and drop target for elevation files
         self.drop_widget = FileDropWidget(
-            "Drag GDAL Color File Here", r"^.*\.txt[i]?$", self.update_color_file, file_drop_style,
+            "Drag GDAL Color File Here", r"^.*\.txt[i]?$", self.import_color_file, file_drop_style,
             status_style
         )
 
@@ -146,7 +146,7 @@ class ColorPage(TabPage):
             QMessageBox.warning(self, "Error", f"Color File error: {str(e)}")
             return False
 
-    def update_color_file(self, dropped_file):
+    def import_color_file(self, dropped_file):
         """
         Import a color file to this project
 
@@ -154,6 +154,12 @@ class ColorPage(TabPage):
             dropped_file (str): The file path of the file to add.
         """
         dropped_filename = os.path.basename(dropped_file)
+        if " " in dropped_filename:
+            QMessageBox.warning(
+                self.main, "Note", f"File names cannot contain spaces. {dropped_filename}"
+            )
+            return
+
         target_filename = os.path.basename(self.main.project.color_file_path)
         target_path = self.main.project.color_file_path
 
@@ -229,6 +235,11 @@ class ColorSettingsWidget(QWidget):
             data_mgr(FileHandler): The color ramp to be edited.
         """
         super().__init__()
+        # Timer to only save periodically
+        self.save_timer = QTimer()
+        self.save_timer.setSingleShot(True)  # Ensure it only fires once per typing pause
+        self.save_timer.timeout.connect(self.save)
+
         self.table_width = 200  # the  width for the table
         self.initial_rows = 15
         self.row_height, self.color_table = None, None
@@ -330,14 +341,17 @@ class ColorSettingsWidget(QWidget):
         )
 
         if ok:
+            # Save snapshot
+            self.save()
+
             # Calculate the current max elevation of the table
-            current_max: int = max([row[0] for row in self.data_mgr])
+            current_max: int = max([row[0] for row in self.data_mgr._data])
 
             # Calculate scale factor for the new max
             scale_factor = new_max / current_max if current_max else 1
 
             # Scale each elevation in the table
-            for row_idx, row in enumerate(self.data_mgr):
+            for row_idx, row in enumerate(self.data_mgr._data):
                 elevation = row[0]
                 scaled_elevation = int(elevation * scale_factor)
                 self.data_mgr.update_line(row_idx, elevation=scaled_elevation)
@@ -351,17 +365,15 @@ class ColorSettingsWidget(QWidget):
         elevation_edit = QLineEdit(str(value))
         elevation_edit.setFixedHeight(self.row_height)
         elevation_edit.setFixedWidth(self.elevation_width())
-        # elevation_edit.setAlignment(Qt.AlignmentFlag.AlignBottom)
         elevation_edit.editingFinished.connect(lambda: self.on_elevation_update(row_idx))
         return elevation_edit
-
-    def elevation_width(self):
-        font_metrics = QFontMetrics(self.font())
-        return font_metrics.horizontalAdvance("9999999") + 10
 
     def on_elevation_update(self, row_idx):
         """Update elevation data when UI changes and notify sample display."""
         line_edit = self.color_table.cellWidget(row_idx, 0)
+
+        # Do saves periodically
+        self.save_timer.start(500)  # 500 milliseconds debounce time
 
         if isinstance(line_edit, QLineEdit):
             try:
@@ -381,18 +393,6 @@ class ColorSettingsWidget(QWidget):
         # Emit signal to indicate color data has been updated
         self.colors_updated.emit()
 
-    def _create_color_button(self, row_idx, r, g, b, a):
-        """
-        Create a button for the color.
-        Shows color and brings up color picker when clicked
-        """
-        color_button = QPushButton(self)
-        color_button.setFlat(True)
-        color_button.setStyleSheet(f"background-color: rgba({r}, {g}, {b}, {a}); border: none;")
-        color_button.setFixedSize(self.color_width, self.row_height)
-        color_button.clicked.connect(lambda: self.open_color_picker(row_idx))
-        return color_button
-
     def open_color_picker(self, idx):
         """Open color picker dialog and update data with result"""
         r, g, b, a = self.data_mgr[idx][1:5]
@@ -406,6 +406,9 @@ class ColorSettingsWidget(QWidget):
         self.colors_updated.emit()
 
     def on_color_update(self, idx, new_color):
+        # Save snapshot
+        self.save()
+
         """Update the color button and data for the given index."""
         color_button = self.color_table.cellWidget(idx, 1)
         r, g, b, a = new_color.red(), new_color.green(), new_color.blue(), new_color.alpha()
@@ -413,13 +416,10 @@ class ColorSettingsWidget(QWidget):
         color_button.setStyleSheet(f"background-color: rgba({r}, {g}, {b}, {a}); border: none;")
         self.colors_updated.emit()
 
-    def undo(self):
-        """Undo - revert back to previous color settings"""
-        self.data_mgr.snapshot_undo()
-        self.display()
-        self.colors_updated.emit()
-
     def insert_row(self):
+        # Save snapshot
+        self.save()
+
         """Insert a new row by interpolating elevation and colors."""
         current_row_idx = self.color_table.currentRow()
         new_row = self.data_mgr.interpolate(current_row_idx)
@@ -430,12 +430,37 @@ class ColorSettingsWidget(QWidget):
         self.colors_updated.emit()
 
     def delete_row(self):
+        # Save snapshot
+        self.save()
+
         """Delete the current row from the color table."""
         current_row = self.color_table.currentRow()
         if current_row != -1:
             self.data_mgr.delete(current_row)
             self.display()
             self.colors_updated.emit()
+
+    def undo(self):
+        """Undo - revert back to previous color settings"""
+        self.data_mgr.snapshot_undo()
+        self.display()
+        self.colors_updated.emit()
+
+    def _create_color_button(self, row_idx, r, g, b, a):
+        """
+        Create a button for the color.
+        Shows color and brings up color picker when clicked
+        """
+        color_button = QPushButton(self)
+        color_button.setFlat(True)
+        color_button.setStyleSheet(f"background-color: rgba({r}, {g}, {b}, {a}); border: none;")
+        color_button.setFixedSize(self.color_width, self.row_height)
+        color_button.clicked.connect(lambda: self.open_color_picker(row_idx))
+        return color_button
+
+    def elevation_width(self):
+        font_metrics = QFontMetrics(self.font())
+        return font_metrics.horizontalAdvance("9999999") + 10
 
 
 class ColorSampleWidget(QWidget):

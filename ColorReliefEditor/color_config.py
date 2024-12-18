@@ -78,6 +78,7 @@ class ColorConfig(DataManager):
         super().__init__()
         self.misc_lines = []
         self._data = []
+        self.max_snapshots = 20
 
     def _save_data(self, f, data):
         """

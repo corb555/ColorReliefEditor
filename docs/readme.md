@@ -2,67 +2,92 @@
 
 <img width="622" alt="sample" src="https://github.com/corb555/ColorReliefEditor/blob/main/docs/images/color%20sample.png?raw=true">
 
-## Overview
-This application uses Digital Elevation files and GDAL tools to create hillshade and color relief images which 
-are combined into a final relief image. All settings, including colors and parameters, are set directly 
-in the app and the app executes GDAL utilities to generate the images.  
+---
 
-**Features**:
+# Overview
 
-* **Color editor for color relief settings:**
-  * Edit settings and see fast preview 
-  * Color palette selector for each color
-  * Undo to back out unwanted changes
-  * Insert row with interpolation
-  * Rescale to rescale all elevations
-  * Import any standard GDAL color setting file 
-* **Hillshade Settings editor:**
-  * Edit settings and see fast preview
-* **Final relief build:**
-  * Uses composite multiply to cleanly merge the hillshade and color relief for the final image.
-  * All settings are stored in a configuration file.
-  * Does the minimum steps needed to generate the image (only rebuilds items with config changes).
-  * Uses multiple processors in parallel to boost performance.
-  * Links to external viewer (QGIS or GIMP)
-  * Copy file to map server
-* **Elevation Files**
-  * Download files and simply drop and drop them to Elevation Tab
-  * Optionally sets the Coordinate Reference System (CRS)
-  * Store their source URL and License
+This application uses GDAL tools to create high-quality color relief maps from 
+Digital Elevation Model (DEM) files. 
+The app provides user-configurable settings for the colors and parameters, and directly executes GDAL 
+utilities, providing a seamless experience for creating relief maps.
 
- For a great introduction to GDAL and shaded relief, see Robert Simmons'
-explanation [here](https://medium.com/@robsimmon/a-gentle-introduction-to-gdal-part-5-shaded-relief-ec29601db654).
+---
+
+## Features
+
+### **Color Editor**
+- **Real-Time Editing:** Modify settings and preview results instantly.
+- **Color Palette Selector:** Choose colors for each elevation range with ease.
+- **Undo Support:** Roll back unwanted changes.
+- **Insert rows:** Insert rows with interpolation.
+- **Rescale:** Rescale elevation values with one click.
+- **Import:** Import standard GDAL color files.
+
+### **Hillshade Editor**
+- Modify hillshade settings and see immediate previews.
+
+### **Final Relief Image Generation**
+- **Blending:** Combines hillshade and color relief with composite multiply for smooth results.
+- **Optimized Processing:**
+  - Only rebuilds components when configurations change.
+  - Supports multi-core processing for faster performance.
+- **External Tools:** Links to external viewers like QGIS or GIMP for post-processing.
+- **Convenient Workflow:** Copy the final image directly to a map server.
+
+### **Elevation File Management**
+- **Drag-and-Drop:** Easily upload elevation files via the Elevation Tab.
+- **Coordinate Reference System (CRS):** Optionally set the CRS for your files.
+- **Metadata:** Save source URLs and license information for all elevation files.
+
+---
 
 ## Installation
 
-### Mac - Install Dependencies
-Use  Homebrew or Anaconda to install these items (whichever your system normally uses).
-Note - this has not been tested with the Anaconda package manager.
-- [ ] **yq:** Used to parse the config file.
-- [ ] **gdal:** Install GDAL, the Geospatial Data Abstraction Library 
-- [ ] **gmake:** Make, used to determine what needs to be built
+---
 
-### Linux Install Dependencies
-Use whichever package manager your system has to install these:
-- [ ] **yq:** Used to parse the config file.
-- [ ] **gdal-bin:** Install GDAL, the Geospatial Data Abstraction Library 
+## _Install Dependencies_
 
-### Install ColorReliefEditor
+### Mac / Anaconda
+
+```shell
+conda install yq
+conda install gdal
+conda install make
+```
+
+### Mac / Homebrew
+ 
+```shell
+brew install yq
+brew install gdal 
+brew install make
+```
+
+### Debian / Ubuntu 
+ 
+```shell
+sudo apt-get install yq
+sudo apt-get install gdal-bin
+```
+
+## _Install ColorReliefEditor_
+   It is recommended that you set up a virtual Python environment for this.
    ```shell
    pip install ColorReliefEditor
    ```
 
-## Create a Color Relief Image
+## Usage - Create a Color Relief Image
 
 1. **Launch ColorReliefEditor**
-   - Start your systems Command shell / Terminal and type:
+   - Start Terminal and type:
    ```shell
    ColorReliefEditor
    ```
-   - Click on New to create a new project
-   - In Elevation tab: download elevation files and drag and drop them here
-   - In Hillshade and Color tab: Edit settings and click Preview to review
-   - In Relief tab:  click Create to create a full size merge of hillshade and color relief
+   
+2. **In Project Tab** - click _New_ to create a new project
+3. **In Elevation Tab** - download Digital Elevation files and drag and drop them here
+4. **In Hillshade and Color Tab** - edit Hillshade and Color settings and click _Preview_ to review
+5. **In Relief Tab**  - click _Create_ to create a full size merge of hillshade and color relief
 
 ## License
 
