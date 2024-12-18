@@ -78,12 +78,10 @@ class ColorReliefEdit(QMainWindow):
 
         if platform.system() == "Linux":
             style_name = "fusion"  # Use Fusion for Linux instead of default
-            self.warn(f"Setting style: {style_name}")
             app.setStyle(QStyleFactory.create(style_name))
         else:
             style_name = "default"
 
-        self.warn(f"App style is {app.style().objectName()}")
         set_style(app, self.font_size, style_name)
 
         self.make_process = MakeProcess(verbose=self.verbose)  # Manage Makefile operations to build images
@@ -339,7 +337,6 @@ def set_style(app, font_size, style_name):
                 """
     if style_name == "fusion":
         main_style += dark_style
-        print("dark style")
 
     app.setStyleSheet(main_style)
 

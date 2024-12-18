@@ -50,33 +50,38 @@ utilities, providing a seamless experience for creating relief maps.
 ### Mac / Anaconda
 
 ```shell
-conda install yq
-conda install gdal
-conda install make
+conda install yq gdal make
 ```
 
 ### Mac / Homebrew
  
 ```shell
-brew install yq
-brew install gdal 
-brew install make
+brew install yq gdal make
 ```
 
 ### Debian / Ubuntu 
  
 ```shell
-sudo apt-get install yq
-sudo apt-get install gdal-bin
+sudo apt-get install yq gdal-bin
 ```
 
 ## _Install ColorReliefEditor_
-   It is recommended that you set up a virtual Python environment for this.
+   It is recommended that you set up a virtual Python environment for this (not needed for Anaconda):
+   ```shell
+   python3 -m venv .venv
+   source .venv/bin/activate
+   ```
+
+   Install the app:
    ```shell
    pip install ColorReliefEditor
    ```
 
-## Usage - Create a Color Relief Image
+---
+
+## Usage 
+
+---
 
 1. **Launch ColorReliefEditor**
    - Start Terminal and type:
@@ -89,7 +94,11 @@ sudo apt-get install gdal-bin
 4. **In Hillshade and Color Tab** - edit Hillshade and Color settings and click _Preview_ to review
 5. **In Relief Tab**  - click _Create_ to create a full size merge of hillshade and color relief
 
+---
+
 ## License
+
+---
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 documentation files (the “Software”), to deal in the Software without restriction, including without limitation the
@@ -104,5 +113,11 @@ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEM
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
 OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+**Note: This uses PyQT with its license terms**
+
+---
+
 ## Support
+
+---
 To report an issue, please visit the [issue tracker](https://github.com/corb555/ColorReliefEditor/issues).

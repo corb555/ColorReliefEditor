@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ColorReliefEditor"
-version = "0.1.24"
+version = "0.1.25"
 description = "Creates hillshade images and color relief images from Digital Elevation Files using GDAL"
 authors = [{ name = "corb" }]
 readme = "docs/readme.md"
