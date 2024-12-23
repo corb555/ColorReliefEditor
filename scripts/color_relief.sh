@@ -33,6 +33,10 @@ ERROR_GDAL_CALC_FAILED=113
 ERROR_INVALID_PREVIEW_SHIFT=114
 ERROR_GDALBUILDVRT=115
 
+# Define color codes
+YELLOW="\033[33m"
+RESET="\033[0m"
+
 ## color_relief.sh
 ## =========================
 ## This shell script provides utilities for processing DEM files using GDAL tools.
@@ -46,6 +50,7 @@ ERROR_GDALBUILDVRT=115
 ##   -  --create_hillshade <region>: Produces a hillshade image from a DEM file with configurable parameters.
 ##   -  --merge_hillshade <region>: Combines color relief and hillshade images into a single relief image.
 ##   -  --preview_dem <region>: Extracts a small section from the merged DEM file for preview generation.
+##   -  --create_proxy region, layer, name : Creates a proxy file
 ##
 ## File Naming Standards:
 ## ----------------------
@@ -125,6 +130,10 @@ init() {
     quiet=$(optional_flag "$config" "QUIET")
   fi
 
+  if [ "$quiet" = "-v" ]; then
+    quiet=""
+  fi
+
   # Some GDAL tools use a long version of the quiet switch
   long_quiet=""
   if [ "$quiet" = "-q" ]; then
@@ -158,6 +167,10 @@ finished() {
   fi
 }
 
+echo_error() {
+  printf "${YELLOW}ERROR: %s${RESET}\n" "$1" >&2
+}
+
 
 ## Function: check_command():
 ##
@@ -169,7 +182,7 @@ finished() {
 ##
 check_command() {
   if ! command -v "$1" > /dev/null 2>&1; then
-    echo "Error: '$1' utility not found. ❌" >&2
+    echo_error "'$1' utility not found. ❌" >&2
     current_shell=$(ps -p $$ -o comm=)
     echo "The shell is: $current_shell" >&2
     exit $2
@@ -188,7 +201,6 @@ optional_flag() {
   if [ "$#" -ne 2 ]; then
     echo "Error: optional_flag: " >&2
     echo "Error: 2 parameters required, but $# provided: $*" >&2
-
     exit $ERROR_OPTIONAL_FLAG_ERROR
   fi
 
@@ -226,7 +238,7 @@ mandatory_flag() {
 
   # Check if flags are empty and output the error message
   if [ -z "$flags" ]; then
-    echo "Error: '$key' not found for layer '$layer' in config '$config' ❌" >&2
+    echo_error "'$key' not found for layer '$layer' in config '$config' ❌" >&2
     exit $ERROR_MANDATORY_FLAG_NOT_FOUND
   fi
 
@@ -269,7 +281,7 @@ get_flags() {
 ##
 verify_files() {
   for file in "$@"; do
-    [ ! -f "$file" ] && { echo "Error: File not found: $file ❌" >&2; exit $ERROR_FILE_NOT_FOUND; }
+    [ ! -f "$file" ] && { echo_error "File not found: $file ❌" >&2; exit $ERROR_FILE_NOT_FOUND; }
   done
   # Return success
   return 0
@@ -307,7 +319,7 @@ run_gdal_calc() {
 
   # Execute gdal_calc.py
   gdal_calc.py -A "$color_file" -B "$hillshade_file" --A_band="$band" --B_band=1 --calc="$calc_expression" $merge_flags $long_quiet --overwrite --outfile="$targ" || {
-    echo "Error: gdal_calc.py execution failed." >&2
+    echo_error "gdal_calc.py execution failed." >&2
     exit $ERROR_GDAL_CALC_FAILED
   }
 }
@@ -336,7 +348,7 @@ set_crs() {
   if [ -z "$warp_flags" ]; then
     echo "No CRS flags provided. Renaming $input_file to $targ" >&2
     if ! mv "$input_file" "$targ"; then
-      echo "Error: Renaming failed. ❌" >&2
+      echo_error "Renaming failed. ❌" >&2
       exit $ERROR_RENAMING_FAILED
     fi
   else
@@ -344,7 +356,7 @@ set_crs() {
     ls $input_file
     echo >&2
     if ! gdalwarp $warp_flags $quiet  "$input_file" "$targ"; then
-      echo "Error: gdalwarp failed. ❌" >&2
+      echo_error "gdalwarp failed. ❌" >&2
       exit $ERROR_GDALWARP_FAILED
     fi
   fi
@@ -380,7 +392,7 @@ create_preview_dem() {
   # Validate x_shift and y_shift are >= 0 and <= 1
   if [ "$(echo "$x_shift < 0 || $x_shift > 1" | bc)" -eq 1 ] || \
      [ "$(echo "$y_shift < 0 || $y_shift > 1" | bc)" -eq 1 ] || [ -z "$x_shift" ]; then
-    echo "ERROR: x_shift and y_shift must be >=0  and <= 1." >&2
+    echo_error "x_shift and y_shift must be >=0  and <= 1." >&2
     exit "$ERROR_INVALID_PREVIEW_SHIFT"
   fi
 
@@ -396,7 +408,7 @@ create_preview_dem() {
 
   # Validate preview size against image dimensions
   if [ "$width" -le "$preview_size" ] || [ "$height" -le "$preview_size" ]; then
-    echo "ERROR: Preview size exceeds image dimensions." >&2
+    echo_error "Preview size exceeds image dimensions." >&2
     exit "$ERROR_PREVIEW_SIZE"
   fi
 
@@ -436,8 +448,7 @@ init_dem() {
   # Check if flags are empty and output error message
   if [ -z "$file_list" ]; then
     echo >&2
-    echo "Error: No elevation files configured for layer '$layer' ❌" >&2
-    echo >&2
+    echo_error "No elevation files configured for layer '$layer' ❌" >&2
     exit $ERROR_MISSING_FILE_PATTERN
   fi
 
@@ -446,7 +457,7 @@ dem_folder=$(mandatory_flag "$config" "DEM_FOLDER")
 
 # Change to the dem_folder
 cd "$dem_folder" || {
-  echo "Error: Failed to change to directory $dem_folder" >&2
+  echo_error "Unable to change to directory $dem_folder" >&2
   exit 1
 }
 
@@ -459,7 +470,7 @@ rm -f "$vrt_temp"
 # Create DEM VRT
 echo gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list >&2
 if ! eval gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list; then
-  echo "gdalbuildvrt error ❌" >&2
+  echo_error "gdalbuildvrt failed ❌" >&2
   exit $ERROR_GDALBUILDVRT
 fi
 
@@ -471,7 +482,7 @@ fi
 
   # Change back to the original directory if needed
   cd "$original_dir" || {
-  echo "Error: Failed to change back to original directory $original_dir" >&2
+  echo_error "Failed to change back to original directory $original_dir" >&2
   exit 1
 }
 
@@ -517,7 +528,7 @@ create_color_relief() {
 
   # Execute the command
   if ! eval "$cmd"; then
-      echo "Error: gdaldem color-relief failed. ❌" >&2
+      echo_error "gdaldem color-relief failed. ❌" >&2
       exit $ERROR_GDAL_COLOR_RELIEF_FAILED
   fi
 
@@ -543,12 +554,12 @@ create_hillshade() {
   # Build the gdaldem hillshade command
   hillshade_flags=$(get_flags "$config" "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
   cmd="gdaldem hillshade $gdaldem_flags $hillshade_flags $quiet \"$dem_file\" \"$target\""
-  echo "$cmd"  >&2
+  echo "$cmd" >&2
   echo >&2
 
   # Execute the command
   if ! eval "$cmd"; then
-      echo "Error: gdaldem hillshade failed. ❌" >&2
+      echo_error "gdaldem hillshade failed. ❌" >&2
       exit $ERROR_GDAL_MERGE_FAILED
   fi
 
@@ -592,7 +603,7 @@ merge_hillshade() {
   # Wait for all gdal_calc bands to finish and check for errors
   for pid in $pids; do
     if ! wait "$pid"; then
-      echo "Error: run_gdal_calc failed for one or more bands. ❌" >&2
+      echo_error "run_gdal_calc failed for one or more bands. ❌" >&2
       exit $ERROR_GDAL_CALC_FAILED
     fi
   done
@@ -604,7 +615,7 @@ merge_hillshade() {
 
   # Execute the command
   if ! eval "$cmd"; then
-    echo "Error: gdal_merge.py failed. ❌" >&2
+    echo_error "gdal_merge.py failed. ❌" >&2
     exit $ERROR_GDAL_MERGE_FAILED
   fi
 
@@ -618,17 +629,16 @@ merge_hillshade() {
 }
 
 
-## --dem_trigger - create dem_trigger file if it doesnt exist
-##              $1 is region name $2 is layer name $3 preview
+## --create_trigger - create trigger file if it doesnt exist
+##              $1 is region name $2 is layer name $3 name
 ##
-dem_trigger(){
+create_trigger(){
   init "$@"
+  trigger_name=$3
 
-  dem_trigger="${region}_${layer}_DEM_trigger.cfg"
-
-  # If DEM trigger file doesn't exist, create it
-  if [ ! -f "$dem_trigger" ]; then
-    touch "$dem_trigger"
+  # If  trigger file doesn't exist, create it
+  if [ ! -f "$trigger_name" ]; then
+    touch "$trigger_name"
   fi
 }
 
@@ -669,8 +679,8 @@ case "$1" in
   --doc)
     command="doc"
     ;;
-  --dem_trigger)
-    command="dem_trigger"
+  --create_trigger)
+    command="create_trigger"
     ;;
   *)
     display_help

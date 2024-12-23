@@ -29,11 +29,12 @@
 #
 from pathlib import Path
 
+from PyQt6.QtWidgets import QVBoxLayout
+from YMLEditor.settings_widget import SettingsWidget
+
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
-from PyQt6.QtWidgets import QVBoxLayout
-from YMLEditor.settings_widget import SettingsWidget
 
 
 class HillshadePage(TabPage):
@@ -50,10 +51,9 @@ class HillshadePage(TabPage):
             main (MainClass): Reference to the main application class.
             name (str): The name of the page.
         """
-        # Set up display formats for the settings that this tab uses in basic and expert mode
+        # Set up display format for settings in basic mode and expert mode
         formats = {
             "expert": {
-                "NAMES.@LAYER": ("Layer", "read_only", None, 180),
                 "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
                                                                           'ZevenbergenThorne',
                                                     '-combined', '-multidirectional', " "], 180),
@@ -63,10 +63,11 @@ class HillshadePage(TabPage):
                 "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
                                                                           'ZevenbergenThorne',
                                                     '-combined', '-multidirectional', " "], 180),
-                "HILLSHADE2": ("Z Factor", "line_edit", None, 180),
+                "HILLSHADE2": ("Z Factor", "line_edit", r'^-z\s+\d+(\s+)?$', 180),
             }
         }
 
+        # Get basic or expert mode
         mode = main.app_config["MODE"]
 
         # Widget for editing config settings
@@ -75,16 +76,18 @@ class HillshadePage(TabPage):
         settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
         settings_layout.setSpacing(5)  # Internal padding between widgets
         self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
+        # todo self.settings_widget = SettingsWidget(main.proj_config, formats, mode,
+        #  verbose=main.verbose, error_style="Crimson")
+
         settings_layout.addWidget(self.settings_widget)
         settings_layout.addItem(expanding_vertical_spacer(1))
 
         super().__init__(
-            main, name, on_exit_callback=main.proj_config.save,
-            on_enter_callback=self.settings_widget.display
+            main, name, on_exit_callback=main.proj_config.save, on_enter_callback=self.display
         )
 
         # Widget for building and displaying a preview
-        button_flags = {"make"}
+        button_flags = ["make"]
         self.preview = PreviewWidget(
             main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags, )
 
@@ -100,7 +103,12 @@ class HillshadePage(TabPage):
         # Create page with widgets vertically on left and instructions on right
         self.create_page(
             widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch
-            )
+        )
+
+    def display(self):
+        self.settings_widget.display()
+        if self.preview:
+            self.preview.display()
 
     def load(self, project):
         """
@@ -114,4 +122,11 @@ class HillshadePage(TabPage):
 
         project_dir = Path(self.main.project.project_directory)
         self.preview.image_file = str(project_dir / self.preview.target)
+
+        # Update Hillshade proxy file if HILLSHADE changes. This forces Hillshade rebuild
+        self.main.proj_config.add_proxy(
+            self.main.project.get_proxy_path("hillshade"),
+            ["HILLSHADE1", "HILLSHADE2", "HILLSHADE3", "HILLSHADE4"]
+        )
+
         return True

@@ -30,30 +30,33 @@ from contextlib import contextmanager
 import os
 from pathlib import Path
 import platform
+import re
 import shutil
 import subprocess
 import sys
+import tempfile
 
-from ColorReliefEditor.tab_page import TabPage, create_hbox_layout, create_button, \
-    create_readonly_window
 from PyQt6.QtCore import Qt, QTimer
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QLabel, QSizePolicy, QMessageBox
 
+from ColorReliefEditor.make_handler import MakeHandler
+from ColorReliefEditor.tab_page import TabPage, create_hbox_layout, create_button, \
+    create_readonly_window
+
 
 class PreviewWidget(TabPage):
     """
-    A widget for creating and optionally displaying generated images.
+    A widget for creating and displaying images using Make
 
-    This widget supports two operational modes:
-    - **Preview Mode**: Generates smaller images for quick viewing.
-    - **Full Build Mode**: Produces full-sized images with additional options for viewing,
-      publishing, and cleaning temporary files.
+    This widget has two modes:
+    - **Preview Mode**: Generates small images for quick viewing.
+    - **Full Build Mode**: Produces full-sized images with features for publishing, cleaning
+    temporary files, and
+      launching an external viewer.
 
     Attributes:
         preview_mode (bool): Determines the operational mode (Preview or Full Build).
-        connected_to_make (bool): Indicates if the widget is connected to the make process.
-        button_flags (list): Specifies the set of buttons available for the mode.
         image_label (QLabel): Displays the generated image in preview mode.
         zoom_factor (float): The current zoom level for the image display.
         make_handler (MakeHandler): Manages the `make` process for image generation and maintenance.
@@ -61,28 +64,33 @@ class PreviewWidget(TabPage):
 
     def __init__(self, main, name, settings, preview_mode, on_save, button_flags):
         """
-        Initialize the widget and configure its components based on the operational mode.
+        Initialize
 
         Args:
-            main (object): Reference to the main application object.
+            main (object): the main application object.
             name (str): The name of this widget/tab.
             settings (object): Application settings object for configuration.
             preview_mode (bool): Whether the widget is in preview mode.
             on_save (callable): Callback function executed upon saving.
-            button_flags (list): Flags specifying which buttons to display.
+            button_flags (list): List of buttons with their attributes to display.
         """
-        super().__init__(main, name, on_exit_callback=on_save, on_enter_callback=settings.display)
+        self.image_file = None
+        self.image = None
+        self.image_layer = None
+        self.settings = settings
+        super().__init__(main, name, on_exit_callback=on_save, on_enter_callback=self.redisplay)
+
         # Button definitions
         self.button_definitions = [
-            {"flag": "make", "label": "Create", "callback": self.make_image, "focus": True},
-            {"flag": "view", "label": "View...", "callback": self.launch_viewer, "focus": False},
-            {"flag": "publish", "label": "Publish", "callback": self.publish, "focus": False}, {
-                "flag": "clean", "label": "Delete temp files", "callback": self.make_clean,
+            {"id": "make", "label": "Create", "callback": self.make_image, "focus": True},
+            {"id": "view", "label": "View...", "callback": self.launch_viewer, "focus": False},
+            {"id": "publish", "label": "Publish", "callback": self.publish, "focus": False}, {
+                "id": "clean", "label": "Delete temp files", "callback": self.make_clean,
                 "focus": False
             }, {
-                "flag": "cancel", "label": "Cancel", "callback": self.on_cancel_button,
-                "focus": False
+                "id": "cancel", "label": "Cancel", "callback": self.on_cancel_button, "focus": False
             }, ]
+
         self.preview_mode = preview_mode
         self.connected_to_make = False
         self.button_flags = button_flags
@@ -127,9 +135,16 @@ class PreviewWidget(TabPage):
         """
         Initialize UI components for the display
         """
-        self.standard_stretch = [1, 2, 8]
-        self.error_stretch = [1, 5, 5]
-        self.full_stretch = [1, 8, 0]
+        # Create window for process output
+        self.output_window = create_readonly_window()
+        self.output_window.setSizePolicy(
+            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        )
+
+        # Vertical size ratios of widgets:  button, output_window, image_label
+        preview_ratio = [1, 3, 15]
+        full_ratio = [1, 20, 0]
+
         if self.preview_mode:
             # Preview Build Mode - create widget to display a preview image
             self.image_label = QLabel(self)
@@ -144,7 +159,7 @@ class PreviewWidget(TabPage):
             self.make_button = create_button("Preview", self.make_image, True, self)
             button_layout = create_hbox_layout([self.make_button])
             height = self.output_min_height
-            stretch = self.standard_stretch
+            stretch = preview_ratio
         else:
             # Full Build Mode
             # Create the buttons in button_flags
@@ -152,37 +167,47 @@ class PreviewWidget(TabPage):
 
             # Create buttons that are in self.button_flags
             for defn in self.button_definitions:
-                if defn["flag"] in self.button_flags:
+                if defn["id"] in self.button_flags:
                     button = create_button(defn["label"], defn["callback"], defn["focus"], self)
                     buttons.append(button)
 
             button_layout = create_hbox_layout(buttons)
             height = self.output_max_height
-            stretch = self.full_stretch
+            stretch = full_ratio
 
-        # Create window for process output
-        self.output_window = create_readonly_window()
-        self.output_window.setSizePolicy(
-            QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
+        self.image = Image(
+            self.main, tab_name=self.tab_name, image_label=self.image_label,
+            preview_mode=self.preview_mode
         )
 
-        self.output_window.setMinimumSize(100, 250)
+        self.output_window.setMinimumSize(60, height)
 
         widgets = [button_layout, self.output_window, self.image_label]
         self.create_page(widgets, None, None, None, vertical=True, stretch=stretch)
 
+    def redisplay(self):
+        self.settings.display()
+
+        # If layer was changed, reload image for new layer
+        if self.image_layer != self.main.project.get_layer() and self.image:
+            self.image_layer = self.main.project.get_layer()
+            self.output_window.clear()
+            self.image.load_image(zoom=False)
+            self.image.zoom_image()
+
     def make_image(self):
-        self.on_save()
         self.set_buttons_ready(False)
-        layer = self.main.project.get_layer()
+        self.on_save()
+
+        self.image_layer = self.main.project.get_layer()
+
         self.image_file = self.make_handler.make_image(
-            self.tab_name.lower(), self.preview_mode, [layer]
+            self.image.get_image_base(), self.preview_mode, [self.image_layer]
         )
 
     def make_clean(self):
         self.set_buttons_ready(False)
-        layer = self.main.project.get_layer()
-        self.make_handler.make_clean([layer])
+        self.make_handler.make_clean([self.main.project.get_layer()])
 
     def on_make_done(self, name, exit_code):
         if name == self.tab_name:
@@ -194,20 +219,12 @@ class PreviewWidget(TabPage):
                     msg = "Done ✅"
                     self.output(msg)
 
-                # Success: Display image
+                # Display image
                 if self.image_label:
-                    self.use_error_layout(False)
-
                     # Load the image into the label
-                    success = self.load_image(self.image_file)
-                    if not success:
+                    image_loaded = self.image.load_image()
+                    if not image_loaded:
                         self.output(f"Error: cannot load {self.image_file} ❌")
-            else:
-                # Error: Display output window at full size
-                self.output(f"Error - exit={exit_code} ❌")
-
-                if self.output_window:
-                    self.use_error_layout(True)
 
     def publish(self):
         """
@@ -216,7 +233,13 @@ class PreviewWidget(TabPage):
         Raises:
             OSError: If there is an issue during the file copy operation.
         """
-        image_path = self.get_image_path()
+        if self.image is None:
+            QMessageBox.warning(
+                self.main, "Error", f"No Image available"
+            )
+            return
+
+        image_path = self.image.construct_image_path()
         dest = self.main.proj_config.get("PUBLISH") or ""
         if dest != "":
             destination_folder = Path(dest)  # Convert to Path object
@@ -232,7 +255,7 @@ class PreviewWidget(TabPage):
         # Check if the project is up to date and confirm action if needed
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
-            self.tab_name.lower(), self.preview_mode, layer
+            self.image.get_image_base(), self.preview_mode, layer
         )
         if self.cancel_for_out_of_date("Publish", target):
             return
@@ -243,20 +266,6 @@ class PreviewWidget(TabPage):
             QMessageBox.information(self.main, "Success", f"Image copied to {target_path}")
         except OSError as e:
             QMessageBox.warning(self.main, "Error", f"Error copying image: {str(e)}")
-
-    def use_error_layout(self, error):
-        """
-        Adjust image size and output size based on whether an error occurred
-        """
-        if self.preview_mode:
-            if error:
-                # Error -  expand output size
-                output_height = self.output_max_height
-            else:
-                # No error - expand image and shrink output
-                output_height = self.output_min_height
-
-            self.output_window.setFixedHeight(output_height)
 
     def on_cancel_button(self):
         """
@@ -277,6 +286,154 @@ class PreviewWidget(TabPage):
             if button:
                 button.setEnabled(state)
 
+    def output(self, message):
+        self.output_window.appendPlainText(message)
+
+    def cancel_for_out_of_date(self, action, target):
+        """
+        Displays a confirmation dialog if the project is out of date.
+
+        Args:
+            action (str): The name of the action (e.g., 'Publish', 'View') to display in the dialog.
+            target (str): The name of the target
+        Returns:
+            bool: True if out of date, and they cancel, False to proceed,
+        """
+        # Check if the project is up to date
+        if not self.make_handler.up_to_date(target):
+            # Prompt the user to confirm action even if not up to date
+            msg_box = QMessageBox(self)
+            msg_box.setWindowTitle("Out of Date")
+            msg_box.setText(f"Image is out of date, {action} anyway?")
+
+            # Add Action and Cancel buttons
+            msg_box.addButton(action, QMessageBox.ButtonRole.AcceptRole)
+            cancel_button = msg_box.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
+
+            # Execute the message box
+            msg_box.exec()
+
+            # Check which button was clicked and return True for cancel
+            if msg_box.clickedButton() == cancel_button:
+                return True
+        return False
+
+    def resizeEvent(self, event):
+        """
+        Resize the image when the window is resized
+        """
+        super().resizeEvent(event)
+        if self.image:
+            self.image.zoom_image()
+        self.display()
+
+    def launch_viewer(self):
+        """
+        Launch an external viewer for a very large image
+        Returns:
+
+        """
+        image_path = ""
+        if self.image:
+            image_path = self.image.construct_image_path()
+        if not os.path.exists(image_path):
+            QMessageBox.warning(self, "Error", f"File '{image_path}' does not exist.")
+            return
+
+        # Check if the project is up to date and confirm action if build needed
+        layer = self.main.project.get_layer()
+        target = self.main.project.get_target_image_name(
+            self.image.get_image_base(), self.preview_mode, layer
+        )
+        if self.cancel_for_out_of_date("View", target):
+            return
+
+        # Get user preferred viewer app from config
+        app = self.main.app_config["VIEWER"]
+
+        try:
+            # Attempt to launch the viewer application
+            app = self.launch_application(app, image_path)
+        except Exception as e:
+            self.output(f"Error launching {app}: {str(e)}")
+            return
+
+        self.output(f"Launching {app} ✅")
+
+    def launch_application(self, app, image_path):
+        """
+        Launch an application to open the given image file.
+
+        Args:
+            app (str): The application to use ('default' for system viewer).
+            image_path (str): Path to the image file.
+
+        Returns:
+            str: The name of the application chosen to launch.
+
+        Raises:
+            ValueError: If the operating system is unsupported or an invalid app is specified.
+            FileNotFoundError: If the specified application is not found.
+            RuntimeError: If the application fails to launch the file or the window cannot be
+            activated.
+        """
+        system = platform.system()
+
+        # Determine the default application for the OS
+        if app == "default":
+            if system == "Darwin":
+                app = "Preview"
+            elif system == "Linux":
+                app = "xdg-open"
+            elif system == "Windows":
+                app = "explorer"
+            else:
+                raise ValueError(f"Unsupported operating system: {system}")
+
+        try:
+            if system == "Darwin":  # macOS
+                subprocess.run(["open", "-a", app, image_path], check=True)
+            elif system == "Linux":
+                # Launch the app
+                subprocess.run([app, image_path], check=True)
+
+                # Attempt to bring the application window to the foreground
+                if app != "xdg-open":  # Skip window activation for xdg-open
+                    try:
+                        subprocess.run(
+                            ["xdotool", "search", "--onlyvisible", "--name", app, "windowactivate"],
+                            check=True, )
+                    except FileNotFoundError as e:
+                        raise RuntimeError(
+                            f"xdotool is not installed or failed to activate the window for '"
+                            f"{app}'."
+                        ) from e
+            elif system == "Windows":
+                subprocess.run([app, image_path], check=True)
+            else:
+                raise ValueError(f"Unsupported operating system: {system}")
+        except FileNotFoundError as e:
+            raise FileNotFoundError(
+                f"Application '{app}' not found. Ensure it is installed and accessible."
+            ) from e
+        except subprocess.CalledProcessError as e:
+            raise RuntimeError(
+                f"Failed to launch application '{app}' for file '{image_path}'.\n{str(e)}"
+            ) from e
+
+        return app
+
+
+class Image:
+    def __init__(self, main, tab_name, image_label, preview_mode):
+        self._pixmap = None
+        self.zoom_factor = None
+        self.main = main
+        self.tab_name = tab_name
+        self.image_label = image_label
+        self.preview_mode = preview_mode
+        self._image_file = None
+
     @property
     def image_file(self):
         """
@@ -294,123 +451,56 @@ class PreviewWidget(TabPage):
         """
         self._image_file = file_path
 
-    def output(self, message):
-        self.output_window.appendPlainText(message)
-
-    def launch_viewer(self):
-        """
-        Launch an external viewer for a very large image
-        Returns:
-
-        """
-        image_path = self.get_image_path()
-
-        # Check if the project is up to date and confirm action if build needed
+    def construct_image_path(self):
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
-            self.tab_name.lower(), self.preview_mode, layer
-        )
-        if self.cancel_for_out_of_date("View", target):
-            return
-
-        # Get user preferred viewer app from config
-        app = self.main.app_config["VIEWER"]
-        self.output(f"Launched {app} ✅")
-        system = platform.system()
-
-        # On Mac/Darwin use Preview as the default viewer
-        if system == "Darwin" and app == "default":
-            app = "Preview"
-
-        # On Linux, use xdg-open to bring up the default viewer
-        if system == "Linux" and app == "default":
-            # Linux: Use xdg-open to launch the default viewer
-            try:
-                subprocess.Popen(
-                    ["xdg-open", image_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
-                    )
-            except Exception as e:
-                self._handle_viewer_error(e, "xdg-open", image_path)
-
-            except subprocess.CalledProcessError as e:
-                success = False
-                error_message = e.stderr.decode("utf-8")
-                print(f"Error opening item with xdg-open: {error_message}")
-        else:
-            launch_app(app, image_path)
-
-    def _handle_viewer_error(self, error, app_name, file_path):
-        """
-        Handles errors when launching a viewer application.
-
-        Args:
-            error (Exception): Exception that occurred.
-            app_name (str): Name of the viewer application.
-            file_path (str): Path to the file attempted to open.
-
-        Returns:
-            None
-        """
-        error_message = f"Failed to launch '{app_name}' for file '{file_path}'.\nError: {str(error)}"
-        print(error_message)
-        QMessageBox.critical(self, "Viewer Error", error_message)
-
-    def cancel_for_out_of_date(self, action, target):
-        """
-        Displays a confirmation dialog if the project is out of date.
-
-        Args:
-            action (str): The name of the action (e.g., 'Publish', 'View') to display in the dialog.
-            target (str): The name of the target
-        Returns:
-            bool: True if out of date, and they cancel, False to proceed,
-        """
-        # Check if the project is up to date
-        if not self.make_handler.up_to_date(target):
-            # Prompt the user to confirm action even if not up to date
-            msg_box = QMessageBox(self)
-            msg_box.setWindowTitle("Confirmation")
-            msg_box.setText(f"Build is out of date, {action} anyway?")
-
-            # Add Action and Cancel buttons
-            msg_box.addButton(action, QMessageBox.ButtonRole.AcceptRole)
-            cancel_button = msg_box.addButton("Cancel", QMessageBox.ButtonRole.RejectRole)
-
-            # Execute the message box
-            msg_box.exec()
-
-            # Check which button was clicked and return True for cancel
-            if msg_box.clickedButton() == cancel_button:
-                return True
-        return False
-
-    def get_image_path(self):
-        layer = self.main.project.get_layer()
-        target = self.main.project.get_target_image_name(
-            self.tab_name.lower(), self.preview_mode, layer
+            self.get_image_base(), self.preview_mode, layer
         )
         return str(Path(self.main.project.project_directory) / target)
 
-    def load_image(self, file_path):
+    def get_image_base(self):
+        if self.tab_name.lower() == "create":
+            return "relief"
+        else:
+            return self.tab_name.lower()
+
+    def load_image(self, zoom=True):
         """
         Load and display an image from the given file path.
 
         Args:
-            file_path (str): Path to the image file.
+            zoom (bool): Whether the image should be zoomed.
         Returns:
-            True on success
+            True if image loaded
         """
+        if not self.image_label:
+            return
+
+        # self.image_layer = self.main.project.get_layer()
+        file_path = self.construct_image_path()
         if not file_path:
-            raise ValueError("Image file path is empty.")
-
-        self._pixmap = QPixmap(file_path)
-
-        if self._pixmap.width() == 0:
-            self.zoom_factor = 1
+            self.image_label.clear()  # Clear the image label
+            self.image_label.update()  # Update the label to reflect the clear state
             return False
 
-        # Use a single-shot timer to defer zoom until geometry is set
-        QTimer.singleShot(0, self.zoom_image)
+        # Load the image.  Filter stderr during load for spurious warnings on GeoTiff tags
+        with filter_stderr(r'Unknown field with tag \d+'):
+            self._pixmap = QPixmap(file_path)
+
+        if self._pixmap.width() == 0:
+            # Can't load image
+            self.image_label.clear()  # Clear the image label
+            self.image_label.update()  # Update the display
+            self.zoom_factor = 1
+            return False
+        if zoom:
+            # Use a single-shot timer to defer zoom until geometry is set
+            QTimer.singleShot(0, self.zoom_image)
+        else:
+            # todo self.use_error_layout(False)
+            self.image_label.setPixmap(self._pixmap)
+            self.image_label.update()
+
         return True
 
     def zoom_image(self):
@@ -440,155 +530,31 @@ class PreviewWidget(TabPage):
             int(self._pixmap.height() * self.zoom_factor), Qt.AspectRatioMode.KeepAspectRatio
         )
         self.image_label.setPixmap(scaled_pixmap)
-        self.display()
-
-    def resizeEvent(self, event):
-        """
-        This method is called whenever the window is resized.
-        """
-        super().resizeEvent(event)
-        self.zoom_image()
 
 
 @contextmanager
-def suppress_stderr():
+def filter_stderr(pattern):
     """
-    Context manager to suppress stderr output.
-    """
-    # Save original stderr
-    old_stderr = sys.stderr
-    stderr_fileno = sys.stderr.fileno()
-
-    # Open a null device (to discard output)
-    devnull = open(os.devnull, 'w')
-
-    # Redirect stderr to null device
-    os.dup2(devnull.fileno(), stderr_fileno)
-
-    try:
-        yield
-    finally:
-        # Restore original stderr
-        os.dup2(old_stderr.fileno(), stderr_fileno)
-        devnull.close()
-
-
-def launch_app(app_name, file_path, parent=None):
-    """
-    Launches the specified application with the  file and brings the app to the front.
+    Context manager to suppress specific warnings in stderr.
 
     Args:
-        app_name (str): The name of the application to launch.
-        file_path (str): The path to the file for the app
-        parent (QWidget, optional): The parent widget for the error message dialog.
-
-    Raises:
-        FileNotFoundError: If the file does not exist.
-        OSError: If the operating system is not supported.
+        pattern (str): Suppress messages containing this regular expression.
     """
-    if not os.path.exists(file_path):
-        QMessageBox.warning(parent, "Error", f"File '{file_path}' does not exist.")
-        return
+    # Save the original stderr file descriptor
+    original_stderr_fd = os.dup(sys.stderr.fileno())
 
-    system = platform.system()
-
-    try:
-        if system == "Linux":
-            subprocess.run([app_name, file_path], check=True)
-            subprocess.run(
-                ['xdotool', 'search', '--onlyvisible', '--name', app_name, 'windowactivate']
-            )
-        elif system == "Darwin":  # macOS
-            subprocess.run(["open", "-a", app_name, file_path], check=True)
-            subprocess.run(['osascript', '-e', f'tell application "{app_name}" to activate'])
-        elif system == "Windows":
-            subprocess.run([app_name, file_path], check=True)
-        else:
-            raise OSError(f"Unsupported operating system: {system}")
-
-    except FileNotFoundError:
-        QMessageBox.warning(parent, "Error", f"{app_name} not found.")
-    except subprocess.CalledProcessError as e:
-        QMessageBox.warning(parent, "Error", f"{app_name} not found. {e}")
-    except OSError as e:
-        QMessageBox.warning(parent, "Error", str(e))
-
-
-class MakeHandler:
-    """
-    Handles make process for generating, viewing, and publishing images.
-    """
-
-    def __init__(self, main, output_window, tab_name, multiprocess_flag=" -j "):
-        self.main = main
-        self.output_window = output_window
-        self.tab_name = tab_name
-        self.multiprocess_flag = multiprocess_flag
-        self.dry_run = False
-        self.make_process = main.make_process
-        self.make = self.main.make_process.make
-
-    def output(self, message):
-        self.output_window.appendPlainText(message)
-
-    def get_make_command(self, base, dry_run_flag=False):
-        region = self.main.project.region
-        layer = self.main.project.get_layer()
-
-        if not layer:
-            return f"{self.make} REGION={region} LAYER='' -f Makefile layer_not_set"
-
-        dry_run = " -n" if dry_run_flag else ""
-        self.dry_run = dry_run_flag
-
-        return (f"{self.make} {self.multiprocess_flag if not dry_run_flag else ''} REGION={region} "
-                f"LAYER={layer} -f Makefile {base} {dry_run}")
-
-    def make_image(self, base, preview_mode, layers):
-        for layer in layers:
-            target = self.main.project.get_target_image_name(base, preview_mode, layer)
-            command = self.get_make_command(target)
-            self.run_make(command)
-            return target
-
-    def make_clean(self, layers):
-        for layer in layers:
-            if layer and self.main.project.region:
-                command = (
-                    f"{self.make} REGION={self.main.project.region} LAYER={layer} -f Makefile "
-                    f"clean")
-                self.run_make(command)
-            else:
-                self.output("Error: layer name is empty.")
-
-    def run_make(self, command):
-        project_directory = self.main.project.project_directory
-        makefile_path = self.main.project.makefile_path
-        self.make_process.run_make(
-            makefile_path, project_directory, command, self.tab_name, self.output_window
-        )
-
-    def up_to_date(self, target):
-        """
-        Check if the project is up to date by running a dry-run of the make process.
-        Returns True if the project is up to date, False otherwise.
-        """
-        # Get the make command with the dry-run option
-        command = self.get_make_command(dry_run_flag=True, base=target)
-
-        project_directory = self.main.project.project_directory
-        makefile_path = self.main.project.makefile_path
-
-        # Run the make process with dry-run to check if anything would be built
-
-        self.make_process.run_make(
-            makefile_path, project_directory, command, self.tab_name, self.output_window
-        )
-
-        # If no build is required, return True (project is up to date), otherwise False
-        if self.make_process.build_required:
-            self.output("The image is out of date.  Click Create to build the image.")
-            return False
-        else:
-            self.output("Image is up to date. ✅")
-            return True
+    # Create a temporary file to capture stderr
+    with tempfile.TemporaryFile(mode='w+') as temp_stderr:
+        # Redirect stderr to the temporary file
+        os.dup2(temp_stderr.fileno(), sys.stderr.fileno())
+        try:
+            yield
+        finally:
+            # Flush and restore stderr
+            os.dup2(original_stderr_fd, sys.stderr.fileno())
+            os.close(original_stderr_fd)
+            # Process the temporary file for filtering
+            temp_stderr.seek(0)
+            for line in temp_stderr:
+                if not re.search(pattern, line):
+                    sys.stderr.write(line)

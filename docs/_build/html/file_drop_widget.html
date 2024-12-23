@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -101,14 +101,14 @@
            <div itemprop="articleBody">
              
   <section id="module-file_drop_widget">
-<span id="file-drop-widget-module"></span><h1>file_drop_widget module<a class="headerlink" href="#module-file_drop_widget" title="Link to this heading"></a></h1>
+<span id="file-drop-widget-module"></span><h1>file_drop_widget module<a class="headerlink" href="#module-file_drop_widget" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="file_drop_widget.FileDropWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">file_drop_widget.</span></span><span class="sig-name descname"><span class="pre">FileDropWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_style</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">file_drop_widget.</span></span><span class="sig-name descname"><span class="pre">FileDropWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_pattern</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">style</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">status_style</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="file_drop_widget.FileDropWidget.dragEnterEvent">
-<span class="sig-name descname"><span class="pre">dragEnterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDragEnterEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.dragEnterEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.dragEnterEvent" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dragEnterEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">QDragEnterEvent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.dragEnterEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.dragEnterEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Handle the drag event. Only accept it if the dragged item matches the regex pattern.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -119,25 +119,25 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="file_drop_widget.FileDropWidget.dropEvent">
-<span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.dropEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.dropEvent" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">dropEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.dropEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.dropEvent" title="Permalink to this definition"></a></dt>
 <dd><p>Triggered when one or more files are dropped onto the widget.
 Save each file to target and call callback.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="file_drop_widget.FileDropWidget.set_status">
-<span class="sig-name descname"><span class="pre">set_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.set_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.set_status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.set_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.set_status" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="file_drop_widget.FileDropWidget.target_path">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_path</span></span><a class="headerlink" href="#file_drop_widget.FileDropWidget.target_path" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_path</span></span><a class="headerlink" href="#file_drop_widget.FileDropWidget.target_path" title="Permalink to this definition"></a></dt>
 <dd><p>Get the target path.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="file_drop_widget.FileDropWidget.update_file">
-<span class="sig-name descname"><span class="pre">update_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.update_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.update_file" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/file_drop_widget.html#FileDropWidget.update_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#file_drop_widget.FileDropWidget.update_file" title="Permalink to this definition"></a></dt>
 <dd><p>Save the dropped file to the target path and call callback for app
 to handle the file</p>
 <dl class="field-list simple">

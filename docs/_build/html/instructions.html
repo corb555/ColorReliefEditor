@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,10 +96,10 @@
            <div itemprop="articleBody">
              
   <section id="module-instructions">
-<span id="instructions-module"></span><h1>instructions module<a class="headerlink" href="#module-instructions" title="Link to this heading"></a></h1>
+<span id="instructions-module"></span><h1>instructions module<a class="headerlink" href="#module-instructions" title="Permalink to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="instructions.filter_instructions">
-<span class="sig-prename descclassname"><span class="pre">instructions.</span></span><span class="sig-name descname"><span class="pre">filter_instructions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instructions.html#filter_instructions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instructions.filter_instructions" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">instructions.</span></span><span class="sig-name descname"><span class="pre">filter_instructions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">content</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_class</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instructions.html#filter_instructions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instructions.filter_instructions" title="Permalink to this definition"></a></dt>
 <dd><p>Toggle sections in HTML content by replacing class names to hide or show content.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -122,7 +122,7 @@ If False, shows the section by setting <cite>hide_class</cite> to <cite>show_cla
 
 <dl class="py function">
 <dt class="sig sig-object py" id="instructions.get_instructions">
-<span class="sig-prename descclassname"><span class="pre">instructions.</span></span><span class="sig-name descname"><span class="pre">get_instructions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class=&quot;expert-section&quot;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class=&quot;show-expert-section&quot;'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instructions.html#get_instructions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instructions.get_instructions" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">instructions.</span></span><span class="sig-name descname"><span class="pre">get_instructions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_inst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class=&quot;expert-section&quot;'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_class</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'class=&quot;show-expert-section&quot;'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instructions.html#get_instructions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instructions.get_instructions" title="Permalink to this definition"></a></dt>
 <dd><p>Retrieve the instructions and update based on the user’s mode (basic or expert).</p>
 <p>This function reads an HTML file with the specified <cite>basename</cite>
 and modifies the content to either hide or show the specified section. The HTML file is
@@ -153,7 +153,7 @@ mode, it replaces <cite>show-expert-section</cite> with <cite>expert-section</ci
 
 <dl class="py function">
 <dt class="sig sig-object py" id="instructions.load_text_resource">
-<span class="sig-prename descclassname"><span class="pre">instructions.</span></span><span class="sig-name descname"><span class="pre">load_text_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instructions.html#load_text_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instructions.load_text_resource" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">instructions.</span></span><span class="sig-name descname"><span class="pre">load_text_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/instructions.html#load_text_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#instructions.load_text_resource" title="Permalink to this definition"></a></dt>
 <dd><p>Load a text resource from the ‘resources’ module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

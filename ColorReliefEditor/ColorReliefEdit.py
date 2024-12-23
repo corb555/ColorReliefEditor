@@ -24,11 +24,14 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-import platform
 from importlib.metadata import version, PackageNotFoundError
+import platform
 import sys
 
-from ColorReliefEditor.app_settings_page import AppSettingsPage
+from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, \
+    QStyleFactory
+from YMLEditor.yaml_config import YamlConfig
+
 from ColorReliefEditor.color_page import ColorPage
 from ColorReliefEditor.elevation_page import ElevationPage
 from ColorReliefEditor.hillshade_page import HillshadePage
@@ -38,8 +41,7 @@ from ColorReliefEditor.project_config import ProjectConfig, app_files_path, \
     create_file_from_resource
 from ColorReliefEditor.project_page import ProjectPage
 from ColorReliefEditor.relief_page import ReliefPage
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, QStyleFactory
-from YMLEditor.yaml_config import YamlConfig
+from ColorReliefEditor.settings_page import AppSettingsPage
 
 
 class ColorReliefEdit(QMainWindow):
@@ -63,6 +65,7 @@ class ColorReliefEdit(QMainWindow):
     - verbose (int): The verbosity level. 0=quiet, 1=error, 2=info.
     **Methods**:
     """
+
     def __init__(self, app) -> None:
         super().__init__()
         self.verbose = 0
@@ -71,7 +74,9 @@ class ColorReliefEdit(QMainWindow):
         self.app_config: YamlConfig = YamlConfig()  # Manage general application settings
         app_path = self.load_app_config("relief_editor.cfg")
         self.verbose = int(self.app_config["VERBOSE"]) or 0
-        self.warn(f"App config file: {app_path}")   # Log path for config file
+        app_version = get_version("ColorReliefEditor")
+        self.warn(f"Version: {app_version}")
+        self.warn(f"App config file: {app_path}")  # Log path for config file
 
         # Set Application style
         self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
@@ -84,7 +89,9 @@ class ColorReliefEdit(QMainWindow):
 
         set_style(app, self.font_size, style_name)
 
-        self.make_process = MakeProcess(verbose=self.verbose)  # Manage Makefile operations to build images
+        self.make_process = MakeProcess(
+            verbose=self.verbose
+        )  # Manage Makefile operations to build images
 
         # Manage opening projects and keeping paths to key project files
         self.project: ProjectConfig = ProjectConfig(self, verbose=self.verbose)
@@ -99,20 +106,20 @@ class ColorReliefEdit(QMainWindow):
         if self.app_config["MODE"] == "basic":
             tab_classes = {
                 "Project": ProjectPage, "Elevation Files": ElevationPage,
-                "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
+                "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
             }
         else:
             if self.app_config["SHOW_TABS"] == "normal":
                 # Expert Mode with SHOW_TABS="normal"
                 tab_classes = {
                     "Project": ProjectPage, "Elevation Files": ElevationPage,
-                    "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
+                    "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
                 }
             else:
                 # Expert Mode with SHOW_TABS="extended" - Adds Misc and Settings Tab
                 tab_classes = {
                     "Project": ProjectPage, "Elevation Files": ElevationPage,
-                    "Hillshade": HillshadePage, "Color": ColorPage, "Relief": ReliefPage,
+                    "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
                     "Misc": MiscPage, "Settings": AppSettingsPage
                 }
 
@@ -224,7 +231,6 @@ class ColorReliefEdit(QMainWindow):
         self.tabs.widget(self.current_tab).on_tab_exit()
         super().closeEvent(event)
 
-
     def load_app_config(self, name):
         """
         Load the application settings. Create default configuration if it doesn't exist or fails to
@@ -266,20 +272,21 @@ class ColorReliefEdit(QMainWindow):
 
 
 def set_style(app, font_size, style_name):
-    # Set application Widget styles
+    # Set application Widget styles - lightslategray
     colors = {
-        "grid": "#323232", "highlight": "lightslategray", "error": "Crimson", "normal": "Silver",
+        "grid": "#323232", "highlight": "orange", "error": "Crimson", "normal": "Silver",
         "buttonBackground": "#323232", "background": "#4b4b4b", "readonly": "#3a3a3a",
         "lineedit": "#202020", "label": "white"
     }
 
-    dark_style =  f"""
+    dark_style = f"""
                 QWidget {{
                     background-color: #353535;
                     color: #FFFFFF;
                 }}
                 QTabBar::tab:selected {{
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, stop:1 #005F9E);
+                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, 
+                    stop:1 #005F9E);
                     border-radius: 4px;
                 }}
                 QTabBar::tab:disabled {{          /* Disabled tab */
@@ -287,7 +294,7 @@ def set_style(app, font_size, style_name):
                 }}
                 """
 
-    main_style =  f"""
+    main_style = f"""
                 QWidget {{
                     font-size: {font_size}px;  /* Default font size */
                 }}
@@ -299,7 +306,6 @@ def set_style(app, font_size, style_name):
                     border: none;
                 }}
                 QLineEdit:read-only {{
-                    color:{colors["highlight"]}; 
                     background-color:{colors["readonly"]};
                     outline:none; 
                     border:none;
@@ -340,6 +346,7 @@ def set_style(app, font_size, style_name):
 
     app.setStyleSheet(main_style)
 
+
 def get_version(package_name: str) -> str:
     """
     Retrieves the version of the installed package.
@@ -361,8 +368,6 @@ def main():
     Entry point for the application. Initializes the QApplication and shows the main window.
     """
     app = QApplication(sys.argv)
-    app_version = get_version("ColorReliefEditor")
-    print(f"Version: {app_version}")
     main_window = ColorReliefEdit(app)
     main_window.show()
     sys.exit(app.exec())

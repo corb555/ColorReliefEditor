@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -113,17 +113,17 @@
            <div itemprop="articleBody">
              
   <section id="module-tab_page">
-<span id="tab-page-module"></span><h1>tab_page module<a class="headerlink" href="#module-tab_page" title="Link to this heading"></a></h1>
+<span id="tab-page-module"></span><h1>tab_page module<a class="headerlink" href="#module-tab_page" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="tab_page.TabPage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">TabPage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_exit_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_enter_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">TabPage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_exit_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_enter_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
 <p>A base class for creating a tab page with a consistent layout of widgets, buttons,
 instructions, and title.
 Has optional callbacks for saving data on tab exit and updating the display.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tab_page.TabPage.tab_name">
-<span class="sig-name descname"><span class="pre">tab_name</span></span><a class="headerlink" href="#tab_page.TabPage.tab_name" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tab_name</span></span><a class="headerlink" href="#tab_page.TabPage.tab_name" title="Permalink to this definition"></a></dt>
 <dd><p>The name of the tab.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -134,7 +134,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tab_page.TabPage.on_exit_callback">
-<span class="sig-name descname"><span class="pre">on_exit_callback</span></span><a class="headerlink" href="#tab_page.TabPage.on_exit_callback" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">on_exit_callback</span></span><a class="headerlink" href="#tab_page.TabPage.on_exit_callback" title="Permalink to this definition"></a></dt>
 <dd><p>Callback for saving data when the tab is exited.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -145,7 +145,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="tab_page.TabPage.on_enter_callback">
-<span class="sig-name descname"><span class="pre">on_enter_callback</span></span><a class="headerlink" href="#tab_page.TabPage.on_enter_callback" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">on_enter_callback</span></span><a class="headerlink" href="#tab_page.TabPage.on_enter_callback" title="Permalink to this definition"></a></dt>
 <dd><p>Callback for updating the display when the tab</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -161,7 +161,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.create_page">
-<span class="sig-name descname"><span class="pre">create_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buttons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instructions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.create_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.create_page" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buttons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instructions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.create_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.create_page" title="Permalink to this definition"></a></dt>
 <dd><p>Set up a page layout with widgets, buttons, instructions, and a title.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -178,13 +178,13 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.display">
-<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.display" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.display" title="Permalink to this definition"></a></dt>
 <dd><p>Update the display using the callback if it exists.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.load" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.load" title="Permalink to this definition"></a></dt>
 <dd><p>Load project data and update display</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -195,25 +195,25 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.on_save">
-<span class="sig-name descname"><span class="pre">on_save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.on_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.on_save" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">on_save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.on_save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.on_save" title="Permalink to this definition"></a></dt>
 <dd><p>Save the data using the callback if it exists.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.on_tab_enter">
-<span class="sig-name descname"><span class="pre">on_tab_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.on_tab_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.on_tab_enter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">on_tab_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.on_tab_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.on_tab_enter" title="Permalink to this definition"></a></dt>
 <dd><p>Refresh the display when entering the tab.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.on_tab_exit">
-<span class="sig-name descname"><span class="pre">on_tab_exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.on_tab_exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.on_tab_exit" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">on_tab_exit</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.on_tab_exit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.on_tab_exit" title="Permalink to this definition"></a></dt>
 <dd><p>Save data when exiting the tab.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.show_list_dialog">
-<span class="sig-name descname"><span class="pre">show_list_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.show_list_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.show_list_dialog" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">show_list_dialog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">title</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">item_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.show_list_dialog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.show_list_dialog" title="Permalink to this definition"></a></dt>
 <dd><p>Show a dialog with a list of items to select from.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -235,7 +235,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.create_button">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">focus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_button" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_button</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">focus</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_button"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_button" title="Permalink to this definition"></a></dt>
 <dd><p>Create a QPushButton with an optional callback and focus setting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -257,7 +257,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.create_hbox_layout">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_hbox_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_hbox_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_hbox_layout" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_hbox_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_hbox_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_hbox_layout" title="Permalink to this definition"></a></dt>
 <dd><p>Create a QHBoxLayout with optional margins and spacing and add supplied widgets to it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -280,7 +280,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.create_readonly_window">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_readonly_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_readonly_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_readonly_window" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_readonly_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_readonly_window"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_readonly_window" title="Permalink to this definition"></a></dt>
 <dd><p>Create a read-only text window with a specified height and width, and set the background color.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -300,7 +300,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.create_table">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_titles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_table" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_table</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rows</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">columns</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">column_titles</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">editable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_table"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_table" title="Permalink to this definition"></a></dt>
 <dd><p>Create a QTableWidget.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -323,7 +323,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.create_vbox_layout">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_vbox_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_vbox_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_vbox_layout" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">create_vbox_layout</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_top</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_bottom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_left</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">margin_right</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spacing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#create_vbox_layout"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.create_vbox_layout" title="Permalink to this definition"></a></dt>
 <dd><p>Create a QVBoxLayout with optional margins and spacing and add supplied widgets to it.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -348,7 +348,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.expanding_horizontal_spacer">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">expanding_horizontal_spacer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#expanding_horizontal_spacer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.expanding_horizontal_spacer" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">expanding_horizontal_spacer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#expanding_horizontal_spacer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.expanding_horizontal_spacer" title="Permalink to this definition"></a></dt>
 <dd><p>Create a spacer that expands vertically to help align UI components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -365,7 +365,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="tab_page.expanding_vertical_spacer">
-<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">expanding_vertical_spacer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#expanding_vertical_spacer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.expanding_vertical_spacer" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">tab_page.</span></span><span class="sig-name descname"><span class="pre">expanding_vertical_spacer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#expanding_vertical_spacer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.expanding_vertical_spacer" title="Permalink to this definition"></a></dt>
 <dd><p>Create a spacer that expands vertically to help align UI components.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

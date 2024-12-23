@@ -45,14 +45,16 @@
     </style>
 </head>
 <body>
-<p>This tab builds full-size hillshade and color images and merges them into a relief image.</p>
+<p>This tab creates full-size hillshade and color images and merges them into a relief image.</p>
 
 <h3>Instructions</h3>
 <p><b>Create:</b> When you are satisfied with the previews in the Hillshade and Color tabs, click Create to generate the
     final full-size image for this layer.</p>
-<p><b>View:</b> Launches Viewer to display the full-size image.</p>
+<p><b>View:</b> Launches Viewer to display the full-size image. The default system viewer is the default but QGIS is
+    highly recommended instead. You can change this in the expert mode Settings tab</p>
 <p><b>Publish:</b> Clicking Publish will copy the image file for the current layer to the destination folder.</p>
-<p><b>Publish To:</b> The destination folder to copy the image to when Publish is clicked. Click on field and enter full path.</p>
+<p><b>Publish To:</b> The destination folder to copy the image to when Publish is clicked. Click on field and enter full
+    path.</p>
 <p><b>Delete Temp:</b> This will delete intermediate files for this layer. Use this when you are done with a project to
     free space.
     The intermediate files significantly speed up image creation.</p><br>
@@ -66,11 +68,9 @@
             composite multiply.
         </li>
         <li><b>Quiet Mode:</b></li>
-        <ul>
-            <li>-q will show minimal output.</li>
-            <li>"blank" show detailed progress</li>
-            <li>--version will show gdal version and stop</li>
-        </ul>
+        <li>-q will show minimal output.</li>
+        <li>-v show detailed progress</li>
+        <li>--version show detailed progress and gdal version</li>
     </ul>
     <br>
     <p>Use the Elevation Tab to switch the active layer</p>

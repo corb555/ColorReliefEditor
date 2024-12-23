@@ -29,23 +29,25 @@ import os
 from pathlib import Path
 
 from appdirs import user_config_dir
+from YMLEditor.data_manager import DataManager
+
 from ColorReliefEditor import resources
 from ColorReliefEditor.recent_files import RecentFiles
-from YMLEditor.data_manager import DataManager
 
 
 class ProjectConfig(DataManager):
     """
     Manage project config, including opening a project and storing paths to all project files
     """
+    layer_ids = ["A", "B", "C", "D", "E", "F", "G", "H", "I"]
 
     # Project file names are <region>_<suffix>
     file_suffix = {
         "color_ramp": "_color_ramp.txt", "config": "_relief.cfg", "dem": "_DEM_trigger.cfg",
-        "app_config": "relief_editor.cfg",
+        "app_config": "relief_editor.cfg", "hillshade": "_hillshade_trigger.cfg",
     }
 
-    def __init__(self, main, verbose=1):
+    def __init__(self, main, verbose=0):
         """
         Initialize
 
@@ -53,6 +55,7 @@ class ProjectConfig(DataManager):
             main (MainClass): Main application class.
         """
         super().__init__(verbose=verbose)
+        self.dem_directory = None
         self.main = main
         self._data = {}
         self.project_directory, self.color_file_path, self.makefile_path = None, None, None,
@@ -63,13 +66,9 @@ class ProjectConfig(DataManager):
     def _load_data(self, _):
         """ Update project data and statuses."""
         data = {
-            "STATUS": "Project Opened",
-            "PROJECT": self.region,
-            "FOLDER": self.project_directory,
-            "SETTINGS": self.main.proj_config.file_path,
-            "COLORFILE": self.color_file_path,
-            "MAKEFILE": self.makefile_path,
-            "SCRIPT": 'color_relief.sh',
+            "STATUS": "Project Opened", "PROJECT": self.region, "FOLDER": self.project_directory,
+            "SETTINGS": self.main.proj_config.file_path, "COLORFILE": self.color_file_path,
+            "MAKEFILE": self.makefile_path, "SCRIPT": 'color_relief.sh',
             "MAKE": self.main.make_process.make,
         }
         return data
@@ -164,6 +163,9 @@ class ProjectConfig(DataManager):
         # Get the name for the active layer id
         return self.main.proj_config[f"NAMES.{layer_id}"]
 
+    def layer_id_to_name(self, layer_id):
+        return self.main.proj_config[f"NAMES.{layer_id}"]
+
     def verify(self, file_keys, script_keys, folder_keys):
         """
         Verify the presence of required files and scripts and update status accordingly.
@@ -188,12 +190,30 @@ class ProjectConfig(DataManager):
 
         return not file_error
 
-    def get_proxy_path(self):
+    def get_proxy_path(self, proxy_id):
         """
-        Return path for Config file proxy
+        Return path for proxy file for this name.
+        Args:
+            proxy_id (str): Name of the type of proxy file.
+        Returns:
+            Path to the proxy file for this proxy type.
         """
-        layer = self.main.project.get_layer()
-        target = f"{self.main.project.region}_{layer}{ProjectConfig.file_suffix['dem']}"
+        # Lookup suffix for this file type
+        file_suffix = ProjectConfig.file_suffix[proxy_id]
+        target = f"{self.main.project.region}{file_suffix}"
+        return str(Path(self.main.project.project_directory) / target)
+
+    def get_proxy_layer_path(self, proxy_id, layer):
+        """
+        Return path for proxy file for this name with LAYER included
+        Args:
+            proxy_id (str): Name of the type of proxy file.
+            layer (str): The layer name
+        Returns:
+            Path to the proxy file for this proxy type.
+        """
+        file_suffix = ProjectConfig.file_suffix[proxy_id]
+        target = f"{self.main.project.region}_{layer}{file_suffix}"
         return str(Path(self.main.project.project_directory) / target)
 
     def create_new_project(self, directory):
@@ -221,7 +241,6 @@ class ProjectConfig(DataManager):
         config_file_path = os.path.join(
             directory, f"{region}{ProjectConfig.file_suffix['config']}"
         )
-        #dem_proxy_path = os.path.join(directory, f"{region}{ProjectConfig.file_suffix['dem']}")
         ramp_file_path = os.path.join(
             directory, f"{region}{ProjectConfig.file_suffix['color_ramp']}"
         )
@@ -248,9 +267,6 @@ class ProjectConfig(DataManager):
         create_file_from_resource(
             f"default{ProjectConfig.file_suffix['color_ramp']}", ramp_file_path
         )
-
-        # Create an empty DEM proxy file as a placeholder
-        #touch_file(dem_proxy_path)
 
         # Return True, None if no errors occurred during the process
         return True, None
@@ -370,7 +386,7 @@ def _read_resource(resource_name):
     except FileNotFoundError as e:
         raise FileNotFoundError(
             f"Resource '{resource_name}' not found. Ensure the resource is correctly packaged and "
-            f"accessible."
+            f"accessible. {e}"
         )
     except IOError as e:
         raise IOError(

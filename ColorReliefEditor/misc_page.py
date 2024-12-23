@@ -28,9 +28,10 @@
 #
 #
 
+from YMLEditor.settings_widget import SettingsWidget
+
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
-from YMLEditor.settings_widget import SettingsWidget
 
 
 class MiscPage(TabPage):
@@ -53,20 +54,17 @@ class MiscPage(TabPage):
                 "LABEL4": ("", "label", None, 400), "LABEL3": ("gdal_warp:   ", "label", None, 400),
                 "WARP1": ("CRS", "line_edit", r'^\s*-t_srs\s+\S+$', 200),
                 "WARP2": ("gdalwarp", "line_edit", r"(?:-(?:\w+(?:\s+\w+=[\w/]+)?)\s*)+", 500),
-                "WARP4": ("Performance", "line_edit", None, 500),
-                "WARP3": ("Resampling", "combo",
+                "WARP4": ("Performance", "line_edit", None, 500), "WARP3": ("Resampling", "combo",
                                                                             ["-r bilinear",
                                                                              '-r cubic',
                                                                              '-r cubicspline',
                                                                              '-r lanczos', " "],
                                                                             200),
-                "LABEL5": ("", "label", None, 400),
-                "LABEL2": ("gdaldem:   ", "label", None, 400),
+                "LABEL5": ("", "label", None, 400), "LABEL2": ("gdaldem:   ", "label", None, 400),
                 "EDGE": ("Edges", "combo", ["-compute_edges", " "], 180),
                 "OUTPUT_TYPE": ("Output Type", "line_edit", r'^\s*-of\s+\S+$', 200),
                 "COLOR1": ("Nearest Color", "line_edit", None, 200),
-                "LABEL6": ("", "label", None, 400),
-                "LABEL1": ("gdal_calc:   ", "label", None, 400),
+                "LABEL6": ("", "label", None, 400), "LABEL1": ("gdal_calc:   ", "label", None, 400),
                 "MERGE1": ("gdal_calc", "line_edit", r"^(--[a-zA-Z0-9]+(=["
                                                      r"a-zA-Z0-9]+)?)(\s+--["
                                                      r"a-zA-Z0-9]+(=["

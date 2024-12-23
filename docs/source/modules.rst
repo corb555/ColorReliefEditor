@@ -5,7 +5,7 @@ ColorReliefEditor
    :maxdepth: 4
 
    ColorReliefEdit
-   app_settings_page
+   settings_page
    color_config
    color_page
    elevation_page
@@ -13,6 +13,7 @@ ColorReliefEditor
    hillshade_page
    instructions
    make_process
+   make_handler
    misc_page
    preview_widget
    project_config

@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -45,7 +45,7 @@
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ColorReliefEditor</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
@@ -53,6 +53,7 @@
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
@@ -90,7 +91,7 @@
            <div itemprop="articleBody">
              
   <section id="colorreliefeditor">
-<h1>ColorReliefEditor<a class="headerlink" href="#colorreliefeditor" title="Link to this heading"></a></h1>
+<h1>ColorReliefEditor<a class="headerlink" href="#colorreliefeditor" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a><ul>
@@ -106,14 +107,12 @@
 <li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.warn"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.warn()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.set_style"><code class="docutils literal notranslate"><span class="pre">set_style()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html#app_settings_page.AppSettingsPage"><code class="docutils literal notranslate"><span class="pre">AppSettingsPage</span></code></a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="color_config.html">color_config module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html#color_config.ColorConfig"><code class="docutils literal notranslate"><span class="pre">ColorConfig</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.format_gdal_line"><code class="docutils literal notranslate"><span class="pre">ColorConfig.format_gdal_line()</span></code></a></li>
@@ -128,8 +127,9 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="color_page.html">color_page module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html#color_page.ColorPage"><code class="docutils literal notranslate"><span class="pre">ColorPage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.display"><code class="docutils literal notranslate"><span class="pre">ColorPage.display()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.import_color_file"><code class="docutils literal notranslate"><span class="pre">ColorPage.import_color_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.load"><code class="docutils literal notranslate"><span class="pre">ColorPage.load()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.update_color_file"><code class="docutils literal notranslate"><span class="pre">ColorPage.update_color_file()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html#color_page.ColorSampleWidget"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget</span></code></a><ul>
@@ -167,7 +167,6 @@
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">ElevationPage.on_tab_enter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.open_url"><code class="docutils literal notranslate"><span class="pre">ElevationPage.open_url()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.update_files_list"><code class="docutils literal notranslate"><span class="pre">ElevationPage.update_files_list()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.validate"><code class="docutils literal notranslate"><span class="pre">ElevationPage.validate()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -185,6 +184,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage"><code class="docutils literal notranslate"><span class="pre">HillshadePage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage.display"><code class="docutils literal notranslate"><span class="pre">HillshadePage.display()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage.load"><code class="docutils literal notranslate"><span class="pre">HillshadePage.load()</span></code></a></li>
 </ul>
 </li>
@@ -214,47 +214,52 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="make_handler.html">make_handler module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler"><code class="docutils literal notranslate"><span class="pre">MakeHandler</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler.get_make_command"><code class="docutils literal notranslate"><span class="pre">MakeHandler.get_make_command()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler.make_clean"><code class="docutils literal notranslate"><span class="pre">MakeHandler.make_clean()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler.make_image"><code class="docutils literal notranslate"><span class="pre">MakeHandler.make_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler.output"><code class="docutils literal notranslate"><span class="pre">MakeHandler.output()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler.run_make"><code class="docutils literal notranslate"><span class="pre">MakeHandler.run_make()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="make_handler.html#make_handler.MakeHandler.up_to_date"><code class="docutils literal notranslate"><span class="pre">MakeHandler.up_to_date()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="misc_page.html">misc_page module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html#misc_page.MiscPage"><code class="docutils literal notranslate"><span class="pre">MiscPage</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preview_widget.html">preview_widget module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler"><code class="docutils literal notranslate"><span class="pre">MakeHandler</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler.get_make_command"><code class="docutils literal notranslate"><span class="pre">MakeHandler.get_make_command()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler.make_clean"><code class="docutils literal notranslate"><span class="pre">MakeHandler.make_clean()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler.make_image"><code class="docutils literal notranslate"><span class="pre">MakeHandler.make_image()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler.output"><code class="docutils literal notranslate"><span class="pre">MakeHandler.output()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler.run_make"><code class="docutils literal notranslate"><span class="pre">MakeHandler.run_make()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.MakeHandler.up_to_date"><code class="docutils literal notranslate"><span class="pre">MakeHandler.up_to_date()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.Image.construct_image_path"><code class="docutils literal notranslate"><span class="pre">Image.construct_image_path()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.Image.get_image_base"><code class="docutils literal notranslate"><span class="pre">Image.get_image_base()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.Image.image_file"><code class="docutils literal notranslate"><span class="pre">Image.image_file</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.Image.load_image"><code class="docutils literal notranslate"><span class="pre">Image.load_image()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.Image.zoom_image"><code class="docutils literal notranslate"><span class="pre">Image.zoom_image()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget"><code class="docutils literal notranslate"><span class="pre">PreviewWidget</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.preview_mode"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.preview_mode</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.connected_to_make"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.connected_to_make</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.button_flags"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.button_flags</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.image_label"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.image_label</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.zoom_factor"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.zoom_factor</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.make_handler"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_handler</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.cancel_for_out_of_date"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.cancel_for_out_of_date()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.get_image_path"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.get_image_path()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.image_file"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.image_file</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.init_ui"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.init_ui()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.launch_application"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.launch_application()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.launch_viewer"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.launch_viewer()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.load_image"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.load_image()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.make_clean"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_clean()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.make_image"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_image()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.on_cancel_button"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.on_cancel_button()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.on_make_done"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.on_make_done()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.output"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.output()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.publish"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.publish()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.redisplay"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.redisplay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.resizeEvent"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.resizeEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.set_buttons_ready"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.set_buttons_ready()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.use_error_layout"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.use_error_layout()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.zoom_image"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.zoom_image()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.launch_app"><code class="docutils literal notranslate"><span class="pre">launch_app()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.suppress_stderr"><code class="docutils literal notranslate"><span class="pre">suppress_stderr()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.filter_stderr"><code class="docutils literal notranslate"><span class="pre">filter_stderr()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="project_config.html">project_config module</a><ul>
@@ -262,8 +267,11 @@
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.create_new_project"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.create_new_project()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.file_suffix"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.file_suffix</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.get_layer"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_layer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.get_proxy_layer_path"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_proxy_layer_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.get_proxy_path"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_proxy_path()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.get_target_image_name"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_target_image_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.layer_id_to_name"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.layer_id_to_name()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.layer_ids"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.layer_ids</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.load"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.load()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.print_project_files"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.print_project_files()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_config.html#project_config.ProjectConfig.set_status"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.set_status()</span></code></a></li>
@@ -302,7 +310,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="relief_page.html">relief_page module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="relief_page.html#relief_page.ReliefPage"><code class="docutils literal notranslate"><span class="pre">ReliefPage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="relief_page.html#relief_page.ReliefPage"><code class="docutils literal notranslate"><span class="pre">ReliefPage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="relief_page.html#relief_page.ReliefPage.display"><code class="docutils literal notranslate"><span class="pre">ReliefPage.display()</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tab_page.html">tab_page module</a><ul>

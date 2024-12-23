@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -60,8 +60,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.create_new_project"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.create_new_project()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.file_suffix"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.file_suffix</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_layer"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_layer()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_proxy_layer_path"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_proxy_layer_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_proxy_path"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_proxy_path()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.get_target_image_name"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.get_target_image_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.layer_id_to_name"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.layer_id_to_name()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.layer_ids"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.layer_ids</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.load"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.print_project_files"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.print_project_files()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_config.ProjectConfig.set_status"><code class="docutils literal notranslate"><span class="pre">ProjectConfig.set_status()</span></code></a></li>
@@ -109,15 +112,15 @@
            <div itemprop="articleBody">
              
   <section id="module-project_config">
-<span id="project-config-module"></span><h1>project_config module<a class="headerlink" href="#module-project_config" title="Link to this heading"></a></h1>
+<span id="project-config-module"></span><h1>project_config module<a class="headerlink" href="#module-project_config" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="project_config.ProjectConfig">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">ProjectConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">ProjectConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">DataManager</span></code></p>
 <p>Manage project config, including opening a project and storing paths to all project files</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.create_new_project">
-<span class="sig-name descname"><span class="pre">create_new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.create_new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.create_new_project" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_new_project</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">directory</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.create_new_project"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.create_new_project" title="Permalink to this definition"></a></dt>
 <dd><p>Creates a new project directory and initializes it with necessary files.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -143,24 +146,46 @@
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.file_suffix">
-<span class="sig-name descname"><span class="pre">file_suffix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'app_config':</span> <span class="pre">'relief_editor.cfg',</span> <span class="pre">'color_ramp':</span> <span class="pre">'_color_ramp.txt',</span> <span class="pre">'config':</span> <span class="pre">'_relief.cfg',</span> <span class="pre">'dem':</span> <span class="pre">'_DEM_trigger.cfg'}</span></em><a class="headerlink" href="#project_config.ProjectConfig.file_suffix" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">file_suffix</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'app_config':</span> <span class="pre">'relief_editor.cfg',</span> <span class="pre">'color_ramp':</span> <span class="pre">'_color_ramp.txt',</span> <span class="pre">'config':</span> <span class="pre">'_relief.cfg',</span> <span class="pre">'dem':</span> <span class="pre">'_DEM_trigger.cfg',</span> <span class="pre">'hillshade':</span> <span class="pre">'_hillshade_trigger.cfg'}</span></em><a class="headerlink" href="#project_config.ProjectConfig.file_suffix" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.get_layer">
-<span class="sig-name descname"><span class="pre">get_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_layer" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_layer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_layer" title="Permalink to this definition"></a></dt>
 <dd><p>Get the name for the currently selected layer.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.get_proxy_layer_path">
+<span class="sig-name descname"><span class="pre">get_proxy_layer_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_proxy_layer_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_proxy_layer_path" title="Permalink to this definition"></a></dt>
+<dd><p>Return path for proxy file for this name with LAYER included
+:param proxy_id: Name of the type of proxy file.
+:type proxy_id: str
+:param layer: The layer name
+:type layer: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the proxy file for this proxy type.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.get_proxy_path">
-<span class="sig-name descname"><span class="pre">get_proxy_path</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_proxy_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_proxy_path" title="Link to this definition"></a></dt>
-<dd><p>Return path for Config file proxy</p>
+<span class="sig-name descname"><span class="pre">get_proxy_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">proxy_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_proxy_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_proxy_path" title="Permalink to this definition"></a></dt>
+<dd><p>Return path for proxy file for this name.
+:param proxy_id: Name of the type of proxy file.
+:type proxy_id: str</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Path to the proxy file for this proxy type.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.get_target_image_name">
-<span class="sig-name descname"><span class="pre">get_target_image_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_target_image_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_target_image_name" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">get_target_image_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.get_target_image_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.get_target_image_name" title="Permalink to this definition"></a></dt>
 <dd><p>Get target image name - &lt;region&gt;_&lt;layer&gt;_&lt;basename&gt;_&lt;prv&gt;.tif
 :param basename: The basename for the target image (hillshade, relief, etc.)
 :param preview_mode: True if we are in preview mode.False for normal mode
@@ -174,8 +199,18 @@
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.layer_id_to_name">
+<span class="sig-name descname"><span class="pre">layer_id_to_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">layer_id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.layer_id_to_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.layer_id_to_name" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="project_config.ProjectConfig.layer_ids">
+<span class="sig-name descname"><span class="pre">layer_ids</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['A',</span> <span class="pre">'B',</span> <span class="pre">'C',</span> <span class="pre">'D',</span> <span class="pre">'E',</span> <span class="pre">'F',</span> <span class="pre">'G',</span> <span class="pre">'H',</span> <span class="pre">'I']</span></em><a class="headerlink" href="#project_config.ProjectConfig.layer_ids" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.load" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.load" title="Permalink to this definition"></a></dt>
 <dd><p>Load project data and update internal data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -189,19 +224,19 @@
 
 <dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.print_project_files">
-<span class="sig-name descname"><span class="pre">print_project_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.print_project_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.print_project_files" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">print_project_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.print_project_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.print_project_files" title="Permalink to this definition"></a></dt>
 <dd><p>Print project file paths.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.set_status">
-<span class="sig-name descname"><span class="pre">set_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.set_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.set_status" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">set_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.set_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.set_status" title="Permalink to this definition"></a></dt>
 <dd><p>Set Project error message</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="project_config.ProjectConfig.verify">
-<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.verify" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">verify</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">script_keys</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">folder_keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#ProjectConfig.verify"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.ProjectConfig.verify" title="Permalink to this definition"></a></dt>
 <dd><p>Verify the presence of required files and scripts and update status accordingly.
 :returns: True if the files are present, False otherwise.
 :rtype: bool</p>
@@ -211,13 +246,13 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="project_config.app_files_path">
-<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">app_files_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#app_files_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.app_files_path" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">app_files_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#app_files_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.app_files_path" title="Permalink to this definition"></a></dt>
 <dd><p>Determine the platform-appropriate path for app files.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="project_config.create_file_from_resource">
-<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">create_file_from_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#create_file_from_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.create_file_from_resource" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">create_file_from_resource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">resource_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">replace_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_text</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#create_file_from_resource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.create_file_from_resource" title="Permalink to this definition"></a></dt>
 <dd><p>Create a file from a resource template, optionally replacing text.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -240,7 +275,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="project_config.script_available">
-<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">script_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#script_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.script_available" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">script_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#script_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.script_available" title="Permalink to this definition"></a></dt>
 <dd><p>Check if a script file is available on the user’s PATH.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -257,7 +292,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="project_config.touch_file">
-<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">touch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#touch_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.touch_file" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">project_config.</span></span><span class="sig-name descname"><span class="pre">touch_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/project_config.html#touch_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#project_config.touch_file" title="Permalink to this definition"></a></dt>
 <dd><p>Set the file’s modification and access time to the current time.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>

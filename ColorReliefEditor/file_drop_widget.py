@@ -67,7 +67,7 @@ class FileDropWidget(QWidget):
 
         layout = QVBoxLayout()
         # Set margins (left, top, right, bottom) to 0 and spacing between widgets to 5
-        layout.setContentsMargins(20, 8, 20, 0)  # No external margins
+        layout.setContentsMargins(20, 8, 20, 0)  # external margins
         layout.setSpacing(5)  # Internal padding between widgets
         layout.addWidget(self.drop_label)
         layout.addWidget(self.status)
@@ -135,7 +135,6 @@ class FileDropWidget(QWidget):
             # Call the callback for app handling
             self.callback(source_file)
         except Exception as e:
-            print(f"Failed to save file {file_name}: {e}")
             self.status.setText(f"Error saving {file_name}. {e}")
 
     def set_status(self, text):

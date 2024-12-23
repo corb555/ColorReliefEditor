@@ -25,12 +25,13 @@
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 
+from PyQt6.QtWidgets import QStyleFactory
+from YMLEditor.settings_widget import SettingsWidget
+
 #
 #
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
-from PyQt6.QtWidgets import QStyleFactory
-from YMLEditor.settings_widget import SettingsWidget
 
 
 class AppSettingsPage(TabPage):
@@ -54,14 +55,12 @@ class AppSettingsPage(TabPage):
                 "DOWNLOAD.US": ("Download", "line_edit", r'^(https?):\/\/.*\..+', 400),
                 "DOWNLOAD.US_HIGH": ("US High Res", "line_edit", r'^(https?):\/\/.*\..+', 400),
                 "LABEL2": ("", "label", None, 400),
-                "VIEWER": ("Viewer", "combo", ['default', "QGIS", 'GIMP','Firefox',], 180),
+                "VIEWER": ("Viewer", "combo", ['default', "QGIS", 'GIMP', 'Firefox', ], 180),
                 "LABEL3": ("", "label", None, 400),
                 "MULTI": ("Multiprocessor", "combo", ["multi", 'single'], 180),
                 "VERBOSE": ("Verbose", "combo", ["0", '1', '2'], 180),
-                "STYLE": ("Style", "combo", styles, 400),
                 "FONT_SIZE": ("Font Size", "line_edit", r"^\d{1,2}$", 90),
-            },
-            "basic": {
+            }, "basic": {
             }
         }
 
@@ -69,7 +68,7 @@ class AppSettingsPage(TabPage):
         mode = main.app_config["MODE"]
         self.app_settings_widget = SettingsWidget(
             main.app_config, app_formats, mode, verbose=main.verbose
-            )
+        )
 
         # This tab uses app_config, not config for data
         super().__init__(

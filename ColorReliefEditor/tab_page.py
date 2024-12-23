@@ -122,7 +122,7 @@ class TabPage(QWidget):
 
     def create_page(
             self, widgets, buttons, instructions=None, title=None, vertical=True, stretch=None
-            ):
+    ):
         """
         Set up a page layout with widgets, buttons, instructions, and a title.
 
@@ -149,7 +149,7 @@ class TabPage(QWidget):
             widget_panel = QWidget(self)
             widget_panel_layout = QVBoxLayout(widget_panel) if vertical else QHBoxLayout(
                 widget_panel
-                )
+            )
             widget_panel.setLayout(widget_panel_layout)
             widget_panel_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
             widget_panel_layout.setSpacing(5)  # Internal padding between widgets
@@ -420,4 +420,3 @@ def _create_layout(
             )
 
     return layout
-

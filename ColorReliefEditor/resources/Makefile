@@ -36,7 +36,7 @@
 ## -
 ## color_relief.sh:
 ##  This is called with:  color_relief.sh --COMMAND $(REGION) $(LAYER) preview
-
+#
 # To generate documentation for this from project root:
 #      grep '^##' ColorReliefEditor/resources/Makefile | sed 's/^## //' > docs/source/makefile.rst
 
@@ -44,27 +44,27 @@ MAKEFLAGS += --warn-undefined-variables
 
 # Ensure REGION and LAYER are set, otherwise exit with an error
 ifndef REGION
-$(error REGION is not set.  Usage: make REGION='ICELAND' LAYER='A'  all)
+$(error ERROR: REGION is not set.  Usage: make REGION='ICELAND' LAYER='A'  all)
 endif
 
 ifndef LAYER
-$(error LAYER is not set.  Usage: make REGION='ICELAND' LAYER='A'  all)
+$(error ERROR: LAYER is not set.  Usage: make REGION='ICELAND' LAYER='A'  all)
 endif
 
-# CONFIG_FILE contains the switches for GDAL commands
+# CONFIG_FILE - contains the switches for GDAL commands
 CONFIG_FILE = $(REGION)_relief.cfg
 
-# Color ramp file for gdaldem color relief
+# Color ramp file - for gdaldem color relief
 COLOR_RAMP_FILE = $(REGION)_color_ramp.txt
 
 # Ensure necessary files exist
 $(CONFIG_FILE):
-	$(error Config file not found: "$@")
+	$(error ERROR: Config file not found: "$@")
 
 $(COLOR_RAMP_FILE):
-	$(error Color ramp file not found: "$@")
+	$(error ERROR: Color ramp file not found: "$@")
 
-# Standard file starts with $(REGION)_$(LAYER)
+# Standard image files start with $(REGION)_$(LAYER)
 PREFIX = $(REGION)_$(LAYER)
 
 # Targets
@@ -78,8 +78,10 @@ PRV_DEM_TIF = $(PREFIX)_DEM_prv.tif
 PRV_COLOR_TIF = $(PREFIX)_color_prv.tif
 PRV_HILLSHADE_TIF = $(PREFIX)_hillshade_prv.tif
 PRV_FINAL_TIF = $(PREFIX)_relief_prv.tif
-# Empty file used to trigger DEM rebuilds
+
+# Empty files used to trigger rebuilds
 DEM_TRIGGER = $(PREFIX)_DEM_trigger.cfg
+HILLSHADE_TRIGGER = $(REGION)_hillshade_trigger.cfg
 
 # Phony targets
 .PHONY: all clean distclean help
@@ -89,7 +91,11 @@ all: $(FINAL_TIF)
 
 # Create the DEM trigger if missing
 $(DEM_TRIGGER):
-	color_relief.sh --dem_trigger $(REGION) $(LAYER)
+	color_relief.sh --create_trigger $(REGION) $(LAYER) $(DEM_TRIGGER)
+
+# Create the Hillshade trigger if missing
+$(HILLSHADE_TRIGGER):
+	color_relief.sh --create_trigger $(REGION) $(LAYER) $(HILLSHADE_TRIGGER)
 
 # Create the DEM Digital Elevation Model file
 $(DEM_TIF): $(DEM_TRIGGER)
@@ -108,11 +114,11 @@ $(PRV_COLOR_TIF): $(PRV_DEM_TIF) $(COLOR_RAMP_FILE)
 	color_relief.sh --create_color_relief $(REGION) $(LAYER) preview
 
 # Create the hillshade image
-$(HILLSHADE_TIF): $(DEM_TIF)  $(CONFIG_FILE)
+$(HILLSHADE_TIF): $(DEM_TIF)  $(HILLSHADE_TRIGGER)
 	color_relief.sh --create_hillshade $(REGION) $(LAYER)
 
 # Create the hillshade preview image
-$(PRV_HILLSHADE_TIF):  $(PRV_DEM_TIF) $(CONFIG_FILE)
+$(PRV_HILLSHADE_TIF):  $(PRV_DEM_TIF) $(HILLSHADE_TRIGGER)
 	color_relief.sh --create_hillshade $(REGION) $(LAYER) preview
 
 # Create the merged image. Merge the color relief and hillshade
@@ -134,7 +140,7 @@ distclean: clean
 # Display help and other info.  Any comment with ## is displayed in help
 help:
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
-	@echo "Color Relief Makefile v0.2"
+	@echo "Color Relief Makefile v0.3"
 	@echo "Final target name: $(FINAL_TIF)"
 	@echo "Config file: $(CONFIG_FILE)"
 	@make --version

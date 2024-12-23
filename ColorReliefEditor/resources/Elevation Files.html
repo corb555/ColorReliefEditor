@@ -46,55 +46,56 @@
 </head>
 <body>
 
-<p>This tab manages settings for digital elevation files and configures the Coordinate Reference System (CRS).
-    It will combine multiple elevation files if more than one file is specified.</p>
-<p>The elevation file(s) are used for generating the Hillshade, Color image, and final Relief image.</p>
-
-<h3>Settings</h3>
-<ul>
-    <li><b>Elevation Files:</b> This will be set when you drag a file to the blue box, or you can manually
-        update it.
-    </li>
-    <li>You will need to run in expert mode to change the Coordinate Reference System from the default
-        of epsg:3857.
-    </li>
-</ul>
+<p>This tab manages settings for Digital Elevation Model (DEM) files and also manages Layers in expert mode. </p>
 
 <h3>Instructions</h3>
-<p><b>Download Buttons:</b> These buttons will bring you to various websites for downloading digital elevation files.
-</p>
-<p>Once the files are downloaded, drag and drop them into the blue box. This will copy them to the project folder
-    and automatically update the Elevation Files setting.</p>
-<h3>Download sites</h3>
-<p><b>Download (EarthExplorer)</b>, select Digital Elevation under the Data Sets tab and
-    choose <b>GMTED2010.</b> Use the gmted_mea file.</p>
+<ol>
+    <li>Click on a <i>Download Button</i> to bring you to a website for downloading Digital Elevation files. Follow the
+        instructions under <i>Download Buttons</i> for the specific site.
+    </li>
+    <li>Once the files are downloaded, drag and drop them into the blue box. This will copy them to the project folder
+        and automatically update the Elevation Files setting.
+    </li>
+</ol>
+<h3>Download Buttons</h3>
+<p><b>Download Elevation</b> (EarthExplorer) - Log in, select <i>Digital Elevation</i> under the <i>Data Sets</i> tab
+    and
+    choose <b>GMTED2010.</b> Use the <i>gmted_mea</i> file.</p>
 <ul>
+    <li><b>Resolutions</b></li>
     <li><b>30 arc sec</b> 1000m</li>
     <li><b>15 arc sec</b> 500m</li>
     <li><b>7.5 arc sec</b> 250m</li>
 </ul>
-<p><b>US High Res (NationalMap)</b>, select Elevation Products, GeoTIFF format</p>
+<p><b>Download US High Res</b> (US National Map) - Log in, select <i>Elevation Products</i>, GeoTIFF format</p>
 <ul>
+    <li><b>Resolutions</b></li>
     <li><b>1 arc sec</b> 30m</li>
     <li><b>1/3 arc sec</b> 10m</li>
     <li><b>1 meter</b> 1m</li>
 </ul>
-<p><b>Other</b></p>
+<p>There are numerous other Digital Elevation sources</p>
+
+<h3>Settings</h3>
 <ul>
-    <li>There are numerous other Digital Elevation sources</li>
+    <li><b>Elevation Files:</b> This will be set when you drag a file to the blue box.
+        The app will combine multiple elevation files if more than one file is specified.
+    </li>
+    <li>To change the Coordinate Reference System from the default of epsg:3857: switch to expert mode and use the Misc
+        tab.
+    </li>
 </ul>
 
 <!-- Expert Settings section is shown or hidden depending on the app mode -->
 <div class="expert-section">
     <p>Expert Settings</p>
-    <p>In expert mode, you can have multiple layers with different elevation files.</p>
-    <p>The layers all share the same rendering settings</p>
-    <p>The elevation files for a layer should be contiguous and must have the same resolution.
-        You can use separate layers for: <br>1) different resolutions (high vs low) or <br>2) for discontinuous
-        areas. Layer names cannot have a space in them.
-    </p>
+    <p>In expert mode, you can have multiple layers. A layer has a name and a set of elevation files.</p>
+    <p>The layers in a project all share the same project settings (color ramp, hillshade settings, etc.)</p>
+    <p>The elevation files for a layer should be contiguous and have the same resolution.</p>
+    <p>Running Preview or Create will only build the Active Layer</p>
+    <p>To create a new layer: just switch Active Layer and type a Layer Name, then add elevation files.</p>
     <ul>
-        <li><b>Active Layer:</b> Select the layer to use for preview and full build.</li>
+        <li><b>Active Layer:</b> Select the layer to use.</li>
         <li><b>Layer Name:</b> Specify the name for this layer.</li>
         <li><b>Source:</b> (Optional) Provide the source of the elevation files.</li>
         <li><b>License:</b> (Optional) Specify licensing information for the elevation files.</li>

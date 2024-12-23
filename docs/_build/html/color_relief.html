@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -96,11 +96,11 @@
            <div itemprop="articleBody">
              
   <section id="color-relief-sh">
-<h1>color_relief.sh<a class="headerlink" href="#color-relief-sh" title="Link to this heading"></a></h1>
+<h1>color_relief.sh<a class="headerlink" href="#color-relief-sh" title="Permalink to this heading"></a></h1>
 <p>This shell script provides utilities for processing DEM files using GDAL tools.
-All gdal flags are pulled from a YAML file.</p>
+All gdal switches are pulled from a YAML file.</p>
 <section id="main-functions">
-<h2>Main Functions:<a class="headerlink" href="#main-functions" title="Link to this heading"></a></h2>
+<h2>Main Functions:<a class="headerlink" href="#main-functions" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>The following options run GDAL utilities using parameters from a YAML config file:</p></li>
@@ -109,11 +109,12 @@ All gdal flags are pulled from a YAML file.</p>
 <li><p>–create_hillshade &lt;region&gt;: Produces a hillshade image from a DEM file with configurable parameters.</p></li>
 <li><p>–merge_hillshade &lt;region&gt;: Combines color relief and hillshade images into a single relief image.</p></li>
 <li><p>–preview_dem &lt;region&gt;: Extracts a small section from the merged DEM file for preview generation.</p></li>
+<li><p>–create_proxy region, layer, name : Creates a proxy file</p></li>
 </ul>
 </div></blockquote>
 </section>
 <section id="file-naming-standards">
-<h2>File Naming Standards:<a class="headerlink" href="#file-naming-standards" title="Link to this heading"></a></h2>
+<h2>File Naming Standards:<a class="headerlink" href="#file-naming-standards" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
 <li><p>ending defaults to “tif”</p></li>
@@ -127,7 +128,7 @@ All gdal flags are pulled from a YAML file.</p>
 </div></blockquote>
 </section>
 <section id="gdal-commands-run">
-<h2>GDAL commands run:<a class="headerlink" href="#gdal-commands-run" title="Link to this heading"></a></h2>
+<h2>GDAL commands run:<a class="headerlink" href="#gdal-commands-run" title="Permalink to this heading"></a></h2>
 <ul class="simple">
 <li><p>gdalbuildvrt  $vrt_flag “$target” $file_list</p></li>
 <li><p>gdalwarp $warp_flags “$input_file” “$target”</p></li>
@@ -243,7 +244,7 @@ Args:</p>
 $2: Target file path</p>
 </div></blockquote>
 <dl class="simple">
-<dt>YML Config Settings:</dt><dd><p>WARP1 through WARP4 - used for gdalwarp flags</p>
+<dt>YML Config Settings:</dt><dd><p>WARP1 through WARP4 - used for gdalwarp switches</p>
 </dd>
 </dl>
 <p>def  create_preview_dem
@@ -283,13 +284,13 @@ HILLSHADE1-5 gdaldem hillshade hillshade flags</p>
 COMPRESS - compression type.  –co=COMPRESS=ZSTD
 MERGE_CALC - calculation to run in gdal_calc.py</p>
 </dd>
-<dt>–dem_trigger - create dem_trigger file if it doesnt exist</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
+<dt>–create_trigger - create trigger file if it doesnt exist</dt><dd><p>$1 is region name $2 is layer name $3 name</p>
 </dd>
 </dl>
 <p>–doc - create rst documentation for this shell script</p>
 </section>
 <section id="yaml-file">
-<h2>YAML File:<a class="headerlink" href="#yaml-file" title="Link to this heading"></a></h2>
+<h2>YAML File:<a class="headerlink" href="#yaml-file" title="Permalink to this heading"></a></h2>
 <p>The YAML file contains the values for the GDAL switches.
 These are mapped to shell script variables as below:</p>
 <ul class="simple">

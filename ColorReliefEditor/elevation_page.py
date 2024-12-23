@@ -29,17 +29,16 @@
 #
 from functools import partial
 import os
-import platform
-import subprocess
+
+from PyQt6.QtCore import QUrl
+from PyQt6.QtGui import QDesktopServices
+from PyQt6.QtWidgets import QMessageBox
+from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.file_drop_widget import FileDropWidget
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.tab_page import TabPage, create_button, create_hbox_layout, \
     expanding_vertical_spacer
-from PyQt6.QtCore import QUrl
-from PyQt6.QtGui import QDesktopServices
-from PyQt6.QtWidgets import QMessageBox
-from YMLEditor.settings_widget import SettingsWidget
 
 
 class ElevationPage(TabPage):
@@ -66,30 +65,30 @@ class ElevationPage(TabPage):
             main (MainClass): Reference to the main application class.
             name (str): Name of the widget.
         """
+        font_style = f"font-size: {main.font_size + 3}px; "
 
         # Set up display format for the config settings that this tab uses
         formats = {
             "expert": {
-                "NAMES": ("Layers", "read_only", None, 680), "LAYER": (
-                    "Active Layer", "combo", ["A", 'B', 'C', "D", 'E', 'F', "G", 'H', 'I'], 204),
-                "NAMES.@LAYER": ("Layer Name", "line_edit", r'^\w+$', 200),
-                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$", 680),
-                "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
+                "NAMES": ("Layers", "read_only", None, 680, font_style),
+                "LAYER": ("Active Layer", "combo", main.project.layer_ids, 30),
+                "NAMES.@LAYER": ("Layer Name", "line_edit", r'^\w+$', 200), "FILES.@LAYER": (
+                    "Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$",
+                    680), "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
                 "LICENSES.@LAYER": ("License", "line_edit", None, 680),
                 "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
             }, "basic": {
-                "FILES.@LAYER": ("Elevation Files", "text_edit", r"^([a-zA-Z0-9._-]+\.tif)( [a-zA-Z0-9._-]+\.tif)*$", 680),
-                "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
+                "FILES.@LAYER": (
+                    "Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$",
+                    680), "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
             }
         }
         mode = main.app_config["MODE"]
 
         # Create widget to display and edit settings
         # Redisplay if LAYER changes
-
         self.settings_widget = SettingsWidget(
-            main.proj_config, formats, mode, ["LAYER"], verbose=main.verbose
-            )
+            main.proj_config, formats, mode, ["LAYER"], verbose=main.verbose, )
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save,
@@ -145,15 +144,27 @@ class ElevationPage(TabPage):
         """
         super().load(project)
 
-        # Get the paths for file drop target
+        # Get the path for file drop target
         self.drop_widget.target_path = self.main.project.dem_directory
 
-        # Update proxy file if WARP or FILES changes. This forces DEM rebuild
+        # Update DEM proxy file if WARP changes. This forces DEM rebuild (for any layer)
+        target_proxy = self.main.project.get_proxy_path("dem")
         self.main.proj_config.add_proxy(
-            self.main.project.get_proxy_path(), ["WARP1", "WARP2", "WARP3", "WARP4", "FILES"]
+            target_proxy, ["WARP1", "WARP2", "WARP3", "WARP4", "EDGE"]
         )
 
-        self.validate()
+        # Update DEM proxy file for each layer if FILE.x for that layer changes.
+        # This forces DEM rebuild just for that layer
+        for layer_id in self.main.project.layer_ids:
+            # Lookup layer name for this id
+            layer_name = self.main.project.layer_id_to_name(layer_id)
+            if layer_name:
+                target_proxy = self.main.project.get_proxy_layer_path("dem", layer_name)
+                self.main.proj_config.add_proxy(
+                    target_proxy, [f"FILES.{layer_id}"]
+                    )
+
+        # Update Display
         self.settings_widget.display()
         return True
 
@@ -161,7 +172,6 @@ class ElevationPage(TabPage):
         """
         Refreshes and validates settings when the tab is entered
         """
-        self.validate()
         self.drop_widget.set_status("")  # Clear drop status
         super().on_tab_enter()
 
@@ -189,16 +199,6 @@ class ElevationPage(TabPage):
         # Convert back into a string, set config entry, and redisplay
         self.main.proj_config.set("FILES.@LAYER", " ".join(sorted(unique_files)))
         self.settings_widget.display()
-
-    def validate(self):
-        """
-        todo: Validate the elevation files specified exist
-        Not implemented.
-        Validates the elevation files specified in the configuration to ensure they exist.
-
-        If any files are missing, updates the status label to notify the user.
-        """
-        pass
 
     def create_download_buttons(self, button_list):
         """
@@ -237,7 +237,6 @@ class ElevationPage(TabPage):
         Raises:
             Warning: Displays a warning message if the URL is empty, invalid, or cannot be opened.
         """
-
         # Fetch the URL from the app config using config_key
         url = self.main.app_config.get(config_key)
 
@@ -245,39 +244,25 @@ class ElevationPage(TabPage):
         if not url:
             QMessageBox.warning(
                 self.main, "File Not Found", f"Empty or invalid URL for: {config_key}"
-                )
-            print(f"Empty or invalid URL for: {config_key}")
+            )
             return
 
         # Trim whitespace from front and back of URL
         trimmed_url = url.strip()
 
         success = True
-        if platform.system() == "Linux":
-            try:
-                # Use xdg-open to open item
-                result = subprocess.run(
-                    ["xdg-open", trimmed_url], check=True, stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
-
-                success = result.returncode == 0
-
-            except subprocess.CalledProcessError as e:
-                success = False
-                error_message = e.stderr.decode("utf-8")
-                print(f"Error opening item with xdg-open: {error_message}")
-        else:
-            # Create a QUrl object
+        error_message = ""
+        try:
+            # Use QDesktopServices to open the URL
             qurl = QUrl(trimmed_url)
-
-            # Try to open the URL
-            try:
-                success = QDesktopServices.openUrl(qurl)
-            except Exception as e:
-                success = False
-                print(f"Error opening URL: {e}")
+            success = QDesktopServices.openUrl(qurl)
+            if not success:
+                error_message = "URL error"
+        except Exception as e:
+            success = False
+            error_message = str(e)
 
         if not success:
-            QMessageBox.warning(self.main, "URL Error", f"Error opening website: {trimmed_url}")
-            print(f"Error opening website: {trimmed_url}")
+            QMessageBox.warning(
+                self.main, "URL Error", f"Error opening website: {trimmed_url}. {error_message}"
+            )

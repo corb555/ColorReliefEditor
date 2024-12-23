@@ -24,11 +24,12 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
+from PyQt6.QtWidgets import QVBoxLayout
+from YMLEditor.settings_widget import SettingsWidget
+
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
-from PyQt6.QtWidgets import QVBoxLayout
-from YMLEditor.settings_widget import SettingsWidget
 
 
 class ReliefPage(TabPage):
@@ -40,22 +41,26 @@ class ReliefPage(TabPage):
 
     def __init__(self, main, name):
         """
-        Initialize the Relief widget with settings and UI components.
+        Initialize
 
         Args:
             main (MainClass): Reference to the main application class.
-            name (str): Name of the tab.
+            name (str): Name of the page.
         """
-        # Set up display format for the settings that this tab uses in basic mode and
-        # expert mode
+        # Set up display format for settings in basic mode and expert mode
+
+        # Make layer label large
+        label_style = f"font-size: {main.font_size + 5}px; "
+
         formats = {
             "expert": {
-                "NAMES.@LAYER": ("Layer", "read_only", None, 180),
-                "MERGE_CALC": ("Calc ", "text_edit", r"^--calc=[^ ]*(?=.*A)(?=.*B)[^ ]*$", 300),
-                "PUBLISH": ("Publish To", "text_edit", None, 300),
-                "QUIET": ("Quiet Mode", "combo", ["-q", " ", "--version"], 100),
+                "NAMES.@LAYER": ("", "read_only", None, 180, label_style),
+                "MERGE_CALC": ("Calc ", "text_edit", r"^--calc=[^ ]*(?=.*A)(?=.*B)[^ ]*$", 280),
+                "PUBLISH": ("Publish To", "text_edit", None, 280),
+                "QUIET": ("Quiet Mode", "combo", ["-q", "-v", "--version"], 100),
             }, "basic": {
-                "PUBLISH": ("Publish To", "text_edit", None, 300),
+                "NAMES.@LAYER": ("", "read_only", None, 180, label_style),
+                "PUBLISH": ("Publish To", "text_edit", None, 200),
             },
         }
 
@@ -67,26 +72,24 @@ class ReliefPage(TabPage):
         settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
         settings_layout.setSpacing(5)  # Internal padding between widgets
 
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode,
-                                              verbose=main.verbose, text_edit_height=60)
+        self.settings_widget = SettingsWidget(
+            main.proj_config, formats, mode, verbose=main.verbose, text_edit_height=60,
+            error_style="color: crimson;"
+        )
         settings_layout.addWidget(self.settings_widget)
         settings_layout.addItem(expanding_vertical_spacer(10))
 
         super().__init__(
-            main, name, on_exit_callback=main.proj_config.save,
-            on_enter_callback=self.settings_widget.display
+            main, name, on_exit_callback=main.proj_config.save, on_enter_callback=self.display
         )
 
         # Widget for building and managing images
-        button_flags = {"make", "view", "publish", "cancel", "clean"}
+        button_flags = ["make", "view", "publish", "cancel", "clean"]
         self.preview = PreviewWidget(
             main, self.tab_name, self.settings_widget, False, main.proj_config.save, button_flags
         )
-        preview_panel = QVBoxLayout()
-        preview_panel.setContentsMargins(0, 0, 0, 0)
-        preview_panel.addWidget(self.preview)
 
-        widgets = [settings_layout, preview_panel]
+        widgets = [settings_layout, self.preview]
         stretch = [1, 8]
 
         # Instructions
@@ -97,4 +100,9 @@ class ReliefPage(TabPage):
 
         self.create_page(
             widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch
-            )
+        )
+
+    def display(self):
+        self.settings_widget.display()
+        if self.preview:
+            self.preview.display()

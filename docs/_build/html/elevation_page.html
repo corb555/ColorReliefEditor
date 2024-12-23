@@ -1,7 +1,7 @@
 
 
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
+<html class="writer-html5" lang="en">
 <head>
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -13,9 +13,9 @@
   
       <script src="_static/jquery.js?v=5d32c60e"></script>
       <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=5929fcd5"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -59,7 +59,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">ElevationPage.on_tab_enter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.open_url"><code class="docutils literal notranslate"><span class="pre">ElevationPage.open_url()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.update_files_list"><code class="docutils literal notranslate"><span class="pre">ElevationPage.update_files_list()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.validate"><code class="docutils literal notranslate"><span class="pre">ElevationPage.validate()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -106,10 +105,10 @@
            <div itemprop="articleBody">
              
   <section id="module-elevation_page">
-<span id="elevation-page-module"></span><h1>elevation_page module<a class="headerlink" href="#module-elevation_page" title="Link to this heading"></a></h1>
+<span id="elevation-page-module"></span><h1>elevation_page module<a class="headerlink" href="#module-elevation_page" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">elevation_page.</span></span><span class="sig-name descname"><span class="pre">ElevationPage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">elevation_page.</span></span><span class="sig-name descname"><span class="pre">ElevationPage</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TabPage</span></code></p>
 <p>Widget for editing Digital Elevation Model (DEM) settings in the application.</p>
 <p>This tab allows users to define and configure DEM layers, set files for
@@ -117,7 +116,7 @@ each layer, and specify GDAL settings to merge DEM files. The tab also supports 
 for adding elevation files and provides buttons for DEM download sites.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.main">
-<span class="sig-name descname"><span class="pre">main</span></span><a class="headerlink" href="#elevation_page.ElevationPage.main" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">main</span></span><a class="headerlink" href="#elevation_page.ElevationPage.main" title="Permalink to this definition"></a></dt>
 <dd><p>Reference to the main application instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -128,7 +127,7 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.settings_widget">
-<span class="sig-name descname"><span class="pre">settings_widget</span></span><a class="headerlink" href="#elevation_page.ElevationPage.settings_widget" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">settings_widget</span></span><a class="headerlink" href="#elevation_page.ElevationPage.settings_widget" title="Permalink to this definition"></a></dt>
 <dd><p>Widget for displaying and editing DEM settings based on</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -144,7 +143,7 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.drop_widget">
-<span class="sig-name descname"><span class="pre">drop_widget</span></span><a class="headerlink" href="#elevation_page.ElevationPage.drop_widget" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">drop_widget</span></span><a class="headerlink" href="#elevation_page.ElevationPage.drop_widget" title="Permalink to this definition"></a></dt>
 <dd><p>Widget for handling file drops for files with .tif extensions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -155,7 +154,7 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.tab_name">
-<span class="sig-name descname"><span class="pre">tab_name</span></span><a class="headerlink" href="#elevation_page.ElevationPage.tab_name" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">tab_name</span></span><a class="headerlink" href="#elevation_page.ElevationPage.tab_name" title="Permalink to this definition"></a></dt>
 <dd><p>Name of the page.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
@@ -167,7 +166,7 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 <p><strong>Methods</strong>:</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.create_download_buttons">
-<span class="sig-name descname"><span class="pre">create_download_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.create_download_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.create_download_buttons" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">create_download_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.create_download_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.create_download_buttons" title="Permalink to this definition"></a></dt>
 <dd><p>Creates download buttons and connects each button to open its respective URL.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -186,7 +185,7 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.load">
-<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.load" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.load" title="Permalink to this definition"></a></dt>
 <dd><p>Load settings for the selected project and update the display.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -203,14 +202,14 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.on_tab_enter">
-<span class="sig-name descname"><span class="pre">on_tab_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.on_tab_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.on_tab_enter" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">on_tab_enter</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.on_tab_enter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.on_tab_enter" title="Permalink to this definition"></a></dt>
 <dd><p>Refreshes and validates settings when the tab is entered</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.open_url">
-<span class="sig-name descname"><span class="pre">open_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.open_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.open_url" title="Link to this definition"></a></dt>
-<dd><p>Opens the URL associated with the given configuration key in the default web browser.</p>
+<span class="sig-name descname"><span class="pre">open_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config_key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.open_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.open_url" title="Permalink to this definition"></a></dt>
+<dd><p>Opens the URL from the configuration file in the default web browser.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>config_key</strong> (<em>str</em>) – Key in the application configuration that maps to a URL.</p>
@@ -223,7 +222,7 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.update_files_list">
-<span class="sig-name descname"><span class="pre">update_files_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.update_files_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.update_files_list" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">update_files_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.update_files_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.update_files_list" title="Permalink to this definition"></a></dt>
 <dd><p>Adds a new DEM file to the list of elevation files maintaining unique
 entries.</p>
 <dl class="field-list simple">
@@ -231,15 +230,6 @@ entries.</p>
 <dd class="field-odd"><p><strong>source_file</strong> (<em>str</em>) – The file path of the  file to add.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="elevation_page.ElevationPage.validate">
-<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.validate" title="Link to this definition"></a></dt>
-<dd><p>todo: Validate the elevation files specified exist
-Not implemented.
-Validates the elevation files specified in the configuration to ensure they exist.</p>
-<p>If any files are missing, updates the status label to notify the user.</p>
 </dd></dl>
 
 </dd></dl>

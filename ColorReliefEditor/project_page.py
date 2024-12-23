@@ -28,12 +28,13 @@
 #
 #
 
+from PyQt6.QtWidgets import QMessageBox, QFileDialog
+from YMLEditor.settings_widget import SettingsWidget
+
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.project_config import ProjectConfig
 from ColorReliefEditor.tab_page import create_button, TabPage, expanding_vertical_spacer, \
     create_hbox_layout
-from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from YMLEditor.settings_widget import SettingsWidget
 
 
 class ProjectPage(TabPage):
@@ -110,8 +111,9 @@ class ProjectPage(TabPage):
 
         # Configure application settings display
         self.app_settings_widget = SettingsWidget(
-            main.app_config, self.app_formats, mode, verbose=main.verbose, trigger_keys=watch, callback=self.restart_dialog
-            )
+            main.app_config, self.app_formats, mode, verbose=main.verbose, trigger_keys=watch,
+            callback=self.restart_dialog
+        )
 
         # Setup buttons for project actions
         self.open_button = create_button("Open", self.open_project_dialog, False, self)
@@ -157,8 +159,7 @@ class ProjectPage(TabPage):
 
     def restart_dialog(self, key, value):
         QMessageBox.information(
-            self.main, "Note",
-            f"You will need to restart for these changes to take effect."
+            self.main, "Note", f"You will need to restart for these changes to take effect."
         )
 
     def set_project_status(self, success):

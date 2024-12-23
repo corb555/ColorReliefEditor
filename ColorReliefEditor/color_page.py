@@ -25,20 +25,22 @@
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 
+import os
 #
 #
 from pathlib import Path
-import os
+
+from PyQt6.QtCore import pyqtSignal, QTimer
+from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
+from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
+                             QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
+
 from ColorReliefEditor.color_config import ColorConfig
 from ColorReliefEditor.file_drop_widget import FileDropWidget
 from ColorReliefEditor.instructions import get_instructions
 from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, create_button, expanding_vertical_spacer, \
     create_hbox_layout, create_vbox_layout
-from PyQt6.QtCore import pyqtSignal, QTimer
-from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
-from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
-                             QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
 
 
 class ColorPage(TabPage):
@@ -65,8 +67,7 @@ class ColorPage(TabPage):
 
         # Set up callbacks for tab entry and exit
         super().__init__(
-            main, name, on_exit_callback=self.data_mgr.save,
-            on_enter_callback=self.color_settings_widget.display
+            main, name, on_exit_callback=self.data_mgr.save, on_enter_callback=self.display
         )
 
         # Styles for Drag and Drop box
@@ -95,7 +96,8 @@ class ColorPage(TabPage):
         else:
             widgets = [self.color_settings_widget]
 
-        # Create the main layout with color_sample and settings_widget plus drop target in expert mode
+        # Create the main layout with color_sample and settings_widget plus drop target in expert
+        # mode
         color_settings_pane = create_vbox_layout(widgets, 0, 0, 0, 0, 5)
 
         # Create a preview widget to run gdaldem color-relief and display result
@@ -124,6 +126,11 @@ class ColorPage(TabPage):
         self.color_settings_widget.colors_updated.connect(
             self.color_settings_widget.color_sample.update
         )
+
+    def display(self):
+        self.color_settings_widget.display()
+        if self.preview:
+            self.preview.display()
 
     def load(self, project):
         """
@@ -186,6 +193,8 @@ class ColorPage(TabPage):
                     # Rename dropped file to the target filename
                     os.rename(dropped_file, target_path)
                     self.drop_widget.set_status("Imported Color File")
+
+                    # Need to mark the file as new for dependency check
                     touch_file(target_path)
                     self.display()
             except OSError as e:
@@ -199,6 +208,7 @@ class ColorPage(TabPage):
         else:
             print("Operation canceled by the user.")
 
+
 def touch_file(filename):
     """
     Set the file's modification and access time to the current time.
@@ -207,8 +217,8 @@ def touch_file(filename):
         filename (str): Path to the file.
     """
     with open(filename, 'a'):
-        print(f"touch {filename}")
         os.utime(filename, None)
+
 
 def scrollbar_width():
     """

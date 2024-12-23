@@ -29,9 +29,18 @@
 #
 import os
 import platform
+import re
+import shutil
 
 from PyQt6.QtCore import QObject, pyqtSignal, QProcess
-from PyQt6.QtGui import QTextCursor
+from PyQt6.QtGui import QTextCursor, QTextCharFormat, QColor
+
+# ANSI color mapping
+ANSI_COLOR_MAP = {
+    '30': 'black', '31': 'red', '32': 'green', '33': 'yellow', '34': 'blue', '35': 'magenta',
+    '36': 'cyan', '37': 'white',
+}
+ANSI_ESCAPE = re.compile(r'\x1b\[([0-9;]*)m')
 
 
 class MakeProcess(QObject):
@@ -81,13 +90,13 @@ class MakeProcess(QObject):
 
     def run_make(self, makefile_path, project_directory, command, job_name, output_window=None):
         """
-        Execute the given Makefile command.
+        Execute the given command.
         Runs synchronously if '-n' is in the command (fast dry-run),
         otherwise runs the process asynchronously and emits the `make_finished` signal
 
         Args:
             makefile_path (str): The path to the Makefile file.
-            command (str): The make command to execute.
+            command (str): The command to execute.
             job_name (str): The name of the job for tracking purposes.
             output_window (QPlainTextEdit, optional): The window to display process output.
             project_directory (str): The path to the project directory.
@@ -100,31 +109,29 @@ class MakeProcess(QObject):
         self.job_name = job_name
         self.output(f"{command}\n")
 
+        # Validate command
+        if shutil.which(command.split()[0]) is None:
+            return self.return_error(102, f"ERROR: Command not found: {command.split()[0]}")
+
         if not makefile_path or not os.path.isfile(makefile_path):
-            self.return_error(103, f"Error: Makefile not found at: {makefile_path} ")
+            self.return_error(103, f"ERROR: Makefile not found at: {makefile_path} ")
 
         # chdir to the project directory
         try:
             os.chdir(project_directory)
         except OSError as e:
             self.return_error(
-                104, f"Error: Unable to change directory to: {project_directory} {e} "
+                104, f"ERROR: Unable to change directory to: {project_directory} {e} "
             )
 
         # Start the make process
         self.build_required = False
 
-        # todo - can startCommand return an error?
-        # self.process.startCommand(command)
-
         try:
             self.process.startCommand(command)
         except Exception as e:
-            self.warn(f"Error: Unable to run Makefile command.\n{e}")
-            return self.return_error(105, f"Error: Unable to start process. {e}")
-
-        # Log the make command being run
-        self.warn(command)
+            self.warn(f"\nERROR: Unable to run Makefile command.\n{e}")
+            return self.return_error(105, f"ERROR: Unable to start process. {e}")
 
         # Check if this is a dry-run command
         if command.strip().endswith("-n"):
@@ -134,6 +141,10 @@ class MakeProcess(QObject):
             self.process.waitForFinished()
         else:
             # Run asynchronously and handle with signal
+            # Monitor if the process fails to start
+            self.process.waitForStarted()
+            if self.process.state() != QProcess.ProcessState.Running:
+                self.return_error(105, f"\nERROR: Unable to run {command}")
             self.dry_run = False
 
     def _on_process_finished(self, exit_code):
@@ -146,7 +157,7 @@ class MakeProcess(QObject):
         self.make_finished.emit(self.job_name, exit_code)
 
     def return_error(self, error, message):
-        self.output(message)
+        self.output(f"\033[33m{message}\x1b[0m")
         self.make_finished.emit(self.job_name, error)
         return error
 
@@ -165,7 +176,9 @@ class MakeProcess(QObject):
             text (str): The text to display in the output window.
         """
         if self._output_window:
-            self._output_window.appendPlainText(text)
+            self._output_window.moveCursor(QTextCursor.MoveOperation.End)
+            self._append_ansi_text(text)
+            self._output_window.moveCursor(QTextCursor.MoveOperation.End)
 
     def cancel(self):
         """
@@ -182,7 +195,7 @@ class MakeProcess(QObject):
 
         if self._output_window:
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
-            self._output_window.insertPlainText(output)
+            self._append_ansi_text(output)
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
 
         # During dry run check if output contains ".sh" (indicating work to be done)
@@ -196,13 +209,53 @@ class MakeProcess(QObject):
         """
         self.build_required = True
         output = self.process.readAllStandardError().data().decode()
-        self.output(output)
+
+        if self._output_window:
+            self._output_window.moveCursor(QTextCursor.MoveOperation.End)
+            if "ERR" in output or "err" in output:
+                self._append_ansi_text(f"\033[33m{output}\x1b[0m")
+            else:
+                self._append_ansi_text(output)
+            self._output_window.moveCursor(QTextCursor.MoveOperation.End)
+
+    def _append_ansi_text(self, text):
+        """
+        Parse ANSI escape sequences and append styled text to the output window.
+
+        Args:
+            text (str): The text containing ANSI escape sequences.
+        """
+        cursor = self._output_window.textCursor()
+        cursor.movePosition(QTextCursor.MoveOperation.End)
+
+        default_format = QTextCharFormat()
+        current_format = QTextCharFormat()
+        current_format.setForeground(QColor('white'))  # Default color
+
+        pos = 0
+        for match in ANSI_ESCAPE.finditer(text):
+            start, end = match.span()
+
+            # Insert the text up to the ANSI escape sequence
+            cursor.insertText(text[pos:start], current_format)
+            pos = end
+
+            # Update the current format based on ANSI codes
+            codes = match.group(1).split(';')
+            if '0' in codes:  # Reset to default
+                current_format = QTextCharFormat(default_format)
+            for code in codes:
+                if code in ANSI_COLOR_MAP:
+                    color = ANSI_COLOR_MAP[code]
+                    current_format.setForeground(QColor(color))
+
+        # Insert the remaining text
+        cursor.insertText(text[pos:], current_format)
 
     def warn(self, message):
         if self.verbose > 0:
             print(message)
 
-    def  info(self, message):
+    def info(self, message):
         if self.verbose > 1:
             print(message)
-
