@@ -29,15 +29,15 @@ utilities, providing a seamless experience for creating relief maps.
 ### **Final Relief Image Generation**
 - **Blending:** Combines hillshade and color relief with composite multiply for smooth results.
 - **Optimized Processing:**
-  - Only rebuilds components when configurations change.
+  - Only rebuilds components when their configuration changes.
   - Supports multi-core processing for faster performance.
 - **External Tools:** Links to external viewers like QGIS or GIMP for post-processing.
-- **Convenient Workflow:** Copy the final image directly to a map server.
+- **Convenient Workflow:** Copy the final image directly to a map folder.
 
 ### **Elevation File Management**
 - **Drag-and-Drop:** Easily upload elevation files via the Elevation Tab.
 - **Coordinate Reference System (CRS):** Optionally set the CRS for your files.
-- **Metadata:** Save source URLs and license information for all elevation files.
+- **Sources:** Save source URLs and license information for elevation files.
 
 ---
 
@@ -46,6 +46,7 @@ utilities, providing a seamless experience for creating relief maps.
 ---
 
 ## _Install Dependencies_
+Launch Terminal
 
 ### Mac / Anaconda
 
@@ -66,6 +67,8 @@ sudo apt-get install yq gdal-bin
 ```
 
 ## _Install ColorReliefEditor_
+Launch Terminal
+
    It is recommended that you set up a virtual Python environment for this (not needed for Anaconda):
    ```shell
    python3 -m venv .venv

@@ -59,8 +59,6 @@ class ReliefPage(TabPage):
                 "PUBLISH": ("Publish To", "text_edit", None, 280),
                 "QUIET": ("Quiet Mode", "combo", ["-q", "-v", "--version"], 100),
             }, "basic": {
-                "NAMES.@LAYER": ("", "read_only", None, 180, label_style),
-                "PUBLISH": ("Publish To", "text_edit", None, 200),
             },
         }
 
@@ -84,7 +82,10 @@ class ReliefPage(TabPage):
         )
 
         # Widget for building and managing images
-        button_flags = ["make", "view", "publish", "cancel", "clean"]
+        if mode == "expert":
+            button_flags = ["make", "view", "publish", "cancel", "clean"]
+        else:
+            button_flags = ["make", "view"]
         self.preview = PreviewWidget(
             main, self.tab_name, self.settings_widget, False, main.proj_config.save, button_flags
         )

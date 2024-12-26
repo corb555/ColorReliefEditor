@@ -63,7 +63,7 @@ class ColorPage(TabPage):
         self.data_mgr = ColorConfig()
 
         # Create color settings widget to edit the color table settings
-        self.color_settings_widget = ColorSettingsWidget(self.data_mgr)
+        self.color_settings_widget = ColorSettingsWidget(self.data_mgr, main.app_config["MODE"])
 
         # Set up callbacks for tab entry and exit
         super().__init__(
@@ -237,7 +237,7 @@ class ColorSettingsWidget(QWidget):
     """
     colors_updated = pyqtSignal()
 
-    def __init__(self, data_mgr):
+    def __init__(self, data_mgr, mode):
         """
         Initialize
 
@@ -256,12 +256,12 @@ class ColorSettingsWidget(QWidget):
         self.insert_button, self.delete_button, self.rescale_button, self.layout = (
             None, None, None, None)
         self.data_mgr = data_mgr
-        self.init_ui()
+        self.init_ui(mode)
 
     def save(self):
         self.data_mgr.save()
 
-    def init_ui(self):
+    def init_ui(self, mode):
         """
         Create the color table and add row manipulation buttons.
         """
@@ -304,8 +304,15 @@ class ColorSettingsWidget(QWidget):
         self.insert_button = create_button("Insert", self.insert_row, False, self)
         self.delete_button = create_button("Delete", self.delete_row, False, self)
         self.undo_button = create_button("Undo", self.undo, False, self)
-        self.rescale_button = create_button("Rescale", self.rescale, False, self)
-        buttons = [self.insert_button, self.delete_button, self.undo_button, self.rescale_button]
+
+        if mode == "basic":
+            # No rescale button
+            buttons = [self.insert_button, self.delete_button, self.undo_button]
+        else:
+            self.rescale_button = create_button("Rescale", self.rescale, False, self)
+            buttons = [self.insert_button, self.delete_button, self.undo_button,
+                       self.rescale_button]
+
         top_button_panel = create_hbox_layout(buttons, 0, 0, 0, 0)
 
         # Edit panel (horizontal) - Expander, Color_Sample, Color_Table

@@ -45,42 +45,48 @@
     </style>
 </head>
 <body>
-<p>This tab creates and opens projects.</p>
-<h3>Create a New Project</h3>
-<p>To start a new project, click <b>New</b>. A dialog will appear to create and then open the project folder
-    location. A sample color ramp and settings file will be generated within this folder.</p>
+<p>This tab creates and opens Color Relief projects. A project stores all the hillshade and color settings needed to create a relief image</p>
+<h3>Create a Project</h3>
+<ol>
+<li>Click <i>New</i>. A dialog will appear to create and then open the project folder. A sample color ramp and
+    settings file will be copied to this folder.</li>
+</ol>
+<h3>Create an image</h3>
+<p>Follow these steps to generate your relief image:</p>
+            <ol>
+                <li>Select the <strong>Elevation</strong> tab to download and configure Digital Elevation files.</li>
+                <li>Adjust and preview hillshade and color settings in the <strong>Hillshade</strong> and <strong>Color</strong> tabs.</li>
+                <li>Finally, use the <strong>Create</strong> tab to produce a full-sized merged image, combining the hillshade and color relief.</li>
+            </ol>
 
-<h3>Buttons</h3>
-<p><b>Open:</b> Load an existing project previously created by this app.</p>
-<p><b>Open Recent:</b> Access a list of recently opened projects for quick loading.</p>
-<p><b>New:</b> Create a new project, generating all necessary files and folders.</p>
-
-<h3>Overview of Tabs</h3>
-<ul>
-    <li><b>Project:</b> Create or open projects. Switch between Basic and Expert mode.</li>
-    <li><b>Elevation Files:</b> Configure file names and settings for Digital Elevation files.</li>
-    <li><b>Hillshade:</b> Set hillshade parameters and preview hillshade images.</li>
-    <li><b>Color:</b> Set color parameters and preview color relief images.</li>
-    <li><b>Create:</b> Create full-size hillshade and color images and merge them into a relief image.</li>
-    <li><b>Misc:</b> Rarely changed GDAL settings.(Only in expert/extended mode)</li>
-    <li><b>Settings:</b> Update general application settings.(Only in expert/extended mode)</li>
-</ul>
-<h3>Expert Mode</h3>
-<p>The app features two modes: Basic and Expert.</p>
+<h3>Modes</h3>
 <b>Basic Mode:</b>
 <ul>
-    <li>Simplified interface with basic settings.</li>
+    <li>A simplified interface for common settings.</li>
 </ul>
 <b>Expert Mode:</b>
 <ul>
-    <li>Offers control over all GDAL settings</li>
+    <li>Offers control over all settings</li>
     <li>Supports the use of multiple layers, each with its own elevation files but sharing hillshade and color relief
         settings.
     </li>
-    <li>Supports import of GDAL color files using Drag and Drop.</li>
-    <li>Optionally provides two additional tabs for access to every setting by setting "Tabs" to Extended in the Project
-        window.
-    </li>
 </ul>
+<!-- Expert Settings section is shown or hidden depending on app mode -->
+<div class="expert-section">
+    <p>Optionally provides two additional tabs for access to every setting by setting "Tabs" to Extended in the Project
+        window:
+    </p>
+    <p><b>Misc:</b> Rarely changed GDAL settings.(Only in expert/extended mode)</p>
+    <p><b>Settings:</b> Update general application settings.(Only in expert/extended mode)</p>
+
+<b>What is a Project?</b>
+<p>A project defines the style for the  relief image including all color settings, hillshade
+<b>What is a Layer?</b>
+<p>A layer is a set of contiguous elevation files with the same
+    resolution.  In basic mode, a project just has one layer.  In expert mode, a project can have multiple layers all
+    using the same project style.  One use for layers is to have higher resolution images with the same style, such as a layer for US,
+    and a higher resolution layer for Washington, and a higher resolution layer for Mt Rainier.  Another is to have separate,
+discontinuous layers such as a layer for Mt Rainier and a layer for Mt Saint Helens.</p>
+</div>
 </body>
 </html>

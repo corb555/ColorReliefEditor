@@ -78,7 +78,6 @@ class ProjectPage(TabPage):
         "basic": {
             "LABEL1": (" ", "label", None, 180),
             "MODE": ("Mode", "combo", ["basic", "expert"], 180),
-            "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
         }
     }
 

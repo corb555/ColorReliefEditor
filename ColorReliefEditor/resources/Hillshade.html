@@ -45,18 +45,15 @@
     </style>
 </head>
 <body>
-<p>This tab manages the settings used to create hillshade images.</p>
+<p>This tab lets you tweak hillshade settings and immediately preview the result.</p>
 
 <!-- h3 elements styled with custom CSS for all h3 tags -->
 <h3>Instructions</h3>
-
-<p><b>Preview:</b> Click to generate a small hillshade preview with the current
-    settings.</p><br>
-
-<h3>Settings</h3>
 <ul>
     <li><b>Shading:</b> Choose the shading algorithm.</li>
-    <li><b>Z Factor:</b> Adjust the vertical exaggeration of the elevation.</li>
+    <li><b>Strength:</b> Adjust the strength of the shading.</li>
+    <li><b>Preview:</b> Click Preview to generate a small hillshade preview with the current
+    settings.</li>
 </ul>
 <br>
 
@@ -65,19 +62,18 @@
     <p>Expert Settings</p>
     <ul>
         <li><b>Other:</b> Set any other gdaldem hillshade settings such as -s 3 (scale), -alt 3 (altitude)</li>
+        <li>Not all parameter combinations are valid. Refer to <i>gdaldem hillshade</i> documentation for more details.</li>
+        <li>Ensure parameters are correctly formatted:</li>
+        <li><b>Strength:</b> -z 3</li>
+        <li><b>Scale:</b> -s 3</li>
+        <li><b>Altitude:</b> -alt 3</li>
     </ul>
     <br>
 </div>
 
 <h3>Notes</h3>
-<p>Not all parameter combinations are valid. Refer to <i>gdaldem hillshade</i> documentation for more details.</p>
-<p>Note: The first time the preview is built it will take considerably longer</p>
+<p>The first time the preview is built it will take considerably longer</p>
 <br>
-<p>Ensure parameters are correctly formatted:</p>
-<ul>
-    <li><b>Z Factor:</b> -z 3</li>
-    <li><b>Scale:</b> -s 3</li>
-    <li><b>Altitude:</b> -alt 3</li>
-</ul>
+
 </body>
 </html>

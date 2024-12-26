@@ -57,13 +57,13 @@ class HillshadePage(TabPage):
                 "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
                                                                           'ZevenbergenThorne',
                                                     '-combined', '-multidirectional', " "], 180),
-                "HILLSHADE2": ("Z Factor", "line_edit", r'^-z\s+\d+(\s+)?$', 180),
+                "HILLSHADE2": ("Strength", "line_edit", r'^-z\s+\d+(\s+)?$', 180),
                 "HILLSHADE3": ("Other", "line_edit", None, 180),
             }, "basic": {
                 "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
                                                                           'ZevenbergenThorne',
                                                     '-combined', '-multidirectional', " "], 180),
-                "HILLSHADE2": ("Z Factor", "line_edit", r'^-z\s+\d+(\s+)?$', 180),
+                "HILLSHADE2": ("Strength", "combo", ['-z 1','-z 2','-z 3','-z 4','-z 5','-z 6',], 180),
             }
         }
 
