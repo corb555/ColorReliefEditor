@@ -32,6 +32,7 @@ ERROR_GDAL_MERGE_FAILED=112
 ERROR_GDAL_CALC_FAILED=113
 ERROR_INVALID_PREVIEW_SHIFT=114
 ERROR_GDALBUILDVRT=115
+ERROR_GDAL_CONTOUR_FAILED=116
 
 # Define color codes
 YELLOW="\033[33m"
@@ -566,6 +567,35 @@ create_hillshade() {
   finished "$target"
 }
 
+## --contour -  gdal_contour
+##              $1 is region name $2 is layer name $3 preview
+## YML Config Settings:
+##   INTERVAL  -i 20
+##
+create_contour() {
+  init "$@"
+  echo "= Create Contour =" >&2
+
+  target="${region}_${layer}_contour.shp"
+  rm -f "${target}"
+
+  verify_files "${dem_file}"
+
+  # Build the command
+  contour_flags=$(get_flags "$config" "INTERVAL" )
+  cmd="gdal_contour -a elev $contour_flags \"$dem_file\" \"$target\" "
+  echo "$cmd" >&2
+  echo >&2
+
+  # Execute the command
+  if ! eval "$cmd"; then
+      echo_error "gdal_contour failed. ❌" >&2
+      exit $ERROR_GDAL_CONTOUR_FAILED
+  fi
+
+  finished "$target"
+}
+
 ## --merge - merge hillshade with color relief
 ##              $1 is region name $2 is layer name $3 preview
 ## YML Config Settings:
@@ -666,6 +696,9 @@ case "$1" in
     ;;
   --create_hillshade)
     command="create_hillshade"
+    ;;
+  --create_contour)
+    command="create_contour"
     ;;
   --preview_dem)
     command="preview_dem"

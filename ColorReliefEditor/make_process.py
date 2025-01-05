@@ -199,7 +199,7 @@ class MakeProcess(QObject):
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
 
         # During dry run check if output contains ".sh" (indicating work to be done)
-        if self.dry_run and ".sh" in output:
+        if self.dry_run and ".sh " in output:
             # If there are script names in the dry run output, a build is required
             self.build_required = True
 

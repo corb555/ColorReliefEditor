@@ -151,7 +151,10 @@ class ProjectConfig(DataManager):
             target image name
         """
         preview = "_prv" if preview_mode else ""
-        return f"{self.region}_{layer}_{basename}{preview}.tif"
+        if "contour" in basename:
+            return f"{self.region}_{layer}_{basename}{preview}.shp"
+        else:
+            return f"{self.region}_{layer}_{basename}{preview}.tif"
 
     def get_layer(self):
         """

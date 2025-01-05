@@ -35,6 +35,7 @@ from YMLEditor.yaml_config import YamlConfig
 from ColorReliefEditor.color_page import ColorPage
 from ColorReliefEditor.elevation_page import ElevationPage
 from ColorReliefEditor.hillshade_page import HillshadePage
+from ColorReliefEditor.contour_page import ContourPage
 from ColorReliefEditor.make_process import MakeProcess
 from ColorReliefEditor.misc_page import MiscPage
 from ColorReliefEditor.project_config import ProjectConfig, app_files_path, \
@@ -75,17 +76,22 @@ class ColorReliefEdit(QMainWindow):
         app_path = self.load_app_config("relief_editor.cfg")
         self.verbose = int(self.app_config["VERBOSE"]) or 0
         app_version = get_version("ColorReliefEditor")
-        self.warn(f"Version: {app_version}")
+        print(f"ColorReliefEditor v{app_version}")
         self.warn(f"App config file: {app_path}")  # Log path for config file
 
-        # Set Application style
+        # Get preferred font size
         self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
 
+        # Set Application style
         if platform.system() == "Linux":
             style_name = "fusion"  # Use Fusion for Linux instead of default
             app.setStyle(QStyleFactory.create(style_name))
+        elif platform.system() == "Darwin":
+            style_name = "MacOs"
+            app.setStyle(QStyleFactory.create(style_name))
         else:
             style_name = "default"
+            print(f"OS: {platform.system()}")
 
         set_style(app, self.font_size, style_name)
 
@@ -120,7 +126,7 @@ class ColorReliefEdit(QMainWindow):
                 tab_classes = {
                     "Project": ProjectPage, "Elevation Files": ElevationPage,
                     "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
-                    "Misc": MiscPage, "Settings": AppSettingsPage
+                    "Contour": ContourPage, "Misc": MiscPage, "Settings": AppSettingsPage
                 }
 
         self.init_ui(tab_classes, app)

@@ -71,6 +71,7 @@ PREFIX = $(REGION)_$(LAYER)
 DEM_TIF = $(PREFIX)_DEM.tif
 COLOR_TIF = $(PREFIX)_color.tif
 HILLSHADE_TIF = $(PREFIX)_hillshade.tif
+CONTOUR_SHP = $(PREFIX)_contour.shp
 FINAL_TIF = $(PREFIX)_relief.tif
 
 # Targets for preview images
@@ -124,6 +125,10 @@ $(PRV_HILLSHADE_TIF):  $(PRV_DEM_TIF) $(HILLSHADE_TRIGGER)
 # Create the merged image. Merge the color relief and hillshade
 $(FINAL_TIF): $(COLOR_TIF) $(HILLSHADE_TIF) $(CONFIG_FILE) $(DEM_TRIGGER)
 	color_relief.sh --merge_hillshade $(REGION) $(LAYER)
+
+# Create the contour shapefile
+$(CONTOUR_SHP): $(DEM_TIF) $(CONFIG_FILE)
+	color_relief.sh --create_contour $(REGION) $(LAYER)
 
 # Create merged preview image. Merge the color relief and hillshade
 $(PRV_FINAL_TIF): $(PRV_COLOR_TIF) $(PRV_HILLSHADE_TIF) $(CONFIG_FILE) $(DEM_TRIGGER)
