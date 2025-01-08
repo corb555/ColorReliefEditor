@@ -172,7 +172,6 @@ echo_error() {
   printf "${YELLOW}ERROR: %s${RESET}\n" "$1" >&2
 }
 
-
 ## Function: check_command():
 ##
 ## Verifies if a required command is available in the environment.
@@ -190,6 +189,40 @@ check_command() {
   fi
 }
 
+## Function: format_compression_flag():
+##
+## Different GDAL commmands have different syntax for compression
+## This creates the appropriate compression syntax for gdaldem and gdal_calc
+##  Args:
+##    $1: the gdal tool to be used
+##    $2: the original compress value which should be in the format "-co COMPRESS=JPEG"
+##  Echos reformatted compression switch
+format_compression_flag() {
+  local tool=$1
+  local compress=$2
+
+  # If no compression is specified or if suffix is "_prv" (preview), return empty
+  if [ -z "$compress" ] || [ "$suffix" = "_prv" ]; then
+    echo ""
+    return
+  fi
+
+  # Format the compression flag based on the tool
+  case $tool in
+    gdaldem)
+      # Use -co for gdaldem, ensuring proper spacing
+      echo "${compress/-co/-co}"
+      ;;
+    gdal_calc.py)
+      # Use --co for gdal_calc.py, replacing "-co " with "--co="
+      echo "${compress/-co /--co=}"
+      ;;
+    *)
+      echo "Error: Unknown tool '$tool' for compression flag formatting." >&2
+      exit 1
+      ;;
+  esac
+}
 
 ## Function: optional_flag
 ## Retrieve an optional flag from the YAML configuration file.
@@ -213,7 +246,10 @@ optional_flag() {
   yml_value=$(eval "yq \".${key}\" \"$config\"")
 
   # Remove enclosing quotation marks if present
-  yml_value=$(echo "$yml_value" | sed 's/^["'\''\(]//;s/["'\''\)]$//')
+  # yml_value=$(echo "$yml_value" | sed 's/^["'\''\(]//;s/["'\''\)]$//')
+
+  # Remove enclosing quotation marks if present, but leave parentheses untouched
+  yml_value=$(echo "$yml_value" | sed 's/^["'\''"]*//;s/["'\''"]*$//')
 
   # If the result is null, set it to an empty string
   [ "$yml_value" = "null" ] && yml_value=""
@@ -221,7 +257,6 @@ optional_flag() {
   # Output the value to the command
   echo "$yml_value"
 }
-
 
 ## Function: mandatory_flag
 ## Retrieves a mandatory flag from the YAML configuration file.
@@ -286,43 +321,6 @@ verify_files() {
   done
   # Return success
   return 0
-}
-
-## Function: run_gdal_calc
-## Runs gdal_calc.py to merge bands from two files using a calculation specified in the YAML config.
-## Args:
-##   $1: Band number to merge
-##   $2: Target output file
-## Shell variables:
-##   merge_calc: Calculation for merging A and B bands
-##   merge_flags: Flags for running gdal_calc
-##   color_file: RGB color relief file
-##   hillshade_file: Grayscale Hillshade
-##
-run_gdal_calc() {
-  band="$1"
-  targ="$2"
-  rm -f "$targ"  # Fix target filename typo
-
-  # Construct the gdal_calc.py command
-  cmd="gdal_calc.py -A \"$color_file\" -B \"$hillshade_file\" --A_band=\"$band\" --B_band=1 $merge_calc $merge_flags \"$long_quiet\" --overwrite --outfile=\"$targ\""
-
-  # Log the command (just need it once for band 1)
-  if [ "$band" -eq 1 ]; then
-    echo >&2
-    echo "$cmd" >&2
-    echo >&2
-  fi
-
-  # Preprocess $merge_calc: Remove '--calc=' prefix so we can quote the calc expression, otherwise
-  # the shell will expand items like * in the expression
-  calc_expression="${merge_calc#--calc=}"  # Strip the '--calc=' prefix
-
-  # Execute gdal_calc.py
-  gdal_calc.py -A "$color_file" -B "$hillshade_file" --A_band="$band" --B_band=1 --calc="$calc_expression" $merge_flags $long_quiet --overwrite --outfile="$targ" || {
-    echo_error "gdal_calc.py execution failed." >&2
-    exit $ERROR_GDAL_CALC_FAILED
-  }
 }
 
 ## Function: set_crs
@@ -505,38 +503,6 @@ preview_dem() {
   finished "target"
 }
 
-
-## --create_color_relief -  gdaldem color-relief
-##              $1 is region name $2 is layer name $3 preview flag
-## YML Config Settings:
-##   OUTPUT_TYPE  -of GTiff
-##   EDGE -compute_edges
-##
-create_color_relief() {
-  init "$@"
-  echo "= Create Color Relief =" >&2
-
-  target="${region}_${layer}_color${suffix}.${ending}"
-  rm -f "${target}"
-
-  verify_files "${dem_file}" "${region}_color_ramp.txt"
-
-  # Build the gdaldem color-relief command
-  color_flags=$(get_flags "$config" "COLOR1" "COLOR2" )
-  cmd="gdaldem color-relief $gdaldem_flags $color_flags $quiet \"$dem_file\" \"${region}_color_ramp.txt\" \"$target\""
-  echo "$cmd"  >&2
-  echo >&2
-
-  # Execute the command
-  if ! eval "$cmd"; then
-      echo_error "gdaldem color-relief failed. ❌" >&2
-      exit $ERROR_GDAL_COLOR_RELIEF_FAILED
-  fi
-
-  finished "$target"
-}
-
-
 ## --hillshade -  gdaldem hillshade
 ##              $1 is region name $2 is layer name $3 preview
 ## YML Config Settings:
@@ -546,15 +512,19 @@ create_color_relief() {
 create_hillshade() {
   init "$@"
   echo "= Create Hillshade =" >&2
+  compress=$(get_flags "$config" "COMPRESS")
 
   target="${region}_${layer}_hillshade${suffix}.${ending}"
   rm -f "${target}"
 
   verify_files "${dem_file}"
 
+  # Format the compression flag for gdaldem
+  gdaldem_compress=$(format_compression_flag gdaldem "$compress")
+
   # Build the gdaldem hillshade command
   hillshade_flags=$(get_flags "$config" "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
-  cmd="gdaldem hillshade $gdaldem_flags $hillshade_flags $quiet \"$dem_file\" \"$target\""
+  cmd="gdaldem hillshade $gdaldem_flags $gdaldem_compress $hillshade_flags $quiet \"$dem_file\" \"$target\""
   echo "$cmd" >&2
   echo >&2
 
@@ -562,6 +532,19 @@ create_hillshade() {
   if ! eval "$cmd"; then
       echo_error "gdaldem hillshade failed. ❌" >&2
       exit $ERROR_GDAL_MERGE_FAILED
+  fi
+
+  # If gamma is not 1, then adjust gamma of hillshade
+  gamma=$(get_flags "$config" "GAMMA")
+  if [ -n "$gamma" ] && [ "$(echo "$gamma == 99" | bc)" -eq 1 ]; then
+    echo "Adjusting gamma to $gamma for $target..." >&2
+    echo "--calc=uint8(((A / 255.)**$gamma) * 255)" >&2
+
+    gamma_temp="${target%.tif}_gamma.tif"  # Temporary file for gamma adjustment
+    gdal_calc.py -A "$target" --outfile="$gamma_temp" $long_quiet --calc="uint8( ( (((A / 255.0)**($gamma)) * 255)))" --type=Byte --overwrite
+
+    # Rename gamma-adjusted file back to the target
+    mv "$gamma_temp" "$target"
   fi
 
   finished "$target"
@@ -596,6 +579,42 @@ create_contour() {
   finished "$target"
 }
 
+
+## --create_color_relief -  gdaldem color-relief
+##              $1 is region name $2 is layer name $3 preview flag
+## YML Config Settings:
+##   OUTPUT_TYPE  -of GTiff
+##   EDGE -compute_edges
+##
+create_color_relief() {
+  init "$@"
+  echo "= Create Color Relief =" >&2
+  color_flags=$(get_flags "$config" "COLOR1" "COLOR2" )
+  compress=$(get_flags "$config" "COMPRESS")
+
+  target="${region}_${layer}_color${suffix}.${ending}"
+  rm -f "${target}"
+
+  verify_files "${dem_file}" "${region}_color_ramp.txt"
+
+  # Format the compression flag for gdaldem
+  gdaldem_compress=$(format_compression_flag gdaldem "$compress")
+
+  # Build the gdaldem color-relief command
+  cmd="gdaldem color-relief $gdaldem_flags $color_flags $quiet $gdaldem_compress \"$dem_file\" \"${region}_color_ramp.txt\" \"$target\""
+  echo "$cmd"  >&2
+  echo >&2
+
+  # Execute the command
+  if ! eval "$cmd"; then
+      echo_error "gdaldem color-relief failed. ❌" >&2
+      exit $ERROR_GDAL_COLOR_RELIEF_FAILED
+  fi
+
+  finished "$target"
+}
+
+
 ## --merge - merge hillshade with color relief
 ##              $1 is region name $2 is layer name $3 preview
 ## YML Config Settings:
@@ -615,37 +634,24 @@ merge_hillshade() {
   color_file="${region}_${layer}_color${suffix}.${ending}"
   hillshade_file="${region}_${layer}_hillshade${suffix}.${ending}"
 
-  merge_calc=$(mandatory_flag "$config" "MERGE_CALC")
   verify_files "$color_file" "$hillshade_file"
-
   rm -f "${target}"
 
-  rgb_bands=""
-  pids=""
+  merge_calc=$(mandatory_flag "$config" "MERGE_CALC")
 
-  # Run gdal_calc for each band in parallel, track RGB file names
-  for band in 1 2 3; do
-    run_gdal_calc "$band" "rgb_$band.$ending" &
-    pids="$pids $!" # Append process ID to the string
-    rgb_bands="$rgb_bands rgb_$band.$ending"
-  done
+  # Remove '--calc=' prefix in $merge_calc so we can quote the expression
+  calc_expression="${merge_calc#--calc=}"  # Strip the '--calc=' prefix
 
-  # Wait for all gdal_calc bands to finish and check for errors
-  for pid in $pids; do
-    if ! wait "$pid"; then
-      echo_error "run_gdal_calc failed for one or more bands. ❌" >&2
-      exit $ERROR_GDAL_CALC_FAILED
-    fi
-  done
+  # Format the compression flag for gdal_calc.py
+  gdal_calc_compress=$(format_compression_flag gdal_calc.py "$compress")
+  cmd="gdal_calc.py -B \"$color_file\" -A \"$hillshade_file\" --allBands=B --calc=\"$calc_expression\" $merge_flags $gdal_calc_compress $long_quiet --overwrite --outfile=\"$target\""
 
-  # Merge R, G, and B bands back together
-  cmd="gdal_merge.py $quiet $compress -separate -o \"$target\" $rgb_bands"
   echo "$cmd" >&2
   echo >&2
 
   # Execute the command
   if ! eval "$cmd"; then
-    echo_error "gdal_merge.py failed. ❌" >&2
+    echo_error "gdal_calc.py failed. ❌" >&2
     exit $ERROR_GDAL_MERGE_FAILED
   fi
 
@@ -654,7 +660,6 @@ merge_hillshade() {
     echo "color_relief.sh $version" >&2
   fi
 
-  rm -f $rgb_bands
   finished "$target"
 }
 

@@ -45,6 +45,8 @@ utilities, providing a seamless experience for creating relief maps.
 
 ---
 
+It is recommended you use a virtual environment for installation.  
+
 ## _Install Dependencies_
 Launch Terminal
 

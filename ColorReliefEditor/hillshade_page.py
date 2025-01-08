@@ -76,8 +76,6 @@ class HillshadePage(TabPage):
         settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
         settings_layout.setSpacing(5)  # Internal padding between widgets
         self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
-        # todo self.settings_widget = SettingsWidget(main.proj_config, formats, mode,
-        #  verbose=main.verbose, error_style="Crimson")
 
         settings_layout.addWidget(self.settings_widget)
         settings_layout.addItem(expanding_vertical_spacer(1))
@@ -123,10 +121,10 @@ class HillshadePage(TabPage):
         project_dir = Path(self.main.project.project_directory)
         self.preview.image_file = str(project_dir / self.preview.target)
 
-        # Update Hillshade proxy file if HILLSHADE changes. This forces Hillshade rebuild
+        # Update Hillshade proxy file if HILLSHADE or GAMMA changes. This forces Hillshade rebuild
         self.main.proj_config.add_proxy(
             self.main.project.get_proxy_path("hillshade"),
-            ["HILLSHADE1", "HILLSHADE2", "HILLSHADE3", "HILLSHADE4"]
+            ["HILLSHADE1", "HILLSHADE2", "HILLSHADE3", "HILLSHADE4", "GAMMA"]
         )
 
         return True

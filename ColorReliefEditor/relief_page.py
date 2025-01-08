@@ -55,7 +55,7 @@ class ReliefPage(TabPage):
         formats = {
             "expert": {
                 "NAMES.@LAYER": ("", "read_only", None, 180, label_style),
-                "MERGE_CALC": ("Calc ", "text_edit", r"^--calc=[^ ]*(?=.*A)(?=.*B)[^ ]*$", 280),
+                "MERGE_CALC": ("Calc ", "text_edit", r"^--calc=.*$", 280),
                 "PUBLISH": ("Publish To", "text_edit", None, 280),
                 "QUIET": ("Quiet Mode", "combo", ["-q", "-v", "--version"], 100),
             }, "basic": {

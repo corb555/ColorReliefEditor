@@ -263,6 +263,7 @@ class PreviewWidget(TabPage):
         target_path = destination_folder / Path(image_path).name
         try:
             shutil.copy2(image_path, target_path)
+            self.output(f"Copied file ✅")
             QMessageBox.information(self.main, "Success", f"Image copied to {target_path}")
         except OSError as e:
             QMessageBox.warning(self.main, "Error", f"Error copying image: {str(e)}")

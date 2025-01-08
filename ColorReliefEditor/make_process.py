@@ -210,9 +210,13 @@ class MakeProcess(QObject):
         self.build_required = True
         output = self.process.readAllStandardError().data().decode()
 
+        A=7
+        B=9
+        aa = print(   (A < 4) | ((A > 90) & (A < 150))  | (A > 250) , B, (A / 255.) * B)
+
         if self._output_window:
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
-            if "ERR" in output or "err" in output:
+            if "ERR" in output or "err" in output or "Err" in output or "failed" in output:
                 self._append_ansi_text(f"\033[33m{output}\x1b[0m")
             else:
                 self._append_ansi_text(output)
