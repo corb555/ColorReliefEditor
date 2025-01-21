@@ -30,10 +30,18 @@ import os
 #
 from pathlib import Path
 
-from PyQt6.QtCore import pyqtSignal, QTimer
-from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
-from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
-                             QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
+try:
+    # Use PySide6 imports
+    from PySide6.QtCore import Signal, QTimer
+    from PySide6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
+    from PySide6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
+                                 QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
+except ImportError:
+    # Use PyQt6 imports as fallback
+    from PyQt6.QtCore import pyqtSignal as Signal, QTimer
+    from PyQt6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
+    from PyQt6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
+                                 QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
 
 from ColorReliefEditor.color_config import ColorConfig
 from ColorReliefEditor.file_drop_widget import FileDropWidget
@@ -101,7 +109,7 @@ class ColorPage(TabPage):
         color_settings_pane = create_vbox_layout(widgets, 0, 0, 0, 0, 5)
 
         # Create a preview widget to run gdaldem color-relief and display result
-        button_flags = ["make"]
+        button_flags = ["preview"]
         self.preview = PreviewWidget(
             main, self.tab_name, self.color_settings_widget, True, self.data_mgr.save,
             button_flags, )
@@ -235,7 +243,7 @@ class ColorSettingsWidget(QWidget):
     Widget for editing elevation levels and colors and
     synchronizing changes to data_mgr
     """
-    colors_updated = pyqtSignal()
+    colors_updated = Signal()
 
     def __init__(self, data_mgr, mode):
         """

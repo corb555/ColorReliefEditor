@@ -29,7 +29,12 @@
 #
 from pathlib import Path
 
-from PyQt6.QtWidgets import QVBoxLayout
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtWidgets import QVBoxLayout
+except ImportError:
+    from PyQt6.QtWidgets import QVBoxLayout
+
 from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.instructions import get_instructions
@@ -57,13 +62,16 @@ class HillshadePage(TabPage):
                 "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
                                                                           'ZevenbergenThorne',
                                                     '-combined', '-multidirectional', " "], 180),
-                "HILLSHADE2": ("Strength", "line_edit", r'^-z\s+\d+(\s+)?$', 180),
+                "HILLSHADE2": ("Strength", "combo", ['-z 1','-z 2','-z 3','-z 4','-z 5','-z 6',], 180),
                 "HILLSHADE3": ("Other", "line_edit", None, 180),
+                "BRIGHTNESS": ("Brightness", "spinbox", [.3, 1.8, .1, 1], 200),
+
             }, "basic": {
                 "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
                                                                           'ZevenbergenThorne',
                                                     '-combined', '-multidirectional', " "], 180),
                 "HILLSHADE2": ("Strength", "combo", ['-z 1','-z 2','-z 3','-z 4','-z 5','-z 6',], 180),
+                "BRIGHTNESS": ("Brightness", "spinbox", [.3, 1.8, .1, 1], 200),
             }
         }
 
@@ -85,7 +93,7 @@ class HillshadePage(TabPage):
         )
 
         # Widget for building and displaying a preview
-        button_flags = ["make"]
+        button_flags = ["preview"]
         self.preview = PreviewWidget(
             main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags, )
 
@@ -121,10 +129,11 @@ class HillshadePage(TabPage):
         project_dir = Path(self.main.project.project_directory)
         self.preview.image_file = str(project_dir / self.preview.target)
 
-        # Update Hillshade proxy file if HILLSHADE or GAMMA changes. This forces Hillshade rebuild
-        self.main.proj_config.add_proxy(
+        # Update Hillshade proxy file if HILLSHADE or BRIGHTNESS fields change.
+        # This forces Hillshade rebuild
+        self.main.proj_config.register_proxy_file(
             self.main.project.get_proxy_path("hillshade"),
-            ["HILLSHADE1", "HILLSHADE2", "HILLSHADE3", "HILLSHADE4", "GAMMA"]
+            ["HILLSHADE1", "HILLSHADE2", "HILLSHADE3", "HILLSHADE4", "BRIGHTNESS"]
         )
 
         return True

@@ -25,7 +25,12 @@
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 
-from PyQt6.QtWidgets import QStyleFactory
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtWidgets import QStyleFactory
+except ImportError:
+    from PyQt6.QtWidgets import QStyleFactory
+
 from YMLEditor.settings_widget import SettingsWidget
 
 #

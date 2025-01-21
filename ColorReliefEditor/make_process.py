@@ -32,8 +32,14 @@ import platform
 import re
 import shutil
 
-from PyQt6.QtCore import QObject, pyqtSignal, QProcess
-from PyQt6.QtGui import QTextCursor, QTextCharFormat, QColor
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtCore import QObject,  Signal, QProcess
+    from PySide6.QtGui import QTextCursor, QTextCharFormat, QColor
+except ImportError:
+    from PyQt6.QtCore import QObject, pyqtSignal as Signal, QProcess
+    from PyQt6.QtGui import QTextCursor, QTextCharFormat, QColor
+
 
 # ANSI color mapping
 ANSI_COLOR_MAP = {
@@ -52,7 +58,7 @@ class MakeProcess(QObject):
     is required.
 
     Attributes:
-        make_finished (pyqtSignal): Signal emitted when the make process finishes, with
+        make_finished (Signal): Signal emitted when the make process finishes, with
             the job name and exit code.
         job_name (str): Name of the current job being processed.
         dry_run (bool): Specifies if the current process is a dry-run. Set to True if the
@@ -65,13 +71,14 @@ class MakeProcess(QObject):
     **Methods**:
     """
 
-    make_finished = pyqtSignal(str, int)
+    make_finished = Signal(str, int)
 
-    def __init__(self, verbose=0):
+    def __init__(self, verbose=0, dark_mode=True ):
         """
         Initialize the MakeProcess object.
         """
         super().__init__()
+        self.dark_mode = dark_mode
         self.verbose = verbose
         self.dry_run = False
         self.build_required = False
@@ -234,7 +241,10 @@ class MakeProcess(QObject):
 
         default_format = QTextCharFormat()
         current_format = QTextCharFormat()
-        current_format.setForeground(QColor('white'))  # Default color
+        if self.dark_mode:
+            current_format.setForeground(QColor('white'))  # Default color
+        else:
+            current_format.setForeground(QColor('black'))  # Default color
 
         pos = 0
         for match in ANSI_ESCAPE.finditer(text):

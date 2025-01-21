@@ -103,7 +103,7 @@ display_help() {
 ##
 init() {
   set -e
-  # Verify these commands are available
+  # Check that these commands are available
   check_command "gdaldem" $ERROR_MISSING_UTILITY
   check_command "yq" $ERROR_MISSING_UTILITY
   check_command "bc" $ERROR_MISSING_UTILITY
@@ -122,13 +122,13 @@ init() {
     exit $ERROR_CONFIG_NOT_FOUND
   fi
 
-  # Set file suffix based on "preview" and set quiet flag
+  # Set quiet flag and file suffix based on "preview"
   if [ "$3" = "preview" ]; then
     suffix="_prv"
     quiet="-q"
   else
     suffix=""
-    quiet=$(optional_flag "$config" "QUIET")
+    quiet=$(optional_flag  "QUIET")
   fi
 
   if [ "$quiet" = "-v" ]; then
@@ -141,16 +141,17 @@ init() {
     long_quiet="--quiet"
   fi
 
-  # Set file ending and dem_file name
+  # Set file ending and DEM (Digital Elevation) file name
   ending="tif"
   dem_file="${region}_${layer}_DEM${suffix}.${ending}"
 
-  gdaldem_flags=$(get_flags  "$config" "OUTPUT_TYPE" "EDGE")
+  gdaldem_flags=$(get_flags  "OUTPUT_TYPE" "EDGE")
 
   # Start timing
   SECONDS=0
   echo >&2
 }
+
 ##
 ## Function: finished():
 ##
@@ -161,7 +162,7 @@ init() {
 ##        File name of the created target
 ##
 finished() {
-  timing=$(optional_flag "$config" "TIMING")
+  timing=$(optional_flag "TIMING")
   if [ "$timing" = "on" ]; then
     # Calculate and display elapsed time
     echo "    Elapsed time: $SECONDS seconds"
@@ -191,7 +192,7 @@ check_command() {
 
 ## Function: format_compression_flag():
 ##
-## Different GDAL commmands have different syntax for compression
+## Different GDAL commands have different syntax for compression
 ## This creates the appropriate compression syntax for gdaldem and gdal_calc
 ##  Args:
 ##    $1: the gdal tool to be used
@@ -232,14 +233,13 @@ format_compression_flag() {
 ##
 optional_flag() {
   # Check if exactly 2 parameters are provided
-  if [ "$#" -ne 2 ]; then
+  if [ "$#" -ne 1 ]; then
     echo "Error: optional_flag: " >&2
-    echo "Error: 2 parameters required, but $# provided: $*" >&2
+    echo "Error: 1 parameters required, but $# provided: $*" >&2
     exit $ERROR_OPTIONAL_FLAG_ERROR
   fi
 
-  config="$1"
-  key="$2"
+  key="$1"
   yml_value=""
 
   # Run yq to extract YML key/value from config file
@@ -266,13 +266,12 @@ optional_flag() {
 ##   $2: Key to search for in the YAML file
 ##
 mandatory_flag() {
-  config="$1"
-  key="$2"
+  key="$1"
 
-  # Use optional_flag to retrieve the value
-  flags=$(optional_flag "$config" "$key")
+  # Call optional_flag to retrieve the value
+  flags=$(optional_flag  "$key")
 
-  # Check if flags are empty and output the error message
+  # If flags are empty  output  error message
   if [ -z "$flags" ]; then
     echo_error "'$key' not found for layer '$layer' in config '$config' ❌" >&2
     exit $ERROR_MANDATORY_FLAG_NOT_FOUND
@@ -284,7 +283,7 @@ mandatory_flag() {
 
 
 ## Function: get_flags
-## Retrieves multiple flags from the YAML configuration file.
+## Retrieves multiple flags from the YAML configuration file and returns concatenation
 ##  Args:
 ##   $1:
 ##      Region name
@@ -294,13 +293,10 @@ mandatory_flag() {
 ##      List of keys to search for in the YAML file
 ##
 get_flags() {
-  config="$1"
-  shift 1  # Shift the first argument off the list (config)
   flags=""
 
   for key in "$@"; do
-    flag_value=$(optional_flag  "$config" "$key")
-
+    flag_value=$(optional_flag  "$key")
     flags="$flags $flag_value"
   done
 
@@ -310,7 +306,7 @@ get_flags() {
 
 
 ## Function: verify_files
-## Verifies that each file passed exists.
+## Verifies that each file in parameters exists.
 ## If any file is missing exit with an error.
 ## Args:
 ##   $@ (variable): List of file paths to check for existence
@@ -341,7 +337,7 @@ set_crs() {
   echo $config
 
   # Get GDAL switches from YML config
-  warp_flags=$(get_flags  "$config" "WARP1" "WARP2" "WARP3" "WARP4")
+  warp_flags=$(get_flags  "WARP1" "WARP2" "WARP3" "WARP4")
   echo "= Set CRS =" >&2
 
   if [ -z "$warp_flags" ]; then
@@ -361,9 +357,31 @@ set_crs() {
   fi
 }
 
+## Function: adjust_brightness
+## Adjusts the brightness of an image
+## Variables:
+##   $brightness: between .7 and 1.5.  Higher is brighter.  1 is no change
+##   $target: image file to adjust
+##
+adjust_brightness() {
+  brightness=$(get_flags  "BRIGHTNESS" )
+  bright_flag="uint8(clip(((A / 255.) * $brightness) * 255, 1, 254))"
+  bright_calc="$bright_flag"  # Assign the final calculation string
+
+  if [ -n "$brightness" ] && [ "$(echo "$brightness != 1" | bc)" -eq 1 ]; then
+    echo "Adjusting brightness to $brightness for $target..." >&2
+
+    brightness_temp="${target%.tif}_brightness.tif"  # Temporary file for brightness adjustment
+    echo gdal_calc.py -A "$target" --outfile="$brightness_temp" $long_quiet --calc="$bright_calc" >&2
+
+    gdal_calc.py -A "$target" --outfile="$brightness_temp" $long_quiet --calc="$bright_calc" --type=Byte --overwrite
+    # Rename brightness-adjusted file back to the target
+    mv "$brightness_temp" "$target"
+  fi
+}
 
 ## Function: create_preview_dem
-## Creates a smaller DEM file as a preview image. The Preview location
+## Extracts a smaller DEM file from input file for preview images. The Preview location
 ## is controlled by x_shift, y_shift
 ## Args:
 ##   $1: Input file path (DEM)
@@ -378,11 +396,11 @@ create_preview_dem() {
   targ="$2"
 
   # Retrieve preview size from config
-  preview_size=$(optional_flag "$config" "PREVIEW")
+  preview_size=$(optional_flag  "PREVIEW")
 
   # Retrieve x_shift and y_shift.  Determines where preview is sliced from
-  x_shift=$(optional_flag "$config" "X_SHIFT")
-  y_shift=$(optional_flag "$config" "Y_SHIFT")
+  x_shift=$(optional_flag  "X_SHIFT")
+  y_shift=$(optional_flag  "Y_SHIFT")
 
   # Default to 0 if x_shift or y_shift is empty
   x_shift=${x_shift:-0}
@@ -438,11 +456,11 @@ init_dem() {
   echo "= Create DEM file =" >&2
 
   # Get GDAL switches from YML config
-  vrt_flag=$(optional_flag   "$config" "VRT")
+  vrt_flag=$(optional_flag    "VRT")
 
   # Get file list for DEM files.  layer_id is (A-G) not the layer text name
-  layer_id=$(mandatory_flag  "$config" "LAYER")
-  file_list=$(optional_flag  "$config" FILES."$layer_id")
+  layer_id=$(mandatory_flag  "LAYER")
+  file_list=$(optional_flag   FILES."$layer_id")
 
   # Check if flags are empty and output error message
   if [ -z "$file_list" ]; then
@@ -452,7 +470,7 @@ init_dem() {
   fi
 
 # Get folder for elevation DEM files
-dem_folder=$(mandatory_flag "$config" "DEM_FOLDER")
+dem_folder=$(mandatory_flag  "DEM_FOLDER")
 
 # Change to the dem_folder
 cd "$dem_folder" || {
@@ -490,7 +508,7 @@ finished "$dem_file"
 
 
 ## --preview_dem -  Create a truncated DEM file to build fast previews
-##              $1 is region name $2 is layer name $3 preview
+##              $region, $layer, and $ending must be set by init
 ##
 preview_dem() {
   init "$@"
@@ -512,7 +530,7 @@ preview_dem() {
 create_hillshade() {
   init "$@"
   echo "= Create Hillshade =" >&2
-  compress=$(get_flags "$config" "COMPRESS")
+  compress=$(get_flags  "COMPRESS")
 
   target="${region}_${layer}_hillshade${suffix}.${ending}"
   rm -f "${target}"
@@ -523,7 +541,7 @@ create_hillshade() {
   gdaldem_compress=$(format_compression_flag gdaldem "$compress")
 
   # Build the gdaldem hillshade command
-  hillshade_flags=$(get_flags "$config" "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
+  hillshade_flags=$(get_flags "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
   cmd="gdaldem hillshade $gdaldem_flags $gdaldem_compress $hillshade_flags $quiet \"$dem_file\" \"$target\""
   echo "$cmd" >&2
   echo >&2
@@ -534,18 +552,8 @@ create_hillshade() {
       exit $ERROR_GDAL_MERGE_FAILED
   fi
 
-  # If gamma is not 1, then adjust gamma of hillshade
-  gamma=$(get_flags "$config" "GAMMA")
-  if [ -n "$gamma" ] && [ "$(echo "$gamma == 99" | bc)" -eq 1 ]; then
-    echo "Adjusting gamma to $gamma for $target..." >&2
-    echo "--calc=uint8(((A / 255.)**$gamma) * 255)" >&2
-
-    gamma_temp="${target%.tif}_gamma.tif"  # Temporary file for gamma adjustment
-    gdal_calc.py -A "$target" --outfile="$gamma_temp" $long_quiet --calc="uint8( ( (((A / 255.0)**($gamma)) * 255)))" --type=Byte --overwrite
-
-    # Rename gamma-adjusted file back to the target
-    mv "$gamma_temp" "$target"
-  fi
+  # If brightness is not 1, then adjust brightness of hillshade
+  adjust_brightness
 
   finished "$target"
 }
@@ -565,7 +573,7 @@ create_contour() {
   verify_files "${dem_file}"
 
   # Build the command
-  contour_flags=$(get_flags "$config" "INTERVAL" )
+  contour_flags=$(get_flags  "INTERVAL" )
   cmd="gdal_contour -a elev $contour_flags \"$dem_file\" \"$target\" "
   echo "$cmd" >&2
   echo >&2
@@ -589,8 +597,8 @@ create_contour() {
 create_color_relief() {
   init "$@"
   echo "= Create Color Relief =" >&2
-  color_flags=$(get_flags "$config" "COLOR1" "COLOR2" )
-  compress=$(get_flags "$config" "COMPRESS")
+  color_flags=$(get_flags  "COLOR1" "COLOR2" )
+  compress=$(get_flags  "COMPRESS")
 
   target="${region}_${layer}_color${suffix}.${ending}"
   rm -f "${target}"
@@ -605,7 +613,7 @@ create_color_relief() {
   echo "$cmd"  >&2
   echo >&2
 
-  # Execute the command
+  # Execute the color-relief command
   if ! eval "$cmd"; then
       echo_error "gdaldem color-relief failed. ❌" >&2
       exit $ERROR_GDAL_COLOR_RELIEF_FAILED
@@ -626,18 +634,18 @@ merge_hillshade() {
   init "$@"
   echo "= Merge Hillshade and Color Relief =" >&2
 
-  # Get GDAL switches from YML config
-  merge_flags=$(get_flags "$config" "MERGE1" "MERGE2" "MERGE3" "MERGE4")
-  compress=$(get_flags "$config" "COMPRESS")
-
   target="${region}_${layer}_relief${suffix}.${ending}"
   color_file="${region}_${layer}_color${suffix}.${ending}"
   hillshade_file="${region}_${layer}_hillshade${suffix}.${ending}"
 
+  # Get GDAL switches from YML config
+  merge_flags=$(get_flags  "MERGE1" "MERGE2" "MERGE3" "MERGE4")
+  compress=$(get_flags  "COMPRESS")
+
   verify_files "$color_file" "$hillshade_file"
   rm -f "${target}"
 
-  merge_calc=$(mandatory_flag "$config" "MERGE_CALC")
+  merge_calc=$(mandatory_flag  "MERGE_CALC")
 
   # Remove '--calc=' prefix in $merge_calc so we can quote the expression
   calc_expression="${merge_calc#--calc=}"  # Strip the '--calc=' prefix
@@ -727,7 +735,7 @@ case "$1" in
 esac
 
 # Shift the positional parameters and call the corresponding function
-version="0.1.10"
+version="0.4"
 shift
 $command "$@"
 

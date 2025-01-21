@@ -29,7 +29,11 @@
 #
 from pathlib import Path
 
-from PyQt6.QtWidgets import QVBoxLayout
+try:
+    from PySide6.QtWidgets import QVBoxLayout
+except ImportError:
+    from PyQt6.QtWidgets import QVBoxLayout
+
 from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.instructions import get_instructions

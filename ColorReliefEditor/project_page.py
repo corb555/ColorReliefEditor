@@ -28,7 +28,12 @@
 #
 #
 
-from PyQt6.QtWidgets import QMessageBox, QFileDialog
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtWidgets import QMessageBox, QFileDialog
+except ImportError:
+    from PyQt6.QtWidgets import QMessageBox, QFileDialog
+
 from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.instructions import get_instructions

@@ -26,10 +26,21 @@
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
 #
 #
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import (QLabel, QPushButton, QWidget, QTextBrowser, QSizePolicy, QHBoxLayout,
-                             QVBoxLayout, QPlainTextEdit, QTableWidget, QAbstractItemView, QDialog,
-                             QListWidget, QDialogButtonBox, QSpacerItem)
+
+
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtCore import Qt
+    from PySide6.QtWidgets import (QLabel, QPushButton, QWidget, QTextBrowser, QSizePolicy,
+                                 QHBoxLayout, QVBoxLayout, QPlainTextEdit, QTableWidget,
+                                 QAbstractItemView, QDialog, QListWidget, QDialogButtonBox,
+                                 QSpacerItem)
+except ImportError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtWidgets import (QLabel, QPushButton, QWidget, QTextBrowser, QSizePolicy,
+                                 QHBoxLayout, QVBoxLayout, QPlainTextEdit, QTableWidget,
+                                 QAbstractItemView, QDialog, QListWidget, QDialogButtonBox,
+                                 QSpacerItem)
 
 
 def create_table(rows, columns, column_titles, editable=True):
@@ -199,15 +210,14 @@ class TabPage(QWidget):
 
             self.page_layout.addWidget(inst_panel)
 
-            # Make the left panel take 3/4 of the space and the right panel take 1/4
+            # Make the left panel take 2/3 of the space and the right panel take 1/3
             if widgets:
-                self.page_layout.setStretch(0, 3)
+                self.page_layout.setStretch(0, 2)
                 self.page_layout.setStretch(1, 1)
 
-        # Create a container widget with a white border
+        # Create a container widget
         container_widget = QWidget(self)
         container_widget.setLayout(self.page_layout)
-        # container_widget.setStyleSheet("QWidget { border: 2px solid white; }")
 
         # Set the bordered container as the layout's top-level widget
         top_layout = QVBoxLayout(self)

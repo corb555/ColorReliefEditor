@@ -108,7 +108,7 @@ def _read_resource(resource_name):
             return resource.read()
     except (FileNotFoundError, OSError) as e:
         print(f"Error: Unable to open the resource file '{resource_name}'. {e}")
-        raise
+        return "Instructions Unavailable"
 
 
 def load_text_resource(file):

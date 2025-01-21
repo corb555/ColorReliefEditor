@@ -36,9 +36,15 @@ import subprocess
 import sys
 import tempfile
 
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtGui import QPixmap
-from PyQt6.QtWidgets import QLabel, QSizePolicy, QMessageBox
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtCore import Qt, QTimer
+    from PySide6.QtGui import QPixmap
+    from PySide6.QtWidgets import QLabel, QSizePolicy, QMessageBox
+except ImportError:
+    from PyQt6.QtCore import Qt, QTimer
+    from PyQt6.QtGui import QPixmap
+    from PyQt6.QtWidgets import QLabel, QSizePolicy, QMessageBox
 
 from ColorReliefEditor.make_handler import MakeHandler
 from ColorReliefEditor.tab_page import TabPage, create_hbox_layout, create_button, \
@@ -52,27 +58,28 @@ class PreviewWidget(TabPage):
     This widget has two modes:
     - **Preview Mode**: Generates small images for quick viewing.
     - **Full Build Mode**: Produces full-sized images with features for publishing, cleaning
-    temporary files, and
-      launching an external viewer.
+    temporary files, and launching an external viewer.
 
     Attributes:
         preview_mode (bool): Determines the operational mode (Preview or Full Build).
         image_label (QLabel): Displays the generated image in preview mode.
         zoom_factor (float): The current zoom level for the image display.
         make_handler (MakeHandler): Manages the `make` process for image generation and maintenance.
+        full_output_height (int): Height of make output for full build. Default = 400
+        preview_output_height (int): Height of make output for preview. Default = 80
     """
 
-    def __init__(self, main, name, settings, preview_mode, on_save, button_flags):
+    def __init__(self, main, name, settings, preview_mode, on_save, button_ids):
         """
         Initialize
 
         Args:
             main (object): the main application object.
             name (str): The name of this widget/tab.
-            settings (object): Application settings object for configuration.
+            settings (object):  Configuration settings object for this widget.
             preview_mode (bool): Whether the widget is in preview mode.
             on_save (callable): Callback function executed upon saving.
-            button_flags (list): List of buttons with their attributes to display.
+            button_ids (list): List of button ids to display in full mode (make,view,publish,clean,cancel)
         """
         self.image_file = None
         self.image = None
@@ -82,10 +89,11 @@ class PreviewWidget(TabPage):
 
         # Button definitions
         self.button_definitions = [
+            {"id": "preview", "label": "Preview", "callback": self.make_image, "focus": True},
             {"id": "make", "label": "Create", "callback": self.make_image, "focus": True},
             {"id": "view", "label": "View...", "callback": self.launch_viewer, "focus": False},
             {"id": "publish", "label": "Publish", "callback": self.publish, "focus": False}, {
-                "id": "clean", "label": "Delete temp files", "callback": self.make_clean,
+                "id": "clean", "label": "Cleanup files", "callback": self.make_clean,
                 "focus": False
             }, {
                 "id": "cancel", "label": "Cancel", "callback": self.on_cancel_button, "focus": False
@@ -93,7 +101,7 @@ class PreviewWidget(TabPage):
 
         self.preview_mode = preview_mode
         self.connected_to_make = False
-        self.button_flags = button_flags
+        self.button_ids = button_ids
 
         # Image parameters
         self._image_file = None
@@ -112,13 +120,13 @@ class PreviewWidget(TabPage):
         self.view_button = None
 
         # Output window parameters
-        self.output_max_height = 400
-        self.output_min_height = 80
+        self.full_output_height = 400
+        self.preview_output_height = 80
         self.output_window = None
 
         self.init_ui()
 
-        # Run make in multiprocessor mode?
+        # Run Make in multiprocessor mode?
         if self.main.app_config["MULTI"] == 'multi':
             multi = ' -j '
         else:
@@ -141,46 +149,38 @@ class PreviewWidget(TabPage):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
 
-        # Vertical size ratios of widgets:  button, output_window, image_label
-        preview_ratio = [1, 3, 15]
-        full_ratio = [1, 20, 0]
+        # Create the buttons that are in self.button_ids
+        buttons = []
+        for defn in self.button_definitions:
+            if defn["id"] in self.button_ids:
+                button = create_button(defn["label"], defn["callback"], defn["focus"], self)
+                buttons.append(button)
+        button_layout = create_hbox_layout(buttons)
 
         if self.preview_mode:
-            # Preview Build Mode - create widget to display a preview image
+            # Preview Build Mode - create a widget to display a preview image
             self.image_label = QLabel(self)
             self.image_label.setSizePolicy(
                 QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
             )
-            self.image_label.setMinimumSize(
-                400, 400
-            )  # Allow the QLabel to shrink to a reasonable minimum size
+            # Allow the image to shrink to a reasonable minimum size
+            self.image_label.setMinimumSize(400, 400)
 
-            # Preview mode just has "Preview" button
-            self.make_button = create_button("Preview", self.make_image, True, self)
-            button_layout = create_hbox_layout([self.make_button])
-            height = self.output_min_height
-            stretch = preview_ratio
+            self.output_window.setMinimumSize(70, self.preview_output_height)
+
+            # Vertical size ratios of widgets:  buttons, output_window, image
+            stretch = [1, 3, 15]
         else:
-            # Full Build Mode
-            # Create the buttons in button_flags
-            buttons = []
+            # Full Build Mode - just an output window, no image preview
+            self.output_window.setMinimumSize(70, self.full_output_height)
 
-            # Create buttons that are in self.button_flags
-            for defn in self.button_definitions:
-                if defn["id"] in self.button_flags:
-                    button = create_button(defn["label"], defn["callback"], defn["focus"], self)
-                    buttons.append(button)
-
-            button_layout = create_hbox_layout(buttons)
-            height = self.output_max_height
-            stretch = full_ratio
+            # Vertical size ratios of widgets:  buttons, output_window, image
+            stretch = [1, 20, 0]
 
         self.image = Image(
             self.main, tab_name=self.tab_name, image_label=self.image_label,
             preview_mode=self.preview_mode
         )
-
-        self.output_window.setMinimumSize(60, height)
 
         widgets = [button_layout, self.output_window, self.image_label]
         self.create_page(widgets, None, None, None, vertical=True, stretch=stretch)

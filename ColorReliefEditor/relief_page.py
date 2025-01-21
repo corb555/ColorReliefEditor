@@ -24,7 +24,12 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-from PyQt6.QtWidgets import QVBoxLayout
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtWidgets import QVBoxLayout
+except ImportError:
+    from PyQt6.QtWidgets import QVBoxLayout
+
 from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.instructions import get_instructions

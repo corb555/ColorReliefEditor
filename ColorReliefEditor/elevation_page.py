@@ -30,9 +30,16 @@
 from functools import partial
 import os
 
-from PyQt6.QtCore import QUrl
-from PyQt6.QtGui import QDesktopServices
-from PyQt6.QtWidgets import QMessageBox
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtCore import QUrl
+    from PySide6.QtGui import QDesktopServices
+    from PySide6.QtWidgets import QMessageBox
+except ImportError:
+    from PyQt6.QtCore import QUrl
+    from PyQt6.QtGui import QDesktopServices
+    from PyQt6.QtWidgets import QMessageBox
+
 from YMLEditor.settings_widget import SettingsWidget
 
 from ColorReliefEditor.file_drop_widget import FileDropWidget
@@ -65,7 +72,7 @@ class ElevationPage(TabPage):
             main (MainClass): Reference to the main application class.
             name (str): Name of the widget.
         """
-        font_style = f"font-size: {main.font_size + 3}px; "
+        font_style = "font-weight: bold;"
 
         # Set up display format for the config settings that this tab uses
         formats = {
@@ -149,7 +156,7 @@ class ElevationPage(TabPage):
 
         # Update DEM proxy file if WARP changes. This forces DEM rebuild (for any layer)
         target_proxy = self.main.project.get_proxy_path("dem")
-        self.main.proj_config.add_proxy(
+        self.main.proj_config.register_proxy_file(
             target_proxy, ["WARP1", "WARP2", "WARP3", "WARP4", "EDGE"]
         )
 
@@ -160,7 +167,7 @@ class ElevationPage(TabPage):
             layer_name = self.main.project.layer_id_to_name(layer_id)
             if layer_name:
                 target_proxy = self.main.project.get_proxy_layer_path("dem", layer_name)
-                self.main.proj_config.add_proxy(
+                self.main.proj_config.register_proxy_file(
                     target_proxy, [f"FILES.{layer_id}"]
                     )
 

@@ -2,5 +2,5 @@ setuptools~=56.0.0
 pytest~=8.3.4
 PyQt6~=6.7.1
 PyQt6-sip~=13.8.0
-YMLEditor~=0.1.17
+YMLEditor~=0.3
 appdirs~=1.4.4

@@ -29,9 +29,15 @@ import os
 import re
 import shutil
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QDragEnterEvent
-from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtCore import Qt
+    from PySide6.QtGui import QDragEnterEvent
+    from PySide6.QtWidgets import QWidget, QLabel, QVBoxLayout
+except ImportError:
+    from PyQt6.QtCore import Qt
+    from PyQt6.QtGui import QDragEnterEvent
+    from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
 
 class FileDropWidget(QWidget):

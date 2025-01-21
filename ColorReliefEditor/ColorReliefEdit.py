@@ -28,8 +28,18 @@ from importlib.metadata import version, PackageNotFoundError
 import platform
 import sys
 
-from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, \
-    QStyleFactory
+# Handle imports for PyQt6 versus PySide depending on which has been installed
+try:
+    from PySide6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, \
+        QStyleFactory, QApplication
+    from PySide6.QtGui import QColor
+    from PySide6.QtCore import QEvent, QObject
+except ImportError:
+    from PyQt6.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget, QVBoxLayout, \
+        QStyleFactory, QApplication
+    from PyQt6.QtGui import QColor
+    from PyQt6.QtCore import QEvent, QObject
+
 from YMLEditor.yaml_config import YamlConfig
 
 from ColorReliefEditor.color_page import ColorPage
@@ -71,42 +81,27 @@ class ColorReliefEdit(QMainWindow):
         super().__init__()
         self.verbose = 0
 
+        self.current_tab = None
+        self.tabs = QTabWidget()  # Tab for each feature
+
         # Load general application settings
         self.app_config: YamlConfig = YamlConfig()  # Manage general application settings
         app_path = self.load_app_config("relief_editor.cfg")
-        self.verbose = int(self.app_config["VERBOSE"]) or 0
-        app_version = get_version("ColorReliefEditor")
-        print(f"ColorReliefEditor v{app_version}")
+        self.verbose = int(self.app_config.get("VERBOSE")) or 0
+
+        self.warn(f"ColorReliefEditor v{get_version('ColorReliefEditor')}")
         self.warn(f"App config file: {app_path}")  # Log path for config file
 
-        # Get preferred font size
-        self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
+        self.setup_style(app)
 
-        # Set Application style
-        if platform.system() == "Linux":
-            style_name = "fusion"  # Use Fusion for Linux instead of default
-            app.setStyle(QStyleFactory.create(style_name))
-        elif platform.system() == "Darwin":
-            style_name = "MacOs"
-            app.setStyle(QStyleFactory.create(style_name))
-        else:
-            style_name = "default"
-            print(f"OS: {platform.system()}")
+        # Manage Makefile operations to build images
+        self.make_process = MakeProcess(self.verbose, is_dark_mode())
 
-        set_style(app, self.font_size, style_name)
-
-        self.make_process = MakeProcess(
-            verbose=self.verbose
-        )  # Manage Makefile operations to build images
-
-        # Manage opening projects and keeping paths to key project files
+        # Manage opening projects and  paths to key project files
         self.project: ProjectConfig = ProjectConfig(self, verbose=self.verbose)
 
-        # Manage project settings (loaded by Project tab)
+        # Manage project settings (Project tab will do the load)
         self.proj_config: YamlConfig = YamlConfig(verbose=self.verbose)
-
-        self.current_tab = None
-        self.tabs = QTabWidget()  # Tab for each feature
 
         # The tabs to launch for basic mode and expert mode
         if self.app_config["MODE"] == "basic":
@@ -130,6 +125,34 @@ class ColorReliefEdit(QMainWindow):
                 }
 
         self.init_ui(tab_classes, app)
+
+    def setup_style(self, app):
+        # Get preferred font size
+        self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
+
+        # Set Application style
+        if platform.system() == "Linux":
+            style_name = "fusion"  # Use Fusion for Linux instead of default
+            app.setStyle(style_name)
+            if is_dark_mode():
+                self.background_color = "#393939"
+            else:
+                self.background_color = "#e5e5e5"
+        elif platform.system() == "Darwin":
+            style_name = "MacOs"
+            app.setStyle(style_name)
+            if is_dark_mode():
+                self.background_color = "#393939"
+            else:
+                self.background_color = "#e5e5e5"
+        else:
+            style_name = "default"
+            print(f"OS: {platform.system()}")
+
+        self.text_color = self.tabs.palette().color(self.tabs.foregroundRole()).name()
+        self.custom_stylesheet(
+            app, self.font_size, style_name, self.background_color, self.text_color
+            )
 
     def init_ui(self, tab_classes, app) -> None:
         """
@@ -276,81 +299,98 @@ class ColorReliefEdit(QMainWindow):
         if self.verbose > 0:
             print(message)
 
+    def custom_stylesheet(self, app, font_size, style_name, background_color, text_color):
+        # Set application Widget styles
+        Zcolors = {
+            "grid": "#323232", "highlight": "orange", "error": "Crimson", "normal": "Silver",
+            "buttonBackground": "#323232", "background": "#4b4b4b", "readonly": "#3a3a3a",
+            "lineedit": "#202020", "label": "white"
+        }
 
-def set_style(app, font_size, style_name):
-    # Set application Widget styles - lightslategray
-    colors = {
-        "grid": "#323232", "highlight": "orange", "error": "Crimson", "normal": "Silver",
-        "buttonBackground": "#323232", "background": "#4b4b4b", "readonly": "#3a3a3a",
-        "lineedit": "#202020", "label": "white"
-    }
+        dark_style = f"""
+                    QWidget {{
+                        background-color: #353535;
+                        color: #FFFFFF;
+                    }}
+                    QTabBar::tab:selected {{
+                        background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, 
+                        stop:1 #005F9E);
+                        border-radius: 4px;
+                    }}
+                    QTabBar::tab:disabled {{         /* Disabled tab */
+                        color: gray;                 /* Text color for disabled tab */
+                    }}
+                    """
 
-    dark_style = f"""
-                QWidget {{
-                    background-color: #353535;
-                    color: #FFFFFF;
-                }}
-                QTabBar::tab:selected {{
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, 
-                    stop:1 #005F9E);
-                    border-radius: 4px;
-                }}
-                QTabBar::tab:disabled {{          /* Disabled tab */
-                    color: gray;                 /* Text color for disabled tab */
-                }}
-                """
+        min_style = f"""
+                    QWidget {{
+                        font-size: {font_size}px;  /* Default font size */
+                    }}
+                    QLineEdit:read-only {{
+                        background-color:{background_color};
+                        outline:none; 
+                        border:none;
+                    }}
+                    QPlainTextEdit:read-only {{
+                        color: {text_color};
+                    }}
+                    """
+        """ 
+        main_style = 
+        
+                    QWidget {{
+                        font-size: {font_size}px;  /* Default font size */
+                    }}
+                    QLineEdit {{
+                        background-color:{colors["lineedit"]}; 
+                    }}
+                    QTextEdit {{
+                        background-color:{colors["lineedit"]}; 
+                        border: none;
+                    }}
+                    QLineEdit:read-only {{
+                        background-color:#f0f0f0;
+                        outline:none; 
+                        border:none;
+                    }}
+                    QLabel {{
+                        color:{colors["label"]}; 
+                    }}
+                    QTextBrowser {{
+                        background-color:{colors["grid"]}; 
+                        border:none;
+                    }}
+                    QTableWidget::item {{
+                        margin: 0px;  /* Remove margin inside the cells */
+                        padding: 0px; /* Remove padding inside the cells */
+                    }}
+                    QTableWidget {{
+                        gridline-color:{"red"};
+                        background-color:{colors["grid"]};
+                        outline:none; 
+                        border:none;
+                        margin: 0px;  /* Remove any margin inside the cells */
+                        padding: 0px; /* Remove any padding around cell content */
+                    }}
+                    QHeaderView::section {{
+                        background-color:{colors["grid"]};
+                        padding:3px;
+                    }}                  
+                    QPlainTextEdit {{
+                        background-color: {colors["background"]};
+                    }}
+                    QScrollBar::handle:vertical {{
+                        background: white;
+                        min-height: 15px;
+                    }}
+                    """
 
-    main_style = f"""
-                QWidget {{
-                    font-size: {font_size}px;  /* Default font size */
-                }}
-                QLineEdit {{
-                    background-color:{colors["lineedit"]}; 
-                }}
-                QTextEdit {{
-                    background-color:{colors["lineedit"]}; 
-                    border: none;
-                }}
-                QLineEdit:read-only {{
-                    background-color:{colors["readonly"]};
-                    outline:none; 
-                    border:none;
-                }}
-                QLabel {{
-                    color:{colors["label"]}; 
-                }}
-                QTextBrowser {{
-                    background-color:{colors["grid"]}; 
-                    border:none;
-                }}
-                QTableWidget::item {{
-                    margin: 0px;  /* Remove margin inside the cells */
-                    padding: 0px; /* Remove padding inside the cells */
-                }}
-                QTableWidget {{
-                    gridline-color:{"red"};
-                    background-color:{colors["grid"]};
-                    outline:none; 
-                    border:none;
-                    margin: 0px;  /* Remove any margin inside the cells */
-                    padding: 0px; /* Remove any padding around cell content */
-                }}
-                QHeaderView::section {{
-                    background-color:{colors["grid"]};
-                    padding:3px;
-                }}                  
-                QPlainTextEdit {{
-                    background-color: {colors["background"]};
-                }}
-                QScrollBar::handle:vertical {{
-                    background: white;
-                    min-height: 15px;
-                }}
-                """
-    if style_name == "fusion":
-        main_style += dark_style
+        if style_name == "fusion":
+            # Add dark styles to main style
+            min_style += dark_style
 
-    app.setStyleSheet(main_style)
+        print(min_style)
+        app.setStyleSheet(min_style)
 
 
 def get_version(package_name: str) -> str:
@@ -369,6 +409,42 @@ def get_version(package_name: str) -> str:
         return "Package not found or not installed."
 
 
+def is_dark_mode() -> bool:
+    """
+    Determines whether the current application style is dark or light.
+
+    This is achieved by analyzing the background and text colors of a common widget
+    and applying a heuristic based on their brightness.
+
+    Returns:
+        bool: True if the style is considered dark, False otherwise.
+    """
+    # Create a temporary widget to sample colors
+    temp_widget = QWidget()
+    temp_widget.setStyleSheet("")  # Reset to default style
+
+    # Get the background and text colors
+    bg_color = temp_widget.palette().color(temp_widget.backgroundRole())
+    text_color = temp_widget.palette().color(temp_widget.foregroundRole())
+
+    def luminance(color: QColor) -> float:
+        return (0.299 * color.red() + 0.587 * color.green() + 0.114 * color.blue()) / 255.0
+
+    # Calculate brightness for both colors
+    bg_brightness = luminance(bg_color)
+    text_brightness = luminance(text_color)
+
+    # If the background is darker than the text, consider it "dark mode"
+    return bg_brightness < text_brightness
+
+
+def _exec(obj):
+    # PySide and PyQT handle exec differently
+    if hasattr(obj, 'exec'):
+        return obj.exec()
+    else:
+        return obj.exec_()
+
 def main():
     """
     Entry point for the application. Initializes the QApplication and shows the main window.
@@ -376,7 +452,9 @@ def main():
     app = QApplication(sys.argv)
     main_window = ColorReliefEdit(app)
     main_window.show()
-    sys.exit(app.exec())
+
+    # Start QT App event loop
+    sys.exit(_exec(app))
 
 
 if __name__ == "__main__":

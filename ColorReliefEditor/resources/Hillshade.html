@@ -52,6 +52,7 @@
 <ul>
     <li><b>Shading:</b> Choose the shading algorithm.</li>
     <li><b>Strength:</b> Adjust the strength of the shading.</li>
+    <li><b>Brightness:</b> > 1 is brighter.  < 1 is dimmer.  1 is no change</li>
     <li><b>Preview:</b> Click Preview to generate a small hillshade preview with the current
     settings.</li>
 </ul>
@@ -59,24 +60,16 @@
 
 <!-- Expert Settings section is shown or hidden depending on the app mode -->
 <div class="expert-section">
-    <p>Gamma</p>
-    <p>Gamma 0.5–0.8: Generally makes image brighter. For better visibility of shadowed areas.</p>
-    <p>Gamma = 1: Image is not modified</p>
-    <p>Gamma 1.2–2.0: Generally makes image darker. Provides strong highlights
-    and contrasts.</p>
+    <p>Expert Mode</p>
     <ul>
         <li><b>Other:</b> Set any other gdaldem hillshade settings such as -s 3 (scale), -alt 3 (altitude)</li>
-        <li>Not all parameter combinations are valid. Refer to <i>gdaldem hillshade</i> documentation for more details.</li>
-        <li>Ensure parameters are correctly formatted:</li>
-        <li><b>Strength:</b> -z 3</li>
-        <li><b>Scale:</b> -s 3</li>
-        <li><b>Altitude:</b> -alt 3</li>
     </ul>
     <br>
 </div>
 
 <h3>Notes</h3>
 <p>The first time the preview is built it will take considerably longer</p>
+<p>Different shading methods produce different brightness.  Use "brightness" to adjust this.</p>
 <br>
 
 </body>
