@@ -79,11 +79,12 @@ class ElevationPage(TabPage):
             "expert": {
                 "NAMES": ("Layers", "read_only", None, 680, font_style),
                 "LAYER": ("Active Layer", "combo", main.project.layer_ids, 30),
-                "NAMES.@LAYER": ("Layer Name", "line_edit", r'^\w+$', 200), "FILES.@LAYER": (
+                "NAMES.@LAYER": ("Layer Name", "line_edit", r'^\w+$', 200),
+                "FILES.@LAYER": (
                     "Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$",
-                    680), "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
-                "LICENSES.@LAYER": ("License", "line_edit", None, 680),
-                "LABEL3": ("", "label", None, 400), "LABEL4": ("", "label", None, 400),
+                    680),
+                "EXTENT.@LAYER": ("Extent", "line_edit", None, 400),
+                "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
             }, "basic": {
                 "FILES.@LAYER": (
                     "Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$",
@@ -169,7 +170,7 @@ class ElevationPage(TabPage):
                 target_proxy = self.main.project.get_proxy_layer_path("dem", layer_name)
                 self.main.proj_config.register_proxy_file(
                     target_proxy, [f"FILES.{layer_id}"]
-                    )
+                )
 
         # Update Display
         self.settings_widget.display()

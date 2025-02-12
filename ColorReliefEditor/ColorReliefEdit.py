@@ -27,6 +27,9 @@
 from importlib.metadata import version, PackageNotFoundError
 import platform
 import sys
+from typing import Dict, Type
+
+from ColorReliefEditor.tab_page import TabPage
 
 # Handle imports for PyQt6 versus PySide depending on which has been installed
 try:
@@ -59,12 +62,18 @@ class ColorReliefEdit(QMainWindow):
     """
     Main window for the app. This uses Digital Elevation files and GDAL tools to create hillshade
     and color
-    relief images which are combined into a final relief image. All configurations, including
-    colors and
-    parameters, are set directly in the app. GDAL utilities are automatically executed to
-    generate the color relief images.
+    relief images which are combined into a final relief image.
+
+    **Steps ColorReliefEditor uses for Generating Images:**
+
+    1. The application provides a tabbed GUI to edit GDAL settings.
+    2. These settings are saved in a YAML configuration file.
+    3. When the user selects either the *Create* or *Preview*, the editor triggers a Make command with the corresponding target.
+    4. The Makefile invokes `color_relief.sh` for the steps required to generate the selected image type.
+    5. The `color_relief.sh` script reads the settings from the YAML file and runs the specified GDAL utilities to generate the requested image.
 
     Attributes:
+
     - make (QProcess or None): A QProcess object that handles GDAL makefile operations.
     - project (ProjectData): An instance of the ProjectData class, which handles the
       management of project data.
@@ -74,87 +83,60 @@ class ColorReliefEdit(QMainWindow):
       settings, color ramps, and makefile operations.
     - current_tab (int): The index of the currently selected tab in the QTabWidget.
     - verbose (int): The verbosity level. 0=quiet, 1=error, 2=info.
+    - app_config (YamlConfig): An instance of the AppConfig class.
+    - font_size (int): The font size of the QApplication.
+
     **Methods**:
     """
 
     def __init__(self, app) -> None:
         super().__init__()
         self.verbose = 0
-
         self.current_tab = None
         self.tabs = QTabWidget()  # Tab for each feature
 
         # Load general application settings
-        self.app_config: YamlConfig = YamlConfig()  # Manage general application settings
+        self.app_config = YamlConfig()
         app_path = self.load_app_config("relief_editor.cfg")
         self.verbose = int(self.app_config.get("VERBOSE")) or 0
 
+        # Display version and config path if verbose > 0
         self.warn(f"ColorReliefEditor v{get_version('ColorReliefEditor')}")
         self.warn(f"App config file: {app_path}")  # Log path for config file
 
-        self.setup_style(app)
+        # Set up stylesheet
+        self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
+        self.setup_style(app, self.font_size)
 
         # Manage Makefile operations to build images
         self.make_process = MakeProcess(self.verbose, is_dark_mode())
 
-        # Manage opening projects and  paths to key project files
+        # Manage opening projects and paths to key project files
         self.project: ProjectConfig = ProjectConfig(self, verbose=self.verbose)
 
-        # Manage project settings (Project tab will do the load)
+        # Manage project settings (Project_page will use this to load the projects)
         self.proj_config: YamlConfig = YamlConfig(verbose=self.verbose)
 
-        # The tabs to launch for basic mode and expert mode
-        if self.app_config["MODE"] == "basic":
-            tab_classes = {
-                "Project": ProjectPage, "Elevation Files": ElevationPage,
-                "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
-            }
+        # Base tabs/pages that are common to both basic and expert modes
+        base_tabs: Dict[str, Type[TabPage]] = {
+            "Project": ProjectPage, "Elevation Files": ElevationPage, "Hillshade": HillshadePage,
+            "Color": ColorPage, "Create": ReliefPage,
+        }
+
+        # Extended tabs for expert mode if SHOW_TABS="extended"
+        extended_tabs: Dict[str, Type[TabPage]] = {
+            "Contour": ContourPage, "Misc": MiscPage, "Settings": AppSettingsPage,
+        }
+
+        # Use base tabs unless mode is expert and show_tabs is extended
+        if self.app_config["MODE"] == "expert" and self.app_config["SHOW_TABS"] == "extended":
+            tab_pages = {**base_tabs, **extended_tabs}
         else:
-            if self.app_config["SHOW_TABS"] == "normal":
-                # Expert Mode with SHOW_TABS="normal"
-                tab_classes = {
-                    "Project": ProjectPage, "Elevation Files": ElevationPage,
-                    "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
-                }
-            else:
-                # Expert Mode with SHOW_TABS="extended" - Adds Misc and Settings Tab
-                tab_classes = {
-                    "Project": ProjectPage, "Elevation Files": ElevationPage,
-                    "Hillshade": HillshadePage, "Color": ColorPage, "Create": ReliefPage,
-                    "Contour": ContourPage, "Misc": MiscPage, "Settings": AppSettingsPage
-                }
+            tab_pages = base_tabs
 
-        self.init_ui(tab_classes, app)
+        self._init_ui(tab_pages, app)
 
-    def setup_style(self, app):
-        # Get preferred font size
-        self.font_size = int(self.app_config.get("FONT_SIZE", "12"))
-
-        # Set Application style
-        if platform.system() == "Linux":
-            style_name = "fusion"  # Use Fusion for Linux instead of default
-            app.setStyle(style_name)
-            if is_dark_mode():
-                self.background_color = "#393939"
-            else:
-                self.background_color = "#e5e5e5"
-        elif platform.system() == "Darwin":
-            style_name = "MacOs"
-            app.setStyle(style_name)
-            if is_dark_mode():
-                self.background_color = "#393939"
-            else:
-                self.background_color = "#e5e5e5"
-        else:
-            style_name = "default"
-            print(f"OS: {platform.system()}")
-
-        self.text_color = self.tabs.palette().color(self.tabs.foregroundRole()).name()
-        self.custom_stylesheet(
-            app, self.font_size, style_name, self.background_color, self.text_color
-            )
-
-    def init_ui(self, tab_classes, app) -> None:
+    def _init_ui(self, tab_pages: Dict[str, Type[TabPage]], app) -> None:
         """
         The UI is a tab control with a tab per feature
         """
@@ -169,21 +151,126 @@ class ColorReliefEdit(QMainWindow):
         tab_section.addWidget(self.tabs)
 
         # Instantiate tabs
-        for tab_name, tab_class in tab_classes.items():
-            tab = tab_class(self, tab_name)
+        for tab_name, tab_page in tab_pages.items():
+            tab = tab_page(self, tab_name)
             self.tabs.addTab(tab, tab_name)
 
         # Note: when a project is loaded, all tabs will have load() called
 
-        # Notify when user changes tabs
+        # Notify when user switches tabs
         self.tabs.currentChanged.connect(self.on_tab_changed)
         self.current_tab: int = self.tabs.currentIndex()  # Index of the current tab
 
-        # Disable all tabs except Project  until a project has been loaded
+        # Disable all tabs except Project until a project has been loaded
         self.set_tabs_available(False, ["Project", "Settings"])
 
+    def setup_style(self, app, font_size):
+        """
+        Configure the application's style based on the operating system and theme.
+
+        This method determines the application style (e.g., Fusion, macOS)
+        and applies the appropriate stylesheet for the platform and adjusts colors based on the
+        system's dark mode setting.
+
+        Args:
+            app (QApplication): The QT application instance.
+            font_size (int): The default font size to be applied.
+
+        Returns:
+            None
+        """
+        if platform.system() == "Linux":
+            # Use Fusion style for better cross-platform appearance on Linux
+            style_name = "fusion"
+            app.setStyle(style_name)
+            background_color = "#3e3e3e" if is_dark_mode() else "#e5e5e5"
+        elif platform.system() == "Darwin":
+            # Use macOS native style
+            style_name = "macos"
+            app.setStyle(style_name)
+            background_color = "#393939" if is_dark_mode() else "#e5e5e5"
+        else:
+            # Default style for other operating systems
+            style_name = "default"
+            background_color = None  # Default background color
+            print(f"OS: {platform.system()}")
+
+        # Get the text color based on the system theme
+        text_color = self.tabs.palette().color(self.tabs.foregroundRole()).name()
+
+        # Apply the custom stylesheet with the determined settings
+        self.custom_stylesheet(app, font_size, style_name, background_color, text_color)
+
+    def custom_stylesheet(self, app, font_size, style_name, background_color, text_color):
+        """
+        Apply a custom stylesheet to the application.
+
+        This method defines styles for various widgets and adjusts their appearance
+        based on the provided parameters such as font size, background color, and text color.
+
+        Args:
+            app (QApplication): The PyQt6 application instance.
+            font_size (int): Default font size for the application.
+            style_name (str): The name of the system style (e.g., 'fusion', 'macos').
+            background_color (str): The background color for read-only widgets (in HEX format).
+            text_color (str): The text color for editable and non-editable widgets (in HEX format).
+
+        Returns:
+            None
+        """
+        # Optional background color for read-only line edits
+        line_edit_ro = f"background-color:{background_color};" if background_color else ""
+
+        # Main application styles
+        main_style = f"""
+            QWidget {{
+                font-size: {font_size}px; /* Default font size */
+            }}
+            QLineEdit:read-only {{
+                {line_edit_ro}
+                outline: none;
+                border: none;
+            }}
+            QPlainTextEdit:read-only {{
+                color: {text_color};
+            }}
+            QTextEdit {{
+                border: none;
+            }}
+            QTableWidget {{
+                outline: none;
+                border: none;
+                margin: 0px; /* Remove any margin inside the cells */
+                padding: 0px; /* Remove any padding around cell content */
+            }}
+        """
+
+        # Fusion dark mode-specific styles
+        fusion_dark = """
+            QWidget {
+                color: #FFFFFF;
+            }
+            QTabBar::tab:selected {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, stop:1 #005F9E);
+                border-radius: 4px;
+            }
+            QTabBar::tab:disabled { /* Disabled tab */
+                color: gray; /* Text color for disabled tab */
+            }
+        """
+
+        # Combine and apply the styles
+        if style_name == "fusion":
+            # Append Fusion dark styles to the main style
+            app.setStyleSheet(main_style + fusion_dark)
+        else:
+            # Apply the main style alone
+            app.setStyleSheet(main_style)
+
     def save_settings(self):
-        # Save App Settings and Project Settings
+        """
+        Save App Settings and Project Settings
+        """
         try:
             self.app_config.save()
             if self.proj_config.file_path is not None:
@@ -299,99 +386,6 @@ class ColorReliefEdit(QMainWindow):
         if self.verbose > 0:
             print(message)
 
-    def custom_stylesheet(self, app, font_size, style_name, background_color, text_color):
-        # Set application Widget styles
-        Zcolors = {
-            "grid": "#323232", "highlight": "orange", "error": "Crimson", "normal": "Silver",
-            "buttonBackground": "#323232", "background": "#4b4b4b", "readonly": "#3a3a3a",
-            "lineedit": "#202020", "label": "white"
-        }
-
-        dark_style = f"""
-                    QWidget {{
-                        background-color: #353535;
-                        color: #FFFFFF;
-                    }}
-                    QTabBar::tab:selected {{
-                        background: qlineargradient(x1:0, y1:0, x2:0, y2:1, stop:0 #0078D7, 
-                        stop:1 #005F9E);
-                        border-radius: 4px;
-                    }}
-                    QTabBar::tab:disabled {{         /* Disabled tab */
-                        color: gray;                 /* Text color for disabled tab */
-                    }}
-                    """
-
-        min_style = f"""
-                    QWidget {{
-                        font-size: {font_size}px;  /* Default font size */
-                    }}
-                    QLineEdit:read-only {{
-                        background-color:{background_color};
-                        outline:none; 
-                        border:none;
-                    }}
-                    QPlainTextEdit:read-only {{
-                        color: {text_color};
-                    }}
-                    """
-        """ 
-        main_style = 
-        
-                    QWidget {{
-                        font-size: {font_size}px;  /* Default font size */
-                    }}
-                    QLineEdit {{
-                        background-color:{colors["lineedit"]}; 
-                    }}
-                    QTextEdit {{
-                        background-color:{colors["lineedit"]}; 
-                        border: none;
-                    }}
-                    QLineEdit:read-only {{
-                        background-color:#f0f0f0;
-                        outline:none; 
-                        border:none;
-                    }}
-                    QLabel {{
-                        color:{colors["label"]}; 
-                    }}
-                    QTextBrowser {{
-                        background-color:{colors["grid"]}; 
-                        border:none;
-                    }}
-                    QTableWidget::item {{
-                        margin: 0px;  /* Remove margin inside the cells */
-                        padding: 0px; /* Remove padding inside the cells */
-                    }}
-                    QTableWidget {{
-                        gridline-color:{"red"};
-                        background-color:{colors["grid"]};
-                        outline:none; 
-                        border:none;
-                        margin: 0px;  /* Remove any margin inside the cells */
-                        padding: 0px; /* Remove any padding around cell content */
-                    }}
-                    QHeaderView::section {{
-                        background-color:{colors["grid"]};
-                        padding:3px;
-                    }}                  
-                    QPlainTextEdit {{
-                        background-color: {colors["background"]};
-                    }}
-                    QScrollBar::handle:vertical {{
-                        background: white;
-                        min-height: 15px;
-                    }}
-                    """
-
-        if style_name == "fusion":
-            # Add dark styles to main style
-            min_style += dark_style
-
-        print(min_style)
-        app.setStyleSheet(min_style)
-
 
 def get_version(package_name: str) -> str:
     """
@@ -413,8 +407,8 @@ def is_dark_mode() -> bool:
     """
     Determines whether the current application style is dark or light.
 
-    This is achieved by analyzing the background and text colors of a common widget
-    and applying a heuristic based on their brightness.
+    This is achieved by analyzing the background and text colors of a common widget.
+    If the text is brighter than the background, return True.
 
     Returns:
         bool: True if the style is considered dark, False otherwise.
@@ -444,6 +438,7 @@ def _exec(obj):
         return obj.exec()
     else:
         return obj.exec_()
+
 
 def main():
     """

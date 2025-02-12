@@ -79,7 +79,8 @@ class PreviewWidget(TabPage):
             settings (object):  Configuration settings object for this widget.
             preview_mode (bool): Whether the widget is in preview mode.
             on_save (callable): Callback function executed upon saving.
-            button_ids (list): List of button ids to display in full mode (make,view,publish,clean,cancel)
+            button_ids (list): List of button ids to display in full mode (make,view,publish,
+            clean,cancel)
         """
         self.image_file = None
         self.image = None
@@ -93,8 +94,7 @@ class PreviewWidget(TabPage):
             {"id": "make", "label": "Create", "callback": self.make_image, "focus": True},
             {"id": "view", "label": "View...", "callback": self.launch_viewer, "focus": False},
             {"id": "publish", "label": "Publish", "callback": self.publish, "focus": False}, {
-                "id": "clean", "label": "Cleanup files", "callback": self.make_clean,
-                "focus": False
+                "id": "clean", "label": "Cleanup files", "callback": self.make_clean, "focus": False
             }, {
                 "id": "cancel", "label": "Cancel", "callback": self.on_cancel_button, "focus": False
             }, ]

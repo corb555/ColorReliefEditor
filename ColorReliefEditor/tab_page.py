@@ -32,9 +32,9 @@
 try:
     from PySide6.QtCore import Qt
     from PySide6.QtWidgets import (QLabel, QPushButton, QWidget, QTextBrowser, QSizePolicy,
-                                 QHBoxLayout, QVBoxLayout, QPlainTextEdit, QTableWidget,
-                                 QAbstractItemView, QDialog, QListWidget, QDialogButtonBox,
-                                 QSpacerItem)
+                                   QHBoxLayout, QVBoxLayout, QPlainTextEdit, QTableWidget,
+                                   QAbstractItemView, QDialog, QListWidget, QDialogButtonBox,
+                                   QSpacerItem)
 except ImportError:
     from PyQt6.QtCore import Qt
     from PyQt6.QtWidgets import (QLabel, QPushButton, QWidget, QTextBrowser, QSizePolicy,

@@ -27,7 +27,6 @@
 
 #
 #
-from pathlib import Path
 
 try:
     from PySide6.QtWidgets import QVBoxLayout
@@ -104,4 +103,3 @@ class ContourPage(TabPage):
         self.settings_widget.display()
         if self.preview:
             self.preview.display()
-

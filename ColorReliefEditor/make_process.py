@@ -34,12 +34,11 @@ import shutil
 
 # Handle imports for PyQt6 versus PySide depending on which has been installed
 try:
-    from PySide6.QtCore import QObject,  Signal, QProcess
+    from PySide6.QtCore import QObject, Signal, QProcess
     from PySide6.QtGui import QTextCursor, QTextCharFormat, QColor
 except ImportError:
     from PyQt6.QtCore import QObject, pyqtSignal as Signal, QProcess
     from PyQt6.QtGui import QTextCursor, QTextCharFormat, QColor
-
 
 # ANSI color mapping
 ANSI_COLOR_MAP = {
@@ -73,7 +72,7 @@ class MakeProcess(QObject):
 
     make_finished = Signal(str, int)
 
-    def __init__(self, verbose=0, dark_mode=True ):
+    def __init__(self, verbose=0, dark_mode=True):
         """
         Initialize the MakeProcess object.
         """
@@ -217,10 +216,6 @@ class MakeProcess(QObject):
         self.build_required = True
         output = self.process.readAllStandardError().data().decode()
 
-        A=7
-        B=9
-        aa = print(   (A < 4) | ((A > 90) & (A < 150))  | (A > 250) , B, (A / 255.) * B)
-
         if self._output_window:
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
             if "ERR" in output or "err" in output or "Err" in output or "failed" in output:
@@ -268,8 +263,8 @@ class MakeProcess(QObject):
 
     def warn(self, message):
         if self.verbose > 0:
-            print(message)
+            print(f"WARNING: {message}")
 
     def info(self, message):
         if self.verbose > 1:
-            print(message)
+            print(f"INFO: {message}")
