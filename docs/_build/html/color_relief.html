@@ -19,7 +19,8 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="tab_page module" href="tab_page.html" /> 
+    <link rel="next" title="ColorReliefEdit module" href="ColorReliefEdit.html" />
+    <link rel="prev" title="color_page module" href="color_page.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -43,29 +44,34 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">color_relief.sh</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-options">Command Line Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-naming">File Naming</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gdal-commands-and-parameters">GDAL Commands and Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#yaml-items">YAML Items</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#utility-functions">Utility Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#main-functions">MAIN FUNCTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html">Makefile for Color Relief Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">color_relief.sh</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#main-functions">Main Functions:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#file-naming-standards">File Naming Standards:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#gdal-commands-run">GDAL commands run:</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#yaml-file">YAML File:</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -97,237 +103,355 @@
              
   <section id="color-relief-sh">
 <h1>color_relief.sh<a class="headerlink" href="#color-relief-sh" title="Permalink to this heading"></a></h1>
-<p>This shell script provides utilities for processing DEM files using GDAL tools.
-All gdal switches are pulled from a YAML file.</p>
-<section id="main-functions">
-<h2>Main Functions:<a class="headerlink" href="#main-functions" title="Permalink to this heading"></a></h2>
+<p>A shell script for processing Digital Elevation Model (DEM) files using GDAL utilities.
+GDAL switches are configured via a YAML file, <cite>${region}_relief.cfg</cite>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>“init_dem” must be run once before any other commands.</p>
+</div>
+<section id="command-line-options">
+<h2>Command Line Options<a class="headerlink" href="#command-line-options" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><p>The following options run GDAL utilities using parameters from a YAML config file:</p></li>
-<li><p>–init_dem &lt;region&gt;: Merges multiple DEM files into a single output DEM for the specified region.</p></li>
-<li><p>–create_color_relief &lt;region&gt;: Generates a color relief image from a DEM file using a specified color ramp.</p></li>
-<li><p>–create_hillshade &lt;region&gt;: Produces a hillshade image from a DEM file with configurable parameters.</p></li>
-<li><p>–merge_hillshade &lt;region&gt;: Combines color relief and hillshade images into a single relief image.</p></li>
-<li><p>–preview_dem &lt;region&gt;: Extracts a small section from the merged DEM file for preview generation.</p></li>
-<li><p>–create_proxy region, layer, name : Creates a proxy file</p></li>
+<li><p><strong>--init_dem</strong> - Merges multiple DEM files into a single DEM file.</p></li>
+<li><p><strong>--create_color_relief</strong> - Generates a color relief image from a DEM file and color ramp.</p></li>
+<li><p><strong>--create_hillshade</strong> - Produces a hillshade image from a DEM file.</p></li>
+<li><p><strong>--merge_hillshade</strong> - Merges color relief and hillshade images into a single image.</p></li>
+<li><p><strong>--preview_dem</strong> - Extracts a small section from the merged DEM file for preview generation.</p></li>
+<li><p><strong>--create_contour</strong> - Creates a contour shapefile</p></li>
+<li><p><strong>--create_trigger</strong> - Creates a trigger file for granular makefile dependency checking</p></li>
+<li><p><strong>--doc</strong> - Generates RST documentation from script comments starting with <cite>##</cite>.</p></li>
 </ul>
 </div></blockquote>
 </section>
-<section id="file-naming-standards">
-<h2>File Naming Standards:<a class="headerlink" href="#file-naming-standards" title="Permalink to this heading"></a></h2>
+<section id="file-naming">
+<h2>File Naming<a class="headerlink" href="#file-naming" title="Permalink to this heading"></a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><p>ending defaults to “tif”</p></li>
-<li><p>suffix is “_prv” or blank depending on preview mode</p></li>
-<li><p>config “${region}_relief.cfg”</p></li>
-<li><p>dem_file “${region}_${layer}_DEM${suffix}.${ending}”</p></li>
-<li><p>color_relief “${region}_${layer}_color${suffix}.${ending}”</p></li>
-<li><p>hillshade “${region}_${layer}$_hillshade${suffix}.${ending}”</p></li>
-<li><p>final “${region}_${layer}$_relief${suffix}.${ending}”</p></li>
+<li><p><strong>ending</strong> - defaults to “tif”</p></li>
+<li><p><strong>suffix</strong> - “_prv” or blank depending on preview mode</p></li>
+<li><p><strong>dem_file</strong> - “${region}_${layer}_DEM${suffix}.${ending}”</p></li>
+<li><p><strong>color_relief</strong> - “${region}_${layer}_color${suffix}.${ending}”</p></li>
+<li><p><strong>hillshade</strong> - “${region}_${layer}$_hillshade${suffix}.${ending}”</p></li>
+<li><p><strong>final</strong> - “${region}_${layer}$_relief${suffix}.${ending}”</p></li>
+<li><p><strong>config</strong> - “${region}_relief.cfg”</p></li>
 </ul>
 </div></blockquote>
 </section>
-<section id="gdal-commands-run">
-<h2>GDAL commands run:<a class="headerlink" href="#gdal-commands-run" title="Permalink to this heading"></a></h2>
-<ul class="simple">
-<li><p>gdalbuildvrt  $vrt_flag “$target” $file_list</p></li>
-<li><p>gdalwarp $warp_flags “$input_file” “$target”</p></li>
-<li><p>gdaldem color-relief $gdaldem_flags “$dem_file” “${region}_color_ramp.txt” “$target”</p></li>
-<li><p>gdaldem hillshade $gdaldem_flags $hillshade_flags $quiet “$dem_file” “$target”</p></li>
-<li><p>gdal_calc.py -A “$color_file” -B “$hillshade_file” –A_band=”$band” —B_band=1 –calc=“$merge_calc” $merge_flags –overwrite —outfile=”$target”</p></li>
-<li><p>gdal_merge.py $compress -separate -o “$target” $rgb_bands</p></li>
+<section id="gdal-commands-and-parameters">
+<h2>GDAL Commands and Parameters<a class="headerlink" href="#gdal-commands-and-parameters" title="Permalink to this heading"></a></h2>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>gdalbuildvrt</strong>  - $vrt_flag “$target” $file_list</p></li>
+<li><p><strong>gdalwarp</strong> - $warp_flags “$input_file” “$target”</p></li>
+<li><p><strong>gdaldem color-relief</strong> - $gdaldem_flags “$dem_file” “${region}_color_ramp.txt” “$target”</p></li>
+<li><p><strong>gdaldem hillshade</strong> - $gdaldem_flags $hillshade_flags $quiet “$dem_file” “$target”</p></li>
+<li><p><strong>gdal_calc.py</strong> - -A “$color_file” -B “$hillshade_file” –A_band=”$band” —B_band=1 –calc=“$merge_calc” $merge_flags –overwrite —outfile=”$target”</p></li>
+<li><p><strong>gdal_merge.py</strong> - $compress -separate -o “$target” $rgb_bands</p></li>
 </ul>
-<p>def  init():</p>
-<blockquote>
-<div><p>Initializes essential variables for the region and layer.
-Verifies the config file exists and key utilities are available (yq, gdal)
-Sets quiet mode, file ending, and dem_file name</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>$1:</dt><dd><p>Region</p>
-</dd>
-<dt>$2:</dt><dd><p>Layer</p>
-</dd>
-<dt>$3:</dt><dd><p>Blank or “preview” to indicate preview generation or full file generation</p>
-</dd>
-</dl>
-</dd>
-</dl>
 </div></blockquote>
-</div></blockquote>
-<p>def  finished():</p>
-<p>Called after function finished. If TIMING is enabled, displays
-elapsed time since the script started.</p>
+</section>
+<section id="yaml-items">
+<h2>YAML Items<a class="headerlink" href="#yaml-items" title="Permalink to this heading"></a></h2>
+<p>Shell script variables are mapped to YAML items as follows:</p>
 <blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>$1:</dt><dd><p>File name of the created target</p>
-</dd>
-</dl>
-</dd>
-</dl>
+<div><ul class="simple">
+<li><p><strong>$vrt_flag</strong> = VRT</p></li>
+<li><p><strong>$warp_flags</strong> = WARP1 - WARP4</p></li>
+<li><p><strong>$gdaldem_flags</strong> = OUTPUT_TYPE, EDGE</p></li>
+<li><p><strong>$hillshade_flags</strong> = HILLSHADE1 - HILLSHADE4</p></li>
+<li><p><strong>$merge_flags</strong> = MERGE1</p></li>
+<li><p><strong>$merge_calc</strong> = MERGE_CALC</p></li>
+<li><p><strong>$compress</strong> = COMPRESS</p></li>
+</ul>
 </div></blockquote>
-<p>def  check_command():</p>
-<p>Verifies if a required command is available in the environment.
-Exit script with error if the command is not found.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>$1:</dt><dd><p>Command name to check</p>
+</section>
+<section id="utility-functions">
+<h2>Utility Functions<a class="headerlink" href="#utility-functions" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">init():</span></span></dt>
+<dd><p>Initializes essential variables for the region and layer including:
+region, layer, quiet mode, config, file ending, dem_file name, gdaldem_flags
+Verifies the config file exists and key utilities are available (yq, bc, gdal)</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: Region</p></li>
+<li><p>$2: Layer</p></li>
+<li><p>$3: Blank or “preview” to indicate preview generation or full file generation</p></li>
+</ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">optional_flag():</span></span></dt>
+<dd></dd></dl>
+
+<p>Retrieve an optional flag from the YAML configuration file. Echoes the value.</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: Key to search for in the $config YAML file</p></li>
+</ul>
 </dd>
 </dl>
-</div></blockquote>
-<p>def  optional_flag
-Retrieve an optional flag from the YAML configuration file.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><p>$1: Configuration file path
-$2: Key to search for in the YAML file</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>def  mandatory_flag
-Retrieves a mandatory flag from the YAML configuration file.
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">mandatory_flag():</span></span></dt>
+<dd></dd></dl>
+
+<p>Retrieve a mandatory flag from the YAML configuration file.  Echoes the value.
 Exits with an error if the key is not found.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><p>$1: Configuration file path
-$2: Key to search for in the YAML file</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>def  get_flags
-Retrieves multiple flags from the YAML configuration file.</p>
-<blockquote>
-<div><dl class="simple">
-<dt>Args:</dt><dd><dl class="simple">
-<dt>$1:</dt><dd><p>Region name</p>
-</dd>
-<dt>$2:</dt><dd><p>Configuration file path</p>
-</dd>
-<dt>$3:</dt><dd><p>List of keys to search for in the YAML file</p>
-</dd>
-</dl>
-</dd>
-</dl>
-</div></blockquote>
-<p>def  verify_files
-Verifies that each file passed exists.
-If any file is missing exit with an error.
-Args:</p>
-<blockquote>
-<div><p>$&#64; (variable): List of file paths to check for existence</p>
-</div></blockquote>
-<p>def  run_gdal_calc
-Runs gdal_calc.py to merge bands from two files using a calculation specified in the YAML config.
-Args:</p>
-<blockquote>
-<div><p>$1: Band number to merge
-$2: Target output file</p>
-</div></blockquote>
 <dl class="simple">
-<dt>Shell variables:</dt><dd><p>merge_calc: Calculation for merging A and B bands
-merge_flags: Flags for running gdal_calc
-color_file: RGB color relief file
-hillshade_file: Grayscale Hillshade</p>
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: Key to search for in the $config YAML file</p></li>
+</ul>
 </dd>
 </dl>
-<p>def  set_crs
-Applies CRS to the input file if provided. If no WARP flags exist, the input file is
-renamed to the target.
-Args:</p>
-<blockquote>
-<div><p>$1: Input file path
-$2: Target file path</p>
-</div></blockquote>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">get_flags():</span></span></dt>
+<dd></dd></dl>
+
+<p>Retrieves multiple flags from the YAML configuration file and returns concatenation</p>
 <dl class="simple">
-<dt>YML Config Settings:</dt><dd><p>WARP1 through WARP4 - used for gdalwarp switches</p>
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: List of keys to search for in the $config YAML file</p></li>
+</ul>
 </dd>
 </dl>
-<p>def  create_preview_dem
-Creates a smaller DEM file as a preview image. The Preview location
-is controlled by x_shift, y_shift
-Args:</p>
-<blockquote>
-<div><p>$1: Input file path (DEM)
-$2: Target output file path for preview DEM</p>
-</div></blockquote>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">verify_files():</span></span></dt>
+<dd></dd></dl>
+
+<p>Verifies that each file in parameters exists.
+If any file is missing, exits with an error.</p>
 <dl class="simple">
-<dt>YML Config Settings:</dt><dd><p>X_SHIFT - 0 is left, 0.5 is middle, 1 is right
-Y_SHIFT - 0 is top, 0.5 is middle, 1 is bottom
-PREVIEW - pixel size of preview DEM.  Default is 1000</p>
-</dd>
-<dt>–init_DEM - Create a merged DEM file and a truncated DEM preview file.  Optionally set CRS</dt><dd><p>$1 is region name
-$2 is layer name</p>
-</dd>
-<dt>YML Config Settings:</dt><dd><p>LAYER - The active layer_id (A-G).  (Different from layer name)
-FILES.layer_id - The file names for the active layer</p>
-</dd>
-<dt>–preview_dem -  Create a truncated DEM file to build fast previews</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
-</dd>
-<dt>–create_color_relief -  gdaldem color-relief</dt><dd><p>$1 is region name $2 is layer name $3 preview flag</p>
-</dd>
-<dt>YML Config Settings:</dt><dd><p>OUTPUT_TYPE  -of GTiff
-EDGE -compute_edges</p>
-</dd>
-<dt>–hillshade -  gdaldem hillshade</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
-</dd>
-<dt>YML Config Settings:</dt><dd><p>OUTPUT_TYPE  -of GTiff
-HILLSHADE1-5 gdaldem hillshade hillshade flags</p>
-</dd>
-<dt>–merge - merge hillshade with color relief</dt><dd><p>$1 is region name $2 is layer name $3 preview</p>
-</dd>
-<dt>YML Config Settings:</dt><dd><p>MERGE1-4 - gdal_calc.py flags
-COMPRESS - compression type.  –co=COMPRESS=ZSTD
-MERGE_CALC - calculation to run in gdal_calc.py</p>
-</dd>
-<dt>–create_trigger - create trigger file if it doesnt exist</dt><dd><p>$1 is region name $2 is layer name $3 name</p>
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1, $2, $3: List of file paths to check for existence</p></li>
+</ul>
 </dd>
 </dl>
-<p>–doc - create rst documentation for this shell script</p>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">verify_command():</span></span></dt>
+<dd></dd></dl>
+
+<p>Verifies if a required command is available in the environment.
+Exits with error if the command is not found.</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: Command name to check</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">set_crs():</span></span></dt>
+<dd></dd></dl>
+
+<p>Applies CRS to the input file if provided. If no WARP flags exist, the input file is
+renamed to the target.</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: Input file path</p></li>
+<li><p>$2: Target file path</p></li>
+</ul>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>WARP1 through WARP4 - used for gdalwarp switches</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">adjust_brightness():</span></span></dt>
+<dd></dd></dl>
+
+<p>Adjusts the brightness of an image</p>
+<dl class="simple">
+<dt>Variables:</dt><dd><ul class="simple">
+<li><p>$brightness: between .7 and 1.5.  Higher is brighter.  1 is no change</p></li>
+<li><p>$target: image file to adjust</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_preview_dem():</span></span></dt>
+<dd></dd></dl>
+
+<p>Extracts a smaller DEM file from input file for preview images. The Preview location
+is controlled by x_shift, y_shift</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: Input file path (DEM)</p></li>
+<li><p>$2: Target output file path for preview DEM</p></li>
+</ul>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>X_SHIFT - 0 is left, 0.5 is middle, 1 is right</p></li>
+<li><p>Y_SHIFT - 0 is top, 0.5 is middle, 1 is bottom</p></li>
+<li><p>PREVIEW - pixel size of preview DEM.  Default is 1000</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">format_compression_flag():</span></span></dt>
+<dd></dd></dl>
+
+<p>Different GDAL commands have different syntax for compression.
+This creates the appropriate compression syntax for gdaldem and gdal_calc.
+Echoes reformatted switch</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: the gdal tool to be used</p></li>
+<li><p>$2: the original compress value which should be in the format “-co COMPRESS=”</p></li>
+</ul>
+</dd>
+</dl>
 </section>
-<section id="yaml-file">
-<h2>YAML File:<a class="headerlink" href="#yaml-file" title="Permalink to this heading"></a></h2>
-<p>The YAML file contains the values for the GDAL switches.
-These are mapped to shell script variables as below:</p>
-<ul class="simple">
-<li><p>$vrt_flag=</p></li>
+<section id="main-functions">
+<h2>MAIN FUNCTIONS<a class="headerlink" href="#main-functions" title="Permalink to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">init_dem():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --init_dem region layer</em></p>
+<p>Create a merged DEM file and a truncated DEM preview file.  Optionally set CRS</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
 </ul>
-<p>VRT: -strict</p>
-<ul class="simple">
-<li><p>$warp_flags=</p></li>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>LAYER - The active layer_id (A-G).  (Different from layer name)</p></li>
+<li><p>FILES.layer_id - The file names for the active layer</p></li>
 </ul>
-<p>WARP1: -t_srs epsg:3857
-WARP2: -wo INIT_DEST=NO_DATA  -overwrite
-WARP3: -r bilinear
-WARP4: -multi -wo NUM_THREADS=val/ALL_CPUS –config GDAL_CACHEMAX 30%</p>
-<ul class="simple">
-<li><p>$gdaldem_flags=</p></li>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">preview_dem():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --preview_dem region layer</em></p>
+<p>Create a truncated DEM file to build fast previews</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
 </ul>
-<p>OUTPUT_TYPE:
-EDGE: -compute_edges</p>
-<ul class="simple">
-<li><p>$hillshade_flags=</p></li>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_hillshade():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --create_hillshade region layer</em></p>
+<p>Create a hillshade image</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
 </ul>
-<p>HILLSHADE1: -alg ZevenbergenThorne
-HILLSHADE2: -z  2
-HILLSHADE3: ‘’
-HILLSHADE4: ‘’</p>
-<ul class="simple">
-<li><p>$merge_flags=</p></li>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>OUTPUT_TYPE  -of GTiff</p></li>
+<li><p>HILLSHADE1-5 gdaldem hillshade flags</p></li>
 </ul>
-<p>MERGE1: –extent=intersect —type=Byte</p>
-<ul class="simple">
-<li><p>$merge_calc=</p></li>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_contour():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --create_contour region layer</em></p>
+<p>Create a contour shapefile</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
 </ul>
-<p>MERGE_CALC: –calc=(A/255.0) * B</p>
-<ul class="simple">
-<li><p>$compress=</p></li>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>INTERVAL  -i 20</p></li>
 </ul>
-<p>COMPRESS: -co COMPRESS=JPEG</p>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_color_relief():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --create_color_relief region layer</em></p>
+<p>Create a color relief image using gdaldem color-relief</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
+</ul>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>OUTPUT_TYPE  -of GTiff</p></li>
+<li><p>EDGE -compute_edges</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">merge_hillshade():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --merge_hillshade region layer</em></p>
+<p>Merge hillshade with color relief</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
+</ul>
+</dd>
+<dt><strong>YML Config Settings:</strong></dt><dd><ul class="simple">
+<li><p>MERGE1-4 - gdal_calc.py flags</p></li>
+<li><p>COMPRESS - compression type.  –co=COMPRESS=ZSTD</p></li>
+<li><p>MERGE_CALC - calculation to run in gdal_calc.py</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">create_trigger():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --create_trigger region layer</em></p>
+<p>Create a trigger file for makefile granular dependency checks</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>$1: region name</p></li>
+<li><p>$2: layer name</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">doc():</span></span></dt>
+<dd></dd></dl>
+
+<p><em>color_relief.sh --doc</em></p>
+<p>Create rst documentation for this shell script from comments with ##</p>
+<dl class="simple">
+<dt><strong>Arguments:</strong></dt><dd><ul class="simple">
+<li><p>none</p></li>
+</ul>
+</dd>
+</dl>
 </section>
 </section>
 
@@ -335,7 +459,8 @@ HILLSHADE4: ‘’</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="tab_page.html" class="btn btn-neutral float-left" title="tab_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="color_page.html" class="btn btn-neutral float-left" title="color_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="ColorReliefEdit.html" class="btn btn-neutral float-right" title="ColorReliefEdit module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -19,8 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="color_relief.sh" href="color_relief.html" />
-    <link rel="prev" title="relief_page module" href="relief_page.html" /> 
+    <link rel="prev" title="settings_page module" href="settings_page.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,21 +43,24 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">tab_page module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#tab_page.TabPage"><code class="docutils literal notranslate"><span class="pre">TabPage</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#tab_page.TabPage.tab_name"><code class="docutils literal notranslate"><span class="pre">TabPage.tab_name</span></code></a></li>
@@ -71,6 +73,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#tab_page.TabPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">TabPage.on_tab_enter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tab_page.TabPage.on_tab_exit"><code class="docutils literal notranslate"><span class="pre">TabPage.on_tab_exit()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#tab_page.TabPage.show_list_dialog"><code class="docutils literal notranslate"><span class="pre">TabPage.show_list_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tab_page.TabPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">TabPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#tab_page.create_button"><code class="docutils literal notranslate"><span class="pre">create_button()</span></code></a></li>
@@ -82,7 +85,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#tab_page.expanding_vertical_spacer"><code class="docutils literal notranslate"><span class="pre">expanding_vertical_spacer()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -159,6 +161,17 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 <span class="sig-name descname"><span class="pre">is</span> <span class="pre">entered.</span></span></dt>
 <dd></dd></dl>
 
+<p>Initialize the tab page widget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main</strong> (<em>QMainWindow</em>) – The main window instance.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of the tab.</p></li>
+<li><p><strong>on_exit_callback</strong> (<em>callable</em><em>, </em><em>optional</em>) – Optional callback for saving data on tab exit.</p></li>
+<li><p><strong>on_enter_callback</strong> (<em>callable</em><em>, </em><em>optional</em>) – Optional callback for updating the display.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="tab_page.TabPage.create_page">
 <span class="sig-name descname"><span class="pre">create_page</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">widgets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">buttons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instructions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vertical</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stretch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/tab_page.html#TabPage.create_page"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#tab_page.TabPage.create_page" title="Permalink to this definition"></a></dt>
@@ -230,6 +243,11 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="tab_page.TabPage.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;TabPage&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QWidget&quot;:</span> <span class="pre">)</span></em><a class="headerlink" href="#tab_page.TabPage.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
@@ -386,8 +404,7 @@ Has optional callbacks for saving data on tab exit and updating the display.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="relief_page.html" class="btn btn-neutral float-left" title="relief_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="color_relief.html" class="btn btn-neutral float-right" title="color_relief.sh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="settings_page.html" class="btn btn-neutral float-left" title="settings_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

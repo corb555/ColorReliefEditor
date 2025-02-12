@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="elevation_page module" href="elevation_page.html" />
+    <link rel="next" title="color_relief.sh" href="color_relief.html" />
     <link rel="prev" title="color_config module" href="color_config.html" /> 
 </head>
 
@@ -44,19 +44,19 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">color_page module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#color_page.ColorPage"><code class="docutils literal notranslate"><span class="pre">ColorPage</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorPage.display"><code class="docutils literal notranslate"><span class="pre">ColorPage.display()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorPage.import_color_file"><code class="docutils literal notranslate"><span class="pre">ColorPage.import_color_file()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorPage.load"><code class="docutils literal notranslate"><span class="pre">ColorPage.load()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color_page.ColorPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#color_page.ColorSampleWidget"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSampleWidget.paintEvent"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.paintEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSampleWidget.scale_color_bands"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.scale_color_bands()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSampleWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#color_page.ColorSettingsWidget"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget</span></code></a><ul>
@@ -71,6 +71,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSettingsWidget.open_color_picker"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.open_color_picker()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSettingsWidget.rescale"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.rescale()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSettingsWidget.save"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.save()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSettingsWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.staticMetaObject</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#color_page.ColorSettingsWidget.undo"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.undo()</span></code></a></li>
 </ul>
 </li>
@@ -78,19 +79,24 @@
 <li class="toctree-l3"><a class="reference internal" href="#color_page.touch_file"><code class="docutils literal notranslate"><span class="pre">touch_file()</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html">Makefile for Color Relief Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -129,10 +135,19 @@
 <p>Provides an editor for the color table used by gdaldem color-relief</p>
 <ol class="arabic simple">
 <li><p>Provides editing for colors and elevations including rescale, insert, and delete rows.</p></li>
-<li><p>Displays an elevation scaled sample of the color gradients</p></li>
+<li><p>Displays an elevation scaled sample of the color gradients.</p></li>
+<li><p>Provides a preview of gdaldem color-relief with current settings.</p></li>
 </ol>
-<p>3) Provides a preview of gdaldem color-relief with current settings.
-<strong>Methods</strong>:</p>
+<p><strong>Methods</strong>:</p>
+<p>Initialize</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main</strong> (<a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit" title="ColorReliefEdit.ColorReliefEdit"><em>ColorReliefEdit</em></a>) – The main application.</p></li>
+<li><p><strong>name</strong> – The name of the page.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorPage.display">
 <span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorPage.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorPage.display" title="Permalink to this definition"></a></dt>
@@ -157,6 +172,11 @@
 Called when a new project is loaded</p>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="color_page.ColorPage.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;ColorPage&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;TabPage&quot;:</span> <span class="pre">)</span></em><a class="headerlink" href="#color_page.ColorPage.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -164,6 +184,15 @@ Called when a new project is loaded</p>
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_page.</span></span><span class="sig-name descname"><span class="pre">ColorSampleWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">color_ramp</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSampleWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSampleWidget" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
 <p>Widget to display color bands with gradients between elevation levels.</p>
+<p>Initialize</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>color_ramp</strong> – The color ramp to be displayed.</p></li>
+<li><p><strong>height</strong> – The height of the widget.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSampleWidget.paintEvent">
 <span class="sig-name descname"><span class="pre">paintEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSampleWidget.paintEvent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSampleWidget.paintEvent" title="Permalink to this definition"></a></dt>
@@ -202,14 +231,32 @@ different elevation range.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="color_page.ColorSampleWidget.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;ColorSampleWidget&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QWidget&quot;:</span> <span class="pre">)</span></em><a class="headerlink" href="#color_page.ColorSampleWidget.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_page.</span></span><span class="sig-name descname"><span class="pre">ColorSettingsWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_mgr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">color_page.</span></span><span class="sig-name descname"><span class="pre">ColorSettingsWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_mgr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QWidget</span></code></p>
-<p>Widget for editing elevation levels and colors and
-synchronizing changes to data_mgr</p>
+<p>Widget for editing elevation levels and corresponding colors,
+with changes synchronized to a data manager (<cite>data_mgr</cite>).</p>
+<dl class="simple">
+<dt>Signals:</dt><dd><p>colors_updated: Emitted whenever the color data is updated.</p>
+</dd>
+</dl>
+<p>Initialize the ColorSettingsWidget.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_mgr</strong> (<em>FileHandler</em>) – The data manager handling the color ramp data.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – Operational mode, either “basic” (minimal UI) or “expert” (full UI).</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.colors_updated">
 <span class="sig-name descname"><span class="pre">colors_updated</span></span><a class="headerlink" href="#color_page.ColorSettingsWidget.colors_updated" title="Permalink to this definition"></a></dt>
@@ -218,64 +265,105 @@ synchronizing changes to data_mgr</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.delete_row">
 <span class="sig-name descname"><span class="pre">delete_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.delete_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.delete_row" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Delete the currently selected row from the color table.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.display">
 <span class="sig-name descname"><span class="pre">display</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.display"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.display" title="Permalink to this definition"></a></dt>
-<dd><p>Populate the table with rows from the color data file.</p>
+<dd><p>Populate the table with rows from the data manager.
+Each row consists of an elevation value and its corresponding color.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.elevation_width">
 <span class="sig-name descname"><span class="pre">elevation_width</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.elevation_width"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.elevation_width" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Calculate the width for the elevation column based on font metrics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Width for the elevation column.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.init_ui">
-<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.init_ui" title="Permalink to this definition"></a></dt>
-<dd><p>Create the color table and add row manipulation buttons.</p>
+<span class="sig-name descname"><span class="pre">init_ui</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.init_ui"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.init_ui" title="Permalink to this definition"></a></dt>
+<dd><p>Set up the user interface for the widget, including the color table and buttons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mode</strong> (<em>str</em>) – Specifies the operational mode (“basic” or “expert”).</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.insert_row">
 <span class="sig-name descname"><span class="pre">insert_row</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.insert_row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.insert_row" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Insert a new row by interpolating elevation and color data.</p>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.on_color_update">
 <span class="sig-name descname"><span class="pre">on_color_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_color</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.on_color_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.on_color_update" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Update the color data and UI for the specified row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<em>int</em>) – The row index to update.</p></li>
+<li><p><strong>new_color</strong> (<em>QColor</em>) – The new color selected by the user.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.on_elevation_update">
 <span class="sig-name descname"><span class="pre">on_elevation_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row_idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.on_elevation_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.on_elevation_update" title="Permalink to this definition"></a></dt>
-<dd><p>Update elevation data when UI changes and notify sample display.</p>
+<dd><p>Update elevation data when the user modifies it through the UI.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>row_idx</strong> (<em>int</em>) – The row index of the updated elevation.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.open_color_picker">
 <span class="sig-name descname"><span class="pre">open_color_picker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.open_color_picker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.open_color_picker" title="Permalink to this definition"></a></dt>
-<dd><p>Open color picker dialog and update data with result</p>
+<dd><p>Open a color picker dialog to update the color for a specific row.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>idx</strong> (<em>int</em>) – The row index to update.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.rescale">
 <span class="sig-name descname"><span class="pre">rescale</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.rescale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.rescale" title="Permalink to this definition"></a></dt>
-<dd><p>Rescale the elevations for each row.
-The scale is calculated using the current max elevation vs new_max elevation and applying
-the scale to all rows.</p>
+<dd><p>Rescale elevations based on a new maximum value provided by the user.
+Scales all rows proportionally.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.save">
 <span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.save"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.save" title="Permalink to this definition"></a></dt>
+<dd><p>Save the current state using the data manager.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="color_page.ColorSettingsWidget.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;ColorSettingsWidget&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QWidget&quot;:</span> <span class="pre">Methods:</span>&#160;&#160; <span class="pre">#34</span> <span class="pre">type=Signal,</span> <span class="pre">signature=colors_updated()</span> <span class="pre">)</span></em><a class="headerlink" href="#color_page.ColorSettingsWidget.staticMetaObject" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="color_page.ColorSettingsWidget.undo">
 <span class="sig-name descname"><span class="pre">undo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/color_page.html#ColorSettingsWidget.undo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#color_page.ColorSettingsWidget.undo" title="Permalink to this definition"></a></dt>
-<dd><p>Undo - revert back to previous color settings</p>
+<dd><p>Undo the last change by reverting to the previous state.</p>
 </dd></dl>
 
 </dd></dl>
@@ -306,7 +394,7 @@ the scale to all rows.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="color_config.html" class="btn btn-neutral float-left" title="color_config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="elevation_page.html" class="btn btn-neutral float-right" title="elevation_page module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="color_relief.html" class="btn btn-neutral float-right" title="color_relief.sh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

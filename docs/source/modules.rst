@@ -4,14 +4,16 @@ ColorReliefEditor
 .. toctree::
    :maxdepth: 4
 
-   ColorReliefEdit
-   settings_page
    color_config
    color_page
+   color_relief
+   ColorReliefEdit
+   contour_page
    elevation_page
    file_drop_widget
    hillshade_page
    instructions
+   makefile
    make_process
    make_handler
    misc_page
@@ -20,6 +22,6 @@ ColorReliefEditor
    project_page
    recent_files
    relief_page
+   settings_page
    tab_page
-   color_relief
-   makefile
+

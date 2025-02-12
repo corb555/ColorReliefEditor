@@ -1,44 +1,65 @@
 #!/bin/sh
-## -
-## Makefile for Color Relief Generation using GDAL
-## -
-## This Makefile automates the process of generating color relief images and hillshade overlays
-## for a specified REGION and LAYER. It defines a set of rules for generating Digital Elevation
+##
+## Makefile for Color Relief Generation
+## ====================================
+##
+## This Makefile is used to generate color relief images and hillshade
+## images for the specified REGION and LAYER. It defines rules for generating Digital Elevation
 ## Model (DEM) files, color relief images, and hillshades using the `color_relief.sh` script.
+## The Makefile dependencies ensure that the minimal steps are run to create an image type.
+##
 ## Preview images are also generated for faster inspection. The Makefile supports both
 ## full-resolution and preview outputs, and includes targets for cleaning up intermediate files.
 ##
-## Required Environment Variables:
-##   - REGION: Specifies the region name (e.g., 'ICELAND').
-##   - LAYER:  Specifies the data layer (e.g., 'A', 'B').
-## -
-## Usage Example:
-##   make REGION='ICELAND' LAYER='A' all
-## -
-## Key Targets:
-##   - help:       Displays Help text
-##   - all:        Generates the final merged color relief image with hillshade.
-##   - clean:      Removes intermediate files, keeping the final outputs.
-##   - distclean:  Removes all generated files, including previews and final outputs.
-##   - info_version: Displays the version of Make and this Makefile
-## -
-## Config Files:
-##   - $(REGION)_relief.cfg: Configuration file for GDAL command parameters
-##   - $(REGION)_color_ramp.txt: Color ramp file for `gdaldem` to create color relief images.
-## -
-## Output Files:
-##   - $(REGION)_$(LAYER)_DEM.tif: Digital Elevation Model (DEM) file
-##   - $(REGION)_$(LAYER)_color.tif: Color relief image.
-##   - $(REGION)_$(LAYER)_hillshade.tif: Hillshade overlay.
-##   - $(REGION)_$(LAYER)_relief.tif: Final merged relief image.
-##   -
-##   - Preview versions of these files are named $(REGION)_$(LAYER)_prv_*.
-## -
-## color_relief.sh:
-##  This is called with:  color_relief.sh --COMMAND $(REGION) $(LAYER) preview
-#
-# To generate documentation for this from project root:
-#      grep '^##' ColorReliefEditor/resources/Makefile | sed 's/^## //' > docs/source/makefile.rst
+## Required Environment Variables
+## -------------------------------
+##   - **REGION**: Specifies the region name (e.g., 'ICELAND').
+##   - **LAYER**: Specifies the data layer (e.g., 'A', 'B').
+##
+## Usage Example
+## -------------
+## Run the following command to generate outputs:
+##
+## .. code-block:: shell
+##
+##    make REGION='ICELAND' LAYER='A' all
+##
+## Config Files
+## ------------
+##   - ``$(REGION)_relief.cfg``: Configuration file containing GDAL command parameters.
+##   - ``$(REGION)_color_ramp.txt``: Color ramp file for `gdaldem` to create color relief images.
+##
+## General Targets
+## -----------
+##   - **all**: Generates the final merged color relief image with hillshade.
+##   - **clean**: Removes intermediate files, keeping the final outputs.
+##   - **distclean**: Removes all generated files, including previews and final outputs.
+##   - **info_version**: Displays the version of Make and this Makefile.
+##
+## Output Targets
+## ------------
+##
+##   - ``$(REGION)_$(LAYER)_DEM.tif``: Digital Elevation Model (DEM) file.
+##   - ``$(REGION)_$(LAYER)_color.tif``: Color relief image.
+##   - ``$(REGION)_$(LAYER)_hillshade.tif``: Hillshade overlay.
+##   - ``$(REGION)_$(LAYER)_relief.tif``: Final merged relief image.
+##   - Preview versions of these files are named ``$(REGION)_$(LAYER)_xxx_prv.tif``.
+##
+## color_relief.sh
+## ---------------
+## This script is invoked by Make with --COMMAND replace with a specific command:
+##
+##    color_relief.sh --COMMAND $(REGION) $(LAYER) <preview>
+##
+## Generating Documentation
+## -------------------------
+## To generate documentation for this Makefile, run the following command from the project root:
+##
+## .. code-block:: shell
+##
+##    grep '^##' ColorReliefEditor/resources/Makefile | sed -e '/^##$/s/^##$//' -e '/^## /s/^## //'  > docs/source/makefile.rst
+##
+
 
 MAKEFLAGS += --warn-undefined-variables
 

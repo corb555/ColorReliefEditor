@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="file_drop_widget module" href="file_drop_widget.html" />
-    <link rel="prev" title="color_page module" href="color_page.html" /> 
+    <link rel="prev" title="contour_page module" href="contour_page.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,10 +44,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">elevation_page module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#elevation_page.ElevationPage"><code class="docutils literal notranslate"><span class="pre">ElevationPage</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.main"><code class="docutils literal notranslate"><span class="pre">ElevationPage.main</span></code></a></li>
@@ -58,6 +59,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.load"><code class="docutils literal notranslate"><span class="pre">ElevationPage.load()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">ElevationPage.on_tab_enter()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.open_url"><code class="docutils literal notranslate"><span class="pre">ElevationPage.open_url()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ElevationPage.staticMetaObject</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#elevation_page.ElevationPage.update_files_list"><code class="docutils literal notranslate"><span class="pre">ElevationPage.update_files_list()</span></code></a></li>
 </ul>
 </li>
@@ -67,14 +69,15 @@
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -164,6 +167,14 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 </dd></dl>
 
 <p><strong>Methods</strong>:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main</strong> (<em>MainClass</em>) – Reference to the main application class.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the widget.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.create_download_buttons">
 <span class="sig-name descname"><span class="pre">create_download_buttons</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">button_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.create_download_buttons"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.create_download_buttons" title="Permalink to this definition"></a></dt>
@@ -220,6 +231,11 @@ for adding elevation files and provides buttons for DEM download sites.</p>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="elevation_page.ElevationPage.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;ElevationPage&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;TabPage&quot;:</span> <span class="pre">)</span></em><a class="headerlink" href="#elevation_page.ElevationPage.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="elevation_page.ElevationPage.update_files_list">
 <span class="sig-name descname"><span class="pre">update_files_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">source_file</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/elevation_page.html#ElevationPage.update_files_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#elevation_page.ElevationPage.update_files_list" title="Permalink to this definition"></a></dt>
@@ -240,7 +256,7 @@ entries.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="color_page.html" class="btn btn-neutral float-left" title="color_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contour_page.html" class="btn btn-neutral float-left" title="contour_page module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="file_drop_widget.html" class="btn btn-neutral float-right" title="file_drop_widget module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

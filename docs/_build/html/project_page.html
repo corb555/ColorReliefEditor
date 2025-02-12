@@ -44,15 +44,17 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
@@ -68,14 +70,15 @@
 <li class="toctree-l4"><a class="reference internal" href="#project_page.ProjectPage.restart_dialog"><code class="docutils literal notranslate"><span class="pre">ProjectPage.restart_dialog()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_page.ProjectPage.set_project_status"><code class="docutils literal notranslate"><span class="pre">ProjectPage.set_project_status()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#project_page.ProjectPage.show_file_dialog"><code class="docutils literal notranslate"><span class="pre">ProjectPage.show_file_dialog()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#project_page.ProjectPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ProjectPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -116,9 +119,18 @@
 - Buttons to create a new project, open an existing project, or access recent projects.
 - A summary of the project’s status, showing either success or error details.</p>
 <p><strong>Methods</strong>:</p>
+<p>Initialize</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main</strong> (<em>MainClass</em>) – Main application class reference.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – Name of the widget.</p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="project_page.ProjectPage.app_formats">
-<span class="sig-name descname"><span class="pre">app_formats</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'basic':</span> <span class="pre">{'INSTRUCTIONS':</span> <span class="pre">('Instructions',</span> <span class="pre">'combo',</span> <span class="pre">['show',</span> <span class="pre">'hide'],</span> <span class="pre">180),</span> <span class="pre">'LABEL1':</span> <span class="pre">('</span> <span class="pre">',</span> <span class="pre">'label',</span> <span class="pre">None,</span> <span class="pre">180),</span> <span class="pre">'MODE':</span> <span class="pre">('Mode',</span> <span class="pre">'combo',</span> <span class="pre">['basic',</span> <span class="pre">'expert'],</span> <span class="pre">180)},</span> <span class="pre">'expert':</span> <span class="pre">{'INSTRUCTIONS':</span> <span class="pre">('Instructions',</span> <span class="pre">'combo',</span> <span class="pre">['show',</span> <span class="pre">'hide'],</span> <span class="pre">180),</span> <span class="pre">'LABEL1':</span> <span class="pre">('</span> <span class="pre">',</span> <span class="pre">'label',</span> <span class="pre">None,</span> <span class="pre">180),</span> <span class="pre">'MODE':</span> <span class="pre">('Mode',</span> <span class="pre">'combo',</span> <span class="pre">['basic',</span> <span class="pre">'expert'],</span> <span class="pre">180),</span> <span class="pre">'SHOW_TABS':</span> <span class="pre">('Tabs',</span> <span class="pre">'combo',</span> <span class="pre">['normal',</span> <span class="pre">'extended'],</span> <span class="pre">180)}}</span></em><a class="headerlink" href="#project_page.ProjectPage.app_formats" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">app_formats</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'basic':</span> <span class="pre">{'LABEL1':</span> <span class="pre">('</span> <span class="pre">',</span> <span class="pre">'label',</span> <span class="pre">None,</span> <span class="pre">180),</span> <span class="pre">'MODE':</span> <span class="pre">('Mode',</span> <span class="pre">'combo',</span> <span class="pre">['basic',</span> <span class="pre">'expert'],</span> <span class="pre">180)},</span> <span class="pre">'expert':</span> <span class="pre">{'INSTRUCTIONS':</span> <span class="pre">('Instructions',</span> <span class="pre">'combo',</span> <span class="pre">['show',</span> <span class="pre">'hide'],</span> <span class="pre">180),</span> <span class="pre">'LABEL1':</span> <span class="pre">('</span> <span class="pre">',</span> <span class="pre">'label',</span> <span class="pre">None,</span> <span class="pre">180),</span> <span class="pre">'MODE':</span> <span class="pre">('Mode',</span> <span class="pre">'combo',</span> <span class="pre">['basic',</span> <span class="pre">'expert'],</span> <span class="pre">180),</span> <span class="pre">'SHOW_TABS':</span> <span class="pre">('Tabs',</span> <span class="pre">'combo',</span> <span class="pre">['normal',</span> <span class="pre">'extended'],</span> <span class="pre">180)}}</span></em><a class="headerlink" href="#project_page.ProjectPage.app_formats" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -197,6 +209,11 @@
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="project_page.ProjectPage.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;ProjectPage&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;TabPage&quot;:</span> <span class="pre">)</span></em><a class="headerlink" href="#project_page.ProjectPage.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

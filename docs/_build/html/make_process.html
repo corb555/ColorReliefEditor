@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="misc_page module" href="misc_page.html" />
+    <link rel="next" title="make_handler module" href="make_handler.html" />
     <link rel="prev" title="instructions module" href="instructions.html" /> 
 </head>
 
@@ -44,10 +44,11 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
@@ -65,19 +66,21 @@
 <li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.output"><code class="docutils literal notranslate"><span class="pre">MakeProcess.output()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.return_error"><code class="docutils literal notranslate"><span class="pre">MakeProcess.return_error()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.run_make"><code class="docutils literal notranslate"><span class="pre">MakeProcess.run_make()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">MakeProcess.staticMetaObject</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#make_process.MakeProcess.warn"><code class="docutils literal notranslate"><span class="pre">MakeProcess.warn()</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -111,7 +114,7 @@
 <span id="make-process-module"></span><h1>make_process module<a class="headerlink" href="#module-make_process" title="Permalink to this heading"></a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="make_process.MakeProcess">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">make_process.</span></span><span class="sig-name descname"><span class="pre">MakeProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">make_process.</span></span><span class="sig-name descname"><span class="pre">MakeProcess</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dark_mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">QObject</span></code></p>
 <p>Executes Makefile commands, streaming real-time output to an optional output window and
 emitting a <cite>make_finished</cite> signal upon completion. Supports dry-run mode to preview actions
@@ -125,7 +128,7 @@ is required.</p>
 the job name and exit code.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>pyqtSignal</p>
+<dd class="field-odd"><p>Signal</p>
 </dd>
 </dl>
 </dd></dl>
@@ -168,6 +171,7 @@ a build is necessary, or if there is error output.</p>
 </dd></dl>
 
 <p><strong>Methods</strong>:</p>
+<p>Initialize the MakeProcess object.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="make_process.MakeProcess.cancel">
 <span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.cancel" title="Permalink to this definition"></a></dt>
@@ -231,6 +235,11 @@ otherwise runs the process asynchronously and emits the <cite>make_finished</cit
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="make_process.MakeProcess.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;MakeProcess&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;QObject&quot;:</span> <span class="pre">Methods:</span>&#160;&#160; <span class="pre">#5</span> <span class="pre">type=Signal,</span> <span class="pre">signature=make_finished(QString,int),</span> <span class="pre">parameters=QString,</span> <span class="pre">int</span> <span class="pre">)</span></em><a class="headerlink" href="#make_process.MakeProcess.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="make_process.MakeProcess.warn">
 <span class="sig-name descname"><span class="pre">warn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/make_process.html#MakeProcess.warn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#make_process.MakeProcess.warn" title="Permalink to this definition"></a></dt>
@@ -245,7 +254,7 @@ otherwise runs the process asynchronously and emits the <cite>make_finished</cit
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="instructions.html" class="btn btn-neutral float-left" title="instructions module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="misc_page.html" class="btn btn-neutral float-right" title="misc_page module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="make_handler.html" class="btn btn-neutral float-right" title="make_handler module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

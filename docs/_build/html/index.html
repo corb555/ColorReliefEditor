@@ -71,7 +71,7 @@
              
   <section id="colorreliefeditor-documentation">
 <h1>ColorReliefEditor Documentation<a class="headerlink" href="#colorreliefeditor-documentation" title="Permalink to this heading"></a></h1>
-<p>The ColorReliefEditor  uses Digital Elevation files and GDAL tools to create hillshade and color relief images which
+<p>The ColorReliefEditor uses Digital Elevation files and GDAL tools to create hillshade and color relief images which
 are combined into a final relief image. All settings, including colors and parameters, are set directly
 in the app and GDAL utilities are automatically executed to generate the images.</p>
 </section>
@@ -80,14 +80,16 @@ in the app and GDAL utilities are automatically executed to generate the images.
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html">Makefile for Color Relief Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
@@ -96,8 +98,8 @@ in the app and GDAL utilities are automatically executed to generate the images.
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -110,6 +112,145 @@ in the app and GDAL utilities are automatically executed to generate the images.
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+</section>
+<section id="readme">
+<h1>Readme<a class="headerlink" href="#readme" title="Permalink to this heading"></a></h1>
+<section id="color-relief-editor">
+<h2>Color Relief Editor<a class="headerlink" href="#color-relief-editor" title="Permalink to this heading"></a></h2>
+<img width="622" alt="sample" src="https://github.com/corb555/ColorReliefEditor/blob/main/docs/images/color%20sample.png?raw=true">
+</section>
+<hr class="docutils" />
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>This application uses GDAL tools to create high-quality color relief maps from
+Digital Elevation Model (DEM) files.
+The app provides user-configurable settings for the colors and parameters, and directly executes GDAL
+utilities, providing a seamless experience for creating relief maps.</p>
+<hr class="docutils" />
+<section id="features">
+<h3>Features<a class="headerlink" href="#features" title="Permalink to this heading"></a></h3>
+<section id="color-editor">
+<h4><strong>Color Editor</strong><a class="headerlink" href="#color-editor" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Real-Time Editing:</strong> Modify settings and preview results instantly.</p></li>
+<li><p><strong>Color Palette Selector:</strong> Choose colors for each elevation range with ease.</p></li>
+<li><p><strong>Undo Support:</strong> Roll back unwanted changes.</p></li>
+<li><p><strong>Insert rows:</strong> Insert rows with interpolation.</p></li>
+<li><p><strong>Rescale:</strong> Rescale elevation values with one click.</p></li>
+<li><p><strong>Import:</strong> Import standard GDAL color files.</p></li>
+</ul>
+</section>
+<section id="hillshade-editor">
+<h4><strong>Hillshade Editor</strong><a class="headerlink" href="#hillshade-editor" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p>Modify hillshade settings and see immediate previews.</p></li>
+</ul>
+</section>
+<section id="final-relief-image-generation">
+<h4><strong>Final Relief Image Generation</strong><a class="headerlink" href="#final-relief-image-generation" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Blending:</strong> Combines hillshade and color relief with composite multiply for smooth results.</p></li>
+<li><p><strong>Optimized Processing:</strong></p>
+<ul>
+<li><p>Only rebuilds components when their configuration changes.</p></li>
+<li><p>Supports multi-core processing for faster performance.</p></li>
+</ul>
+</li>
+<li><p><strong>External Tools:</strong> Links to external viewers like QGIS or GIMP for post-processing.</p></li>
+<li><p><strong>Convenient Workflow:</strong> Copy the final image directly to a map folder.</p></li>
+</ul>
+</section>
+<section id="elevation-file-management">
+<h4><strong>Elevation File Management</strong><a class="headerlink" href="#elevation-file-management" title="Permalink to this heading"></a></h4>
+<ul class="simple">
+<li><p><strong>Drag-and-Drop:</strong> Easily upload elevation files via the Elevation Tab.</p></li>
+<li><p><strong>Coordinate Reference System (CRS):</strong> Optionally set the CRS for your files.</p></li>
+<li><p><strong>Sources:</strong> Save source URLs and license information for elevation files.</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="installation">
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h3>
+<hr class="docutils" />
+<p>It is recommended you use a virtual environment for installation.</p>
+</section>
+<section id="install-dependencies">
+<h3><em>Install Dependencies</em><a class="headerlink" href="#install-dependencies" title="Permalink to this heading"></a></h3>
+<p>Launch Terminal</p>
+<section id="mac-anaconda">
+<h4>Mac / Anaconda<a class="headerlink" href="#mac-anaconda" title="Permalink to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>conda<span class="w"> </span>install<span class="w"> </span>yq<span class="w"> </span>gdal<span class="w"> </span>make
+</pre></div>
+</div>
+</section>
+<section id="mac-homebrew">
+<h4>Mac / Homebrew<a class="headerlink" href="#mac-homebrew" title="Permalink to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>yq<span class="w"> </span>gdal<span class="w"> </span>make
+</pre></div>
+</div>
+</section>
+<section id="debian-ubuntu">
+<h4>Debian / Ubuntu<a class="headerlink" href="#debian-ubuntu" title="Permalink to this heading"></a></h4>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>yq<span class="w"> </span>gdal-bin
+</pre></div>
+</div>
+</section>
+</section>
+<section id="install-colorreliefeditor">
+<h3><em>Install ColorReliefEditor</em><a class="headerlink" href="#install-colorreliefeditor" title="Permalink to this heading"></a></h3>
+<p>Launch Terminal</p>
+<p>It is recommended that you set up a virtual Python environment for this (not needed for Anaconda):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+</pre></div>
+</div>
+<p>Install the app:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>ColorReliefEditor
+</pre></div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="usage">
+<h3>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h3>
+<hr class="docutils" />
+<ol class="arabic">
+<li><p><strong>Launch ColorReliefEditor</strong></p>
+<ul class="simple">
+<li><p>Start Terminal and type:</p></li>
+</ul>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>ColorReliefEditor
+</pre></div>
+</div>
+</li>
+<li><p><strong>In Project Tab</strong> - click <em>New</em> to create a new project</p></li>
+<li><p><strong>In Elevation Tab</strong> - download Digital Elevation files and drag and drop them here</p></li>
+<li><p><strong>In Hillshade and Color Tab</strong> - edit Hillshade and Color settings and click <em>Preview</em> to review</p></li>
+<li><p><strong>In Relief Tab</strong>  - click <em>Create</em> to create a full size merge of hillshade and color relief</p></li>
+</ol>
+</section>
+<hr class="docutils" />
+<section id="license">
+<h3>License<a class="headerlink" href="#license" title="Permalink to this heading"></a></h3>
+<hr class="docutils" />
+<p>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+documentation files (the “Software”), to deal in the Software without restriction, including without limitation the
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
+persons to whom the Software is furnished to do so, subject to the following conditions:</p>
+<p>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the
+Software.</p>
+<p>THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
+</section>
+<hr class="docutils" />
+<section id="support">
+<h3>Support<a class="headerlink" href="#support" title="Permalink to this heading"></a></h3>
+<hr class="docutils" />
+<p>To report an issue, please visit the <a class="reference external" href="https://github.com/corb555/ColorReliefEditor/issues">issue tracker</a>.</p>
+</section>
+</section>
 </section>
 
 

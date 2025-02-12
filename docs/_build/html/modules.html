@@ -19,7 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="ColorReliefEdit module" href="ColorReliefEdit.html" />
+    <link rel="next" title="color_config module" href="color_config.html" />
     <link rel="prev" title="ColorReliefEditor Documentation" href="index.html" /> 
 </head>
 
@@ -44,14 +44,16 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ColorReliefEditor</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html">Makefile for Color Relief Generation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
@@ -60,8 +62,8 @@
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -94,27 +96,18 @@
 <h1>ColorReliefEditor<a class="headerlink" href="#colorreliefeditor" title="Permalink to this heading"></a></h1>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit</span></code></a><ul>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.closeEvent"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.closeEvent()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.create_default_app_config"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.create_default_app_config()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.init_ui"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.init_ui()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.load_all_tabs"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.load_all_tabs()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.load_app_config"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.load_app_config()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.on_tab_changed"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.on_tab_changed()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.save_settings"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.save_settings()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.set_tabs_available"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.set_tabs_available()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.warn"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.warn()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.set_style"><code class="docutils literal notranslate"><span class="pre">set_style()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="color_config.html">color_config module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html#color_config.ColorConfig"><code class="docutils literal notranslate"><span class="pre">ColorConfig</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.verbose"><code class="docutils literal notranslate"><span class="pre">ColorConfig.verbose</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig._data"><code class="docutils literal notranslate"><span class="pre">ColorConfig._data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.file_path"><code class="docutils literal notranslate"><span class="pre">ColorConfig.file_path</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.directory"><code class="docutils literal notranslate"><span class="pre">ColorConfig.directory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.unsaved_changes"><code class="docutils literal notranslate"><span class="pre">ColorConfig.unsaved_changes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.snapshots"><code class="docutils literal notranslate"><span class="pre">ColorConfig.snapshots</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.handler"><code class="docutils literal notranslate"><span class="pre">ColorConfig.handler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.max_snapshots"><code class="docutils literal notranslate"><span class="pre">ColorConfig.max_snapshots</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.proxy_mapping"><code class="docutils literal notranslate"><span class="pre">ColorConfig.proxy_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.error"><code class="docutils literal notranslate"><span class="pre">ColorConfig.error</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.format_gdal_line"><code class="docutils literal notranslate"><span class="pre">ColorConfig.format_gdal_line()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.interpolate"><code class="docutils literal notranslate"><span class="pre">ColorConfig.interpolate()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_config.html#color_config.ColorConfig.update_line"><code class="docutils literal notranslate"><span class="pre">ColorConfig.update_line()</span></code></a></li>
@@ -130,11 +123,13 @@
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.display"><code class="docutils literal notranslate"><span class="pre">ColorPage.display()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.import_color_file"><code class="docutils literal notranslate"><span class="pre">ColorPage.import_color_file()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.load"><code class="docutils literal notranslate"><span class="pre">ColorPage.load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html#color_page.ColorSampleWidget"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSampleWidget.paintEvent"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.paintEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSampleWidget.scale_color_bands"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.scale_color_bands()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSampleWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorSampleWidget.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html#color_page.ColorSettingsWidget"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget</span></code></a><ul>
@@ -149,11 +144,49 @@
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSettingsWidget.open_color_picker"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.open_color_picker()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSettingsWidget.rescale"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.rescale()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSettingsWidget.save"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.save()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSettingsWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.staticMetaObject</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="color_page.html#color_page.ColorSettingsWidget.undo"><code class="docutils literal notranslate"><span class="pre">ColorSettingsWidget.undo()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html#color_page.scrollbar_width"><code class="docutils literal notranslate"><span class="pre">scrollbar_width()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html#color_page.touch_file"><code class="docutils literal notranslate"><span class="pre">touch_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="color_relief.html">color_relief.sh</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html#command-line-options">Command Line Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html#file-naming">File Naming</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html#gdal-commands-and-parameters">GDAL Commands and Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html#yaml-items">YAML Items</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html#utility-functions">Utility Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html#main-functions">MAIN FUNCTIONS</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.closeEvent"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.closeEvent()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.create_default_app_config"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.create_default_app_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.custom_stylesheet"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.custom_stylesheet()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.load_all_tabs"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.load_all_tabs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.load_app_config"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.load_app_config()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.on_tab_changed"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.on_tab_changed()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.save_settings"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.save_settings()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.set_tabs_available"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.set_tabs_available()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.setup_style"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.setup_style()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.staticMetaObject</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.ColorReliefEdit.warn"><code class="docutils literal notranslate"><span class="pre">ColorReliefEdit.warn()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.get_version"><code class="docutils literal notranslate"><span class="pre">get_version()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.is_dark_mode"><code class="docutils literal notranslate"><span class="pre">is_dark_mode()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html#ColorReliefEdit.main"><code class="docutils literal notranslate"><span class="pre">main()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contour_page.html">contour_page module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html#contour_page.ContourPage"><code class="docutils literal notranslate"><span class="pre">ContourPage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="contour_page.html#contour_page.ContourPage.display"><code class="docutils literal notranslate"><span class="pre">ContourPage.display()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="contour_page.html#contour_page.ContourPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ContourPage.staticMetaObject</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="elevation_page.html">elevation_page module</a><ul>
@@ -166,6 +199,7 @@
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.load"><code class="docutils literal notranslate"><span class="pre">ElevationPage.load()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">ElevationPage.on_tab_enter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.open_url"><code class="docutils literal notranslate"><span class="pre">ElevationPage.open_url()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ElevationPage.staticMetaObject</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="elevation_page.html#elevation_page.ElevationPage.update_files_list"><code class="docutils literal notranslate"><span class="pre">ElevationPage.update_files_list()</span></code></a></li>
 </ul>
 </li>
@@ -176,6 +210,7 @@
 <li class="toctree-l3"><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget.dragEnterEvent"><code class="docutils literal notranslate"><span class="pre">FileDropWidget.dragEnterEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget.dropEvent"><code class="docutils literal notranslate"><span class="pre">FileDropWidget.dropEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget.set_status"><code class="docutils literal notranslate"><span class="pre">FileDropWidget.set_status()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">FileDropWidget.staticMetaObject</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget.target_path"><code class="docutils literal notranslate"><span class="pre">FileDropWidget.target_path</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="file_drop_widget.html#file_drop_widget.FileDropWidget.update_file"><code class="docutils literal notranslate"><span class="pre">FileDropWidget.update_file()</span></code></a></li>
 </ul>
@@ -186,6 +221,7 @@
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage"><code class="docutils literal notranslate"><span class="pre">HillshadePage</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage.display"><code class="docutils literal notranslate"><span class="pre">HillshadePage.display()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage.load"><code class="docutils literal notranslate"><span class="pre">HillshadePage.load()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="hillshade_page.html#hillshade_page.HillshadePage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">HillshadePage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -194,6 +230,15 @@
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#instructions.filter_instructions"><code class="docutils literal notranslate"><span class="pre">filter_instructions()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#instructions.get_instructions"><code class="docutils literal notranslate"><span class="pre">get_instructions()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html#instructions.load_text_resource"><code class="docutils literal notranslate"><span class="pre">load_text_resource()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="makefile.html">Makefile for Color Relief Generation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#required-environment-variables">Required Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#config-files">Config Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#general-targets">General Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#output-targets">Output Targets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="makefile.html#generating-documentation">Generating Documentation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="make_process.html">make_process module</a><ul>
@@ -209,6 +254,7 @@
 <li class="toctree-l3"><a class="reference internal" href="make_process.html#make_process.MakeProcess.output"><code class="docutils literal notranslate"><span class="pre">MakeProcess.output()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="make_process.html#make_process.MakeProcess.return_error"><code class="docutils literal notranslate"><span class="pre">MakeProcess.return_error()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="make_process.html#make_process.MakeProcess.run_make"><code class="docutils literal notranslate"><span class="pre">MakeProcess.run_make()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="make_process.html#make_process.MakeProcess.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">MakeProcess.staticMetaObject</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="make_process.html#make_process.MakeProcess.warn"><code class="docutils literal notranslate"><span class="pre">MakeProcess.warn()</span></code></a></li>
 </ul>
 </li>
@@ -227,7 +273,10 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="misc_page.html">misc_page module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="misc_page.html#misc_page.MiscPage"><code class="docutils literal notranslate"><span class="pre">MiscPage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="misc_page.html#misc_page.MiscPage"><code class="docutils literal notranslate"><span class="pre">MiscPage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="misc_page.html#misc_page.MiscPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">MiscPage.staticMetaObject</span></code></a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="preview_widget.html">preview_widget module</a><ul>
@@ -244,6 +293,8 @@
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.image_label"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.image_label</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.zoom_factor"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.zoom_factor</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.make_handler"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_handler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.full_output_height"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.full_output_height</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.preview_output_height"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.preview_output_height</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.cancel_for_out_of_date"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.cancel_for_out_of_date()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.init_ui"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.init_ui()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.launch_application"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.launch_application()</span></code></a></li>
@@ -257,6 +308,7 @@
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.redisplay"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.redisplay()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.resizeEvent"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.resizeEvent()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.set_buttons_ready"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.set_buttons_ready()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="preview_widget.html#preview_widget.PreviewWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html#preview_widget.filter_stderr"><code class="docutils literal notranslate"><span class="pre">filter_stderr()</span></code></a></li>
@@ -296,12 +348,23 @@
 <li class="toctree-l3"><a class="reference internal" href="project_page.html#project_page.ProjectPage.restart_dialog"><code class="docutils literal notranslate"><span class="pre">ProjectPage.restart_dialog()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_page.html#project_page.ProjectPage.set_project_status"><code class="docutils literal notranslate"><span class="pre">ProjectPage.set_project_status()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="project_page.html#project_page.ProjectPage.show_file_dialog"><code class="docutils literal notranslate"><span class="pre">ProjectPage.show_file_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="project_page.html#project_page.ProjectPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ProjectPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="recent_files.html">recent_files module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles"><code class="docutils literal notranslate"><span class="pre">RecentFiles</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.verbose"><code class="docutils literal notranslate"><span class="pre">RecentFiles.verbose</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles._data"><code class="docutils literal notranslate"><span class="pre">RecentFiles._data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.file_path"><code class="docutils literal notranslate"><span class="pre">RecentFiles.file_path</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.directory"><code class="docutils literal notranslate"><span class="pre">RecentFiles.directory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.unsaved_changes"><code class="docutils literal notranslate"><span class="pre">RecentFiles.unsaved_changes</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.snapshots"><code class="docutils literal notranslate"><span class="pre">RecentFiles.snapshots</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.handler"><code class="docutils literal notranslate"><span class="pre">RecentFiles.handler</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.max_snapshots"><code class="docutils literal notranslate"><span class="pre">RecentFiles.max_snapshots</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.proxy_mapping"><code class="docutils literal notranslate"><span class="pre">RecentFiles.proxy_mapping</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.error"><code class="docutils literal notranslate"><span class="pre">RecentFiles.error</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.add"><code class="docutils literal notranslate"><span class="pre">RecentFiles.add()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.get_open_mode"><code class="docutils literal notranslate"><span class="pre">RecentFiles.get_open_mode()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="recent_files.html#recent_files.RecentFiles.insert"><code class="docutils literal notranslate"><span class="pre">RecentFiles.insert()</span></code></a></li>
@@ -312,6 +375,14 @@
 <li class="toctree-l1"><a class="reference internal" href="relief_page.html">relief_page module</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html#relief_page.ReliefPage"><code class="docutils literal notranslate"><span class="pre">ReliefPage</span></code></a><ul>
 <li class="toctree-l3"><a class="reference internal" href="relief_page.html#relief_page.ReliefPage.display"><code class="docutils literal notranslate"><span class="pre">ReliefPage.display()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="relief_page.html#relief_page.ReliefPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">ReliefPage.staticMetaObject</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="settings_page.html">settings_page module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html#settings_page.AppSettingsPage"><code class="docutils literal notranslate"><span class="pre">AppSettingsPage</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="settings_page.html#settings_page.AppSettingsPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">AppSettingsPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -328,6 +399,7 @@
 <li class="toctree-l3"><a class="reference internal" href="tab_page.html#tab_page.TabPage.on_tab_enter"><code class="docutils literal notranslate"><span class="pre">TabPage.on_tab_enter()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tab_page.html#tab_page.TabPage.on_tab_exit"><code class="docutils literal notranslate"><span class="pre">TabPage.on_tab_exit()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="tab_page.html#tab_page.TabPage.show_list_dialog"><code class="docutils literal notranslate"><span class="pre">TabPage.show_list_dialog()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="tab_page.html#tab_page.TabPage.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">TabPage.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html#tab_page.create_button"><code class="docutils literal notranslate"><span class="pre">create_button()</span></code></a></li>
@@ -339,13 +411,6 @@
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html#tab_page.expanding_vertical_spacer"><code class="docutils literal notranslate"><span class="pre">expanding_vertical_spacer()</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="color_relief.html">color_relief.sh</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html#main-functions">Main Functions:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html#file-naming-standards">File Naming Standards:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html#gdal-commands-run">GDAL commands run:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html#yaml-file">YAML File:</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </section>
@@ -355,7 +420,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="index.html" class="btn btn-neutral float-left" title="ColorReliefEditor Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ColorReliefEdit.html" class="btn btn-neutral float-right" title="ColorReliefEdit module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="color_config.html" class="btn btn-neutral float-right" title="color_config module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

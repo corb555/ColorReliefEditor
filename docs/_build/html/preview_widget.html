@@ -44,15 +44,17 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">preview_widget module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#preview_widget.Image"><code class="docutils literal notranslate"><span class="pre">Image</span></code></a><ul>
@@ -68,6 +70,8 @@
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.image_label"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.image_label</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.zoom_factor"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.zoom_factor</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.make_handler"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.make_handler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.full_output_height"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.full_output_height</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.preview_output_height"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.preview_output_height</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.cancel_for_out_of_date"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.cancel_for_out_of_date()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.init_ui"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.init_ui()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.launch_application"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.launch_application()</span></code></a></li>
@@ -81,6 +85,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.redisplay"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.redisplay()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.resizeEvent"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.resizeEvent()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.set_buttons_ready"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.set_buttons_ready()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#preview_widget.PreviewWidget.staticMetaObject"><code class="docutils literal notranslate"><span class="pre">PreviewWidget.staticMetaObject</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#preview_widget.filter_stderr"><code class="docutils literal notranslate"><span class="pre">filter_stderr()</span></code></a></li>
@@ -90,8 +95,8 @@
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="recent_files.html">recent_files module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -167,16 +172,13 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="preview_widget.PreviewWidget">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">preview_widget.</span></span><span class="sig-name descname"><span class="pre">PreviewWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button_flags</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget" title="Permalink to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">preview_widget.</span></span><span class="sig-name descname"><span class="pre">PreviewWidget</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">main</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">settings</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">preview_mode</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">on_save</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">button_ids</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget" title="Permalink to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">TabPage</span></code></p>
 <p>A widget for creating and displaying images using Make</p>
 <p>This widget has two modes:
 - <strong>Preview Mode</strong>: Generates small images for quick viewing.
 - <strong>Full Build Mode</strong>: Produces full-sized images with features for publishing, cleaning
-temporary files, and</p>
-<blockquote>
-<div><p>launching an external viewer.</p>
-</div></blockquote>
+temporary files, and launching an external viewer.</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="preview_widget.PreviewWidget.preview_mode">
 <span class="sig-name descname"><span class="pre">preview_mode</span></span><a class="headerlink" href="#preview_widget.PreviewWidget.preview_mode" title="Permalink to this definition"></a></dt>
@@ -216,11 +218,48 @@ temporary files, and</p>
 <dd><p>Manages the <cite>make</cite> process for image generation and maintenance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>MakeHandler</p>
+<dd class="field-odd"><p><a class="reference internal" href="make_handler.html#make_handler.MakeHandler" title="make_handler.MakeHandler">MakeHandler</a></p>
 </dd>
 </dl>
 </dd></dl>
 
+<dl class="py attribute">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.full_output_height">
+<span class="sig-name descname"><span class="pre">full_output_height</span></span><a class="headerlink" href="#preview_widget.PreviewWidget.full_output_height" title="Permalink to this definition"></a></dt>
+<dd><p>Height of make output for full build. Default = 400</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.preview_output_height">
+<span class="sig-name descname"><span class="pre">preview_output_height</span></span><a class="headerlink" href="#preview_widget.PreviewWidget.preview_output_height" title="Permalink to this definition"></a></dt>
+<dd><p>Height of make output for preview. Default = 80</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>Initialize</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>main</strong> (<em>object</em>) – the main application object.</p></li>
+<li><p><strong>name</strong> (<em>str</em>) – The name of this widget/tab.</p></li>
+<li><p><strong>settings</strong> (<em>object</em>) – Configuration settings object for this widget.</p></li>
+<li><p><strong>preview_mode</strong> (<em>bool</em>) – Whether the widget is in preview mode.</p></li>
+<li><p><strong>on_save</strong> (<em>callable</em>) – Callback function executed upon saving.</p></li>
+<li><p><strong>button_ids</strong> (<em>list</em>) – List of button ids to display in full mode (make,view,publish,</p></li>
+<li><p><strong>clean</strong> – </p></li>
+<li><p><strong>cancel</strong><strong>)</strong> – </p></li>
+</ul>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="preview_widget.PreviewWidget.cancel_for_out_of_date">
 <span class="sig-name descname"><span class="pre">cancel_for_out_of_date</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/preview_widget.html#PreviewWidget.cancel_for_out_of_date"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#preview_widget.PreviewWidget.cancel_for_out_of_date" title="Permalink to this definition"></a></dt>
@@ -338,6 +377,11 @@ The cancel button takes the opposite state
 :param ready: Whether buttons should be enabled.
 :type ready: bool</p>
 </dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="preview_widget.PreviewWidget.staticMetaObject">
+<span class="sig-name descname"><span class="pre">staticMetaObject</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">PySide6.QtCore.QMetaObject(&quot;PreviewWidget&quot;</span> <span class="pre">inherits</span> <span class="pre">&quot;TabPage&quot;:</span> <span class="pre">)</span></em><a class="headerlink" href="#preview_widget.PreviewWidget.staticMetaObject" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

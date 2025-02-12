@@ -44,21 +44,33 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">ColorReliefEditor</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="app_settings_page.html">app_settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_config.html">color_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="color_page.html">color_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ColorReliefEdit.html">ColorReliefEdit module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contour_page.html">contour_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="elevation_page.html">elevation_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="file_drop_widget.html">file_drop_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="hillshade_page.html">hillshade_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="instructions.html">instructions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="make_process.html">make_process module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="make_handler.html">make_handler module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="misc_page.html">misc_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="preview_widget.html">preview_widget module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_config.html">project_config module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="project_page.html">project_page module</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">recent_files module</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#recent_files.RecentFiles"><code class="docutils literal notranslate"><span class="pre">RecentFiles</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.verbose"><code class="docutils literal notranslate"><span class="pre">RecentFiles.verbose</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles._data"><code class="docutils literal notranslate"><span class="pre">RecentFiles._data</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.file_path"><code class="docutils literal notranslate"><span class="pre">RecentFiles.file_path</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.directory"><code class="docutils literal notranslate"><span class="pre">RecentFiles.directory</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.unsaved_changes"><code class="docutils literal notranslate"><span class="pre">RecentFiles.unsaved_changes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.snapshots"><code class="docutils literal notranslate"><span class="pre">RecentFiles.snapshots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.handler"><code class="docutils literal notranslate"><span class="pre">RecentFiles.handler</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.max_snapshots"><code class="docutils literal notranslate"><span class="pre">RecentFiles.max_snapshots</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.proxy_mapping"><code class="docutils literal notranslate"><span class="pre">RecentFiles.proxy_mapping</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.error"><code class="docutils literal notranslate"><span class="pre">RecentFiles.error</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.add"><code class="docutils literal notranslate"><span class="pre">RecentFiles.add()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.get_open_mode"><code class="docutils literal notranslate"><span class="pre">RecentFiles.get_open_mode()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#recent_files.RecentFiles.insert"><code class="docutils literal notranslate"><span class="pre">RecentFiles.insert()</span></code></a></li>
@@ -67,8 +79,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="relief_page.html">relief_page module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="settings_page.html">settings_page module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tab_page.html">tab_page module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="color_relief.html">color_relief.sh</a></li>
 </ul>
 </li>
 </ul>
@@ -118,6 +130,124 @@ Used in applications to track recent files, persisting them across sessions.</p>
 - Re-initializes with an empty list if the file is corrupted/empty.
 - Limits the list to <cite>max_items</cite> entries (default=10)</p>
 <p><strong>Methods</strong>:</p>
+<p>Init</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>verbose</strong> (<em>int</em>) – Verbosity level for logging warnings. Defaults to 1.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.verbose">
+<span class="sig-name descname"><span class="pre">verbose</span></span><a class="headerlink" href="#recent_files.RecentFiles.verbose" title="Permalink to this definition"></a></dt>
+<dd><p>Verbosity level for logging and debugging.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles._data">
+<span class="sig-name descname"><span class="pre">_data</span></span><a class="headerlink" href="#recent_files.RecentFiles._data" title="Permalink to this definition"></a></dt>
+<dd><p>Internal data structure being managed and manipulated.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.file_path">
+<span class="sig-name descname"><span class="pre">file_path</span></span><a class="headerlink" href="#recent_files.RecentFiles.file_path" title="Permalink to this definition"></a></dt>
+<dd><p>Path to the file associated with the current data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.directory">
+<span class="sig-name descname"><span class="pre">directory</span></span><a class="headerlink" href="#recent_files.RecentFiles.directory" title="Permalink to this definition"></a></dt>
+<dd><p>Directory associated with the current data or file
+operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str | None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.unsaved_changes">
+<span class="sig-name descname"><span class="pre">unsaved_changes</span></span><a class="headerlink" href="#recent_files.RecentFiles.unsaved_changes" title="Permalink to this definition"></a></dt>
+<dd><p>Flag to determine whether the data has unsaved
+modifications.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.snapshots">
+<span class="sig-name descname"><span class="pre">snapshots</span></span><a class="headerlink" href="#recent_files.RecentFiles.snapshots" title="Permalink to this definition"></a></dt>
+<dd><p>Stack of snapshots representing the stored states of the
+<cite>_data</cite> attribute for undo functionality.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.handler">
+<span class="sig-name descname"><span class="pre">handler</span></span><a class="headerlink" href="#recent_files.RecentFiles.handler" title="Permalink to this definition"></a></dt>
+<dd><p>Handler for the specific data type, used for
+managing data operations and interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>DataHandler</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.max_snapshots">
+<span class="sig-name descname"><span class="pre">max_snapshots</span></span><a class="headerlink" href="#recent_files.RecentFiles.max_snapshots" title="Permalink to this definition"></a></dt>
+<dd><p>Maximum number of snapshots to retain within the
+<cite>snapshots</cite> stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.proxy_mapping">
+<span class="sig-name descname"><span class="pre">proxy_mapping</span></span><a class="headerlink" href="#recent_files.RecentFiles.proxy_mapping" title="Permalink to this definition"></a></dt>
+<dd><p>Dictionary mapping keys to proxy files for certain
+data operations or file handling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="recent_files.RecentFiles.error">
+<span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#recent_files.RecentFiles.error" title="Permalink to this definition"></a></dt>
+<dd><p>String representation of the last error or issue encountered
+during an operation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="recent_files.RecentFiles.add">
 <span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/recent_files.html#RecentFiles.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#recent_files.RecentFiles.add" title="Permalink to this definition"></a></dt>
