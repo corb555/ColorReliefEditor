@@ -40,40 +40,60 @@ RESET="\033[0m"
 
 ## color_relief.sh
 ## =========================
-## This shell script provides utilities for processing DEM files using GDAL tools.
-## All gdal switches are pulled from a YAML file.
+## A shell script for processing Digital Elevation Model (DEM) files using GDAL utilities.
+## GDAL switches are configured via a YAML file, `${region}_relief.cfg`.
 ##
-## Main Functions:
-## ---------------
-##   -  The following options run GDAL utilities using parameters from a YAML config file:
-##   -  --init_dem <region>: Merges multiple DEM files into a single output DEM for the specified region.
-##   -  --create_color_relief <region>: Generates a color relief image from a DEM file using a specified color ramp.
-##   -  --create_hillshade <region>: Produces a hillshade image from a DEM file with configurable parameters.
-##   -  --merge_hillshade <region>: Combines color relief and hillshade images into a single relief image.
-##   -  --preview_dem <region>: Extracts a small section from the merged DEM file for preview generation.
-##   -  --create_proxy region, layer, name : Creates a proxy file
+## .. note::
 ##
-## File Naming Standards:
-## ----------------------
-##    - ending defaults to "tif"
-##    - suffix is "_prv" or blank depending on preview mode
-##    - config "${region}_relief.cfg"
-##    - dem_file "${region}_${layer}_DEM${suffix}.${ending}"
-##    - color_relief "${region}_${layer}_color${suffix}.${ending}"
-##    - hillshade "${region}_${layer}$_hillshade${suffix}.${ending}"
-##    - final "${region}_${layer}$_relief${suffix}.${ending}"
+##    "init_dem" must be run once before any other commands.
 ##
-## GDAL commands run:
-## ------------------
-## - gdalbuildvrt  $vrt_flag "$target" $file_list
-## - gdalwarp $warp_flags "$input_file" "$target"
-## - gdaldem color-relief $gdaldem_flags "$dem_file" "${region}_color_ramp.txt" “$target"
-## - gdaldem hillshade $gdaldem_flags $hillshade_flags $quiet "$dem_file" “$target"
-## - gdal_calc.py -A "$color_file" -B "$hillshade_file" --A_band="$band" —B_band=1 --calc=“$merge_calc" $merge_flags --overwrite —outfile="$target"
-## - gdal_merge.py $compress -separate -o "$target" $rgb_bands
+## Command Line Options
+## --------------------
 ##
-# UTILITY FUNCTIONS:
-
+##   - **\--init_dem** - Merges multiple DEM files into a single DEM file.
+##   - **\--create_color_relief** - Generates a color relief image from a DEM file and color ramp.
+##   - **\--create_hillshade** - Produces a hillshade image from a DEM file.
+##   - **\--merge_hillshade** - Merges color relief and hillshade images into a single image.
+##   - **\--preview_dem** - Extracts a small section from the merged DEM file for preview generation.
+##   - **\--create_contour** - Creates a contour shapefile
+##   - **\--create_trigger** - Creates a trigger file for granular makefile dependency checking
+##   - **\--doc** - Generates RST documentation from script comments starting with `##`.
+##
+## File Naming
+## -----------
+##   - **ending** - defaults to "tif"
+##   - **suffix** - "_prv" or blank depending on preview mode
+##   - **dem_file** - "${region}_${layer}_DEM${suffix}.${ending}"
+##   - **color_relief** - "${region}_${layer}_color${suffix}.${ending}"
+##   - **hillshade** - "${region}_${layer}$_hillshade${suffix}.${ending}"
+##   - **final** - "${region}_${layer}$_relief${suffix}.${ending}"
+##   - **config** - "${region}_relief.cfg"
+##
+## GDAL Commands and Parameters
+## ----------------------------
+##   - **gdalbuildvrt**  - $vrt_flag "$target" $file_list
+##   - **gdalwarp** - $warp_flags "$input_file" "$target"
+##   - **gdaldem color-relief** - $gdaldem_flags "$dem_file" "${region}_color_ramp.txt" “$target"
+##   - **gdaldem hillshade** - $gdaldem_flags $hillshade_flags $quiet "$dem_file" “$target"
+##   - **gdal_calc.py** - -A "$color_file" -B "$hillshade_file" --A_band="$band" —B_band=1 --calc=“$merge_calc" $merge_flags --overwrite —outfile="$target"
+##   - **gdal_merge.py** - $compress -separate -o "$target" $rgb_bands
+##
+## YAML Items
+## ----------
+## Shell script variables are mapped to YAML items as follows:
+##
+##   - **$vrt_flag** = VRT
+##   - **$warp_flags** = WARP1 - WARP4
+##   - **$gdaldem_flags** = OUTPUT_TYPE, EDGE
+##   - **$hillshade_flags** = HILLSHADE1 - HILLSHADE4
+##   - **$merge_flags** = MERGE1
+##   - **$merge_calc** = MERGE_CALC
+##   - **$compress** = COMPRESS
+##
+##
+## Utility Functions
+## -----------------
+##
 # Function: display_help
 display_help() {
   echo "Usage: $0 --create_color_relief <region>  | --create_hillshade <region>  | --merge_hillshade <region>  | --set_crs <region>  | --init_dem <region>"
@@ -87,26 +107,25 @@ display_help() {
   echo "5. --doc: Generates documentation in docs/source/color_relief.rst"
   exit $ERROR_HELP
 }
+
 ##
-## Function: init():
+## .. function::  init():
 ##
-##    Initializes essential variables for the region and layer.
-##    Verifies the config file exists and key utilities are available (yq, gdal)
-##    Sets quiet mode, file ending, and dem_file name
-##      Args:
-##        $1:
-##          Region
-##        $2:
-##          Layer
-##        $3:
-##          Blank or "preview" to indicate preview generation or full file generation
+##    Initializes essential variables for the region and layer including:
+##    region, layer, layer_id, quiet mode, config, file ending, dem_file name, gdaldem_flags
+##    Verifies the config file exists and key utilities are available (yq, bc, gdal)
+##
+##    **Arguments:**
+##      - $1: Region
+##      - $2: Layer
+##      - $3: Blank or "preview" to indicate preview generation or full file generation
 ##
 init() {
   set -e
   # Check that these commands are available
-  check_command "gdaldem" $ERROR_MISSING_UTILITY
-  check_command "yq" $ERROR_MISSING_UTILITY
-  check_command "bc" $ERROR_MISSING_UTILITY
+  verify_command "gdaldem" $ERROR_MISSING_UTILITY
+  verify_command "yq" $ERROR_MISSING_UTILITY
+  verify_command "bc" $ERROR_MISSING_UTILITY
 
   # Store the  working directory
   original_dir=$(pwd)
@@ -121,6 +140,9 @@ init() {
     echo "Error: Configuration file not found: $config ❌" >&2
     exit $ERROR_CONFIG_NOT_FOUND
   fi
+
+  # Get Layer Id (A,B,C, etc)
+  layer_id=$(mandatory_flag  "LAYER")
 
   # Set quiet flag and file suffix based on "preview"
   if [ "$3" = "preview" ]; then
@@ -152,15 +174,15 @@ init() {
   echo >&2
 }
 
-##
-## Function: finished():
-##
-## Called after function finished. If TIMING is enabled, displays
-## elapsed time since the script started.
-##  Args:
-##    $1:
-##        File name of the created target
-##
+#
+# .. function::  finished():
+#
+# If TIMING is enabled, displays
+# elapsed time since the script started.
+#
+# **Arguments:**
+#    - $1: File name of the created target
+#
 finished() {
   timing=$(optional_flag "TIMING")
   if [ "$timing" = "on" ]; then
@@ -173,66 +195,16 @@ echo_error() {
   printf "${YELLOW}ERROR: %s${RESET}\n" "$1" >&2
 }
 
-## Function: check_command():
+
+## .. function::  optional_flag():
 ##
-## Verifies if a required command is available in the environment.
-## Exit script with error if the command is not found.
-##  Args:
-##    $1:
-##        Command name to check
+## Retrieve an optional flag from the YAML configuration file. Echoes the value.
 ##
-check_command() {
-  if ! command -v "$1" > /dev/null 2>&1; then
-    echo_error "'$1' utility not found. ❌" >&2
-    current_shell=$(ps -p $$ -o comm=)
-    echo "The shell is: $current_shell" >&2
-    exit $2
-  fi
-}
-
-## Function: format_compression_flag():
-##
-## Different GDAL commands have different syntax for compression
-## This creates the appropriate compression syntax for gdaldem and gdal_calc
-##  Args:
-##    $1: the gdal tool to be used
-##    $2: the original compress value which should be in the format "-co COMPRESS=JPEG"
-##  Echos reformatted compression switch
-format_compression_flag() {
-  local tool=$1
-  local compress=$2
-
-  # If no compression is specified or if suffix is "_prv" (preview), return empty
-  if [ -z "$compress" ] || [ "$suffix" = "_prv" ]; then
-    echo ""
-    return
-  fi
-
-  # Format the compression flag based on the tool
-  case $tool in
-    gdaldem)
-      # Use -co for gdaldem, ensuring proper spacing
-      echo "${compress/-co/-co}"
-      ;;
-    gdal_calc.py)
-      # Use --co for gdal_calc.py, replacing "-co " with "--co="
-      echo "${compress/-co /--co=}"
-      ;;
-    *)
-      echo "Error: Unknown tool '$tool' for compression flag formatting." >&2
-      exit 1
-      ;;
-  esac
-}
-
-## Function: optional_flag
-## Retrieve an optional flag from the YAML configuration file.
-##  Args:
-##   $1: Configuration file path
-##   $2: Key to search for in the YAML file
+## **Arguments:**
+##    - $1: Key to search for in the $config YAML file
 ##
 optional_flag() {
-  # Check if exactly 2 parameters are provided
+  # Check if exactly 1 parameters are provided
   if [ "$#" -ne 1 ]; then
     echo "Error: optional_flag: " >&2
     echo "Error: 1 parameters required, but $# provided: $*" >&2
@@ -245,9 +217,6 @@ optional_flag() {
   # Run yq to extract YML key/value from config file
   yml_value=$(eval "yq \".${key}\" \"$config\"")
 
-  # Remove enclosing quotation marks if present
-  # yml_value=$(echo "$yml_value" | sed 's/^["'\''\(]//;s/["'\''\)]$//')
-
   # Remove enclosing quotation marks if present, but leave parentheses untouched
   yml_value=$(echo "$yml_value" | sed 's/^["'\''"]*//;s/["'\''"]*$//')
 
@@ -258,12 +227,13 @@ optional_flag() {
   echo "$yml_value"
 }
 
-## Function: mandatory_flag
-## Retrieves a mandatory flag from the YAML configuration file.
+## .. function::  mandatory_flag():
+##
+## Retrieve a mandatory flag from the YAML configuration file.  Echoes the value.
 ## Exits with an error if the key is not found.
-##  Args:
-##   $1: Configuration file path
-##   $2: Key to search for in the YAML file
+##
+## **Arguments:**
+##    - $1: Key to search for in the $config YAML file
 ##
 mandatory_flag() {
   key="$1"
@@ -282,15 +252,12 @@ mandatory_flag() {
 }
 
 
-## Function: get_flags
+## .. function::  get_flags():
+##
 ## Retrieves multiple flags from the YAML configuration file and returns concatenation
-##  Args:
-##   $1:
-##      Region name
-##   $2:
-##      Configuration file path
-##   $3:
-##      List of keys to search for in the YAML file
+##
+## **Arguments:**
+##    - $1: List of keys to search for in the $config YAML file
 ##
 get_flags() {
   flags=""
@@ -305,11 +272,13 @@ get_flags() {
 }
 
 
-## Function: verify_files
+## .. function::  verify_files():
+##
 ## Verifies that each file in parameters exists.
-## If any file is missing exit with an error.
-## Args:
-##   $@ (variable): List of file paths to check for existence
+## If any file is missing, exits with an error.
+##
+## **Arguments:**
+##    - $1, $2, $3: List of file paths to check for existence
 ##
 verify_files() {
   for file in "$@"; do
@@ -319,14 +288,35 @@ verify_files() {
   return 0
 }
 
-## Function: set_crs
+##
+## .. function::  verify_command():
+##
+## Verifies if a required command is available in the environment.
+## Exits with error if the command is not found.
+##
+## **Arguments:**
+##    - $1: Command name to check
+##
+verify_command() {
+  if ! command -v "$1" > /dev/null 2>&1; then
+    echo_error "'$1' utility not found. ❌" >&2
+    current_shell=$(ps -p $$ -o comm=)
+    echo "The shell is: $current_shell" >&2
+    exit $2
+  fi
+}
+
+## .. function::  set_crs():
+##
 ## Applies CRS to the input file if provided. If no WARP flags exist, the input file is
 ## renamed to the target.
-## Args:
-##   $1: Input file path
-##   $2: Target file path
-## YML Config Settings:
-##   WARP1 through WARP4 - used for gdalwarp switches
+##
+## **Arguments:**
+##    - $1: Input file path
+##    - $2: Target file path
+##
+## **YML Config Settings:**
+##   - WARP1 through WARP4 - used for gdalwarp switches
 ##
 set_crs() {
   input_file="$1"
@@ -340,6 +330,9 @@ set_crs() {
   warp_flags=$(get_flags  "WARP1" "WARP2" "WARP3" "WARP4")
   echo "= Set CRS =" >&2
 
+  # Get optional Extent switch
+  extent_flag=$(optional_flag   EXTENT."$layer_id")
+
   if [ -z "$warp_flags" ]; then
     echo "No CRS flags provided. Renaming $input_file to $targ" >&2
     if ! mv "$input_file" "$targ"; then
@@ -347,21 +340,23 @@ set_crs() {
       exit $ERROR_RENAMING_FAILED
     fi
   else
-    echo "gdalwarp $warp_flags $quiet  $input_file $targ" >&2
+    echo "gdalwarp $warp_flags $extent_flag $quiet  $input_file $targ" >&2
     ls $input_file
     echo >&2
-    if ! gdalwarp $warp_flags $quiet  "$input_file" "$targ"; then
+    if ! gdalwarp $warp_flags $extent_flag $quiet  "$input_file" "$targ"; then
       echo_error "gdalwarp failed. ❌" >&2
       exit $ERROR_GDALWARP_FAILED
     fi
   fi
 }
 
-## Function: adjust_brightness
+## .. function::  adjust_brightness():
+##
 ## Adjusts the brightness of an image
+##
 ## Variables:
-##   $brightness: between .7 and 1.5.  Higher is brighter.  1 is no change
-##   $target: image file to adjust
+##   - $brightness: between .7 and 1.5.  Higher is brighter.  1 is no change
+##   - $target: image file to adjust
 ##
 adjust_brightness() {
   brightness=$(get_flags  "BRIGHTNESS" )
@@ -380,16 +375,19 @@ adjust_brightness() {
   fi
 }
 
-## Function: create_preview_dem
+## .. function::  create_preview_dem():
+##
 ## Extracts a smaller DEM file from input file for preview images. The Preview location
 ## is controlled by x_shift, y_shift
-## Args:
-##   $1: Input file path (DEM)
-##   $2: Target output file path for preview DEM
-## YML Config Settings:
-##   X_SHIFT - 0 is left, 0.5 is middle, 1 is right
-##   Y_SHIFT - 0 is top, 0.5 is middle, 1 is bottom
-##   PREVIEW - pixel size of preview DEM.  Default is 1000
+##
+## **Arguments:**
+##    - $1: Input file path (DEM)
+##    - $2: Target output file path for preview DEM
+##
+## **YML Config Settings:**
+##   - X_SHIFT - 0 is left, 0.5 is middle, 1 is right
+##   - Y_SHIFT - 0 is top, 0.5 is middle, 1 is bottom
+##   - PREVIEW - pixel size of preview DEM.  Default is 1000
 ##
 create_preview_dem() {
   input_file="$1"
@@ -442,14 +440,62 @@ create_preview_dem() {
 }
 
 
-# MAIN FUNCTIONS
-#
-## --init_DEM - Create a merged DEM file and a truncated DEM preview file.  Optionally set CRS
-##              $1 is region name
-##              $2 is layer name
-## YML Config Settings:
-##   LAYER - The active layer_id (A-G).  (Different from layer name)
-##   FILES.layer_id - The file names for the active layer
+## .. function::  format_creation_option():
+##
+## Different GDAL commands use different syntax for the creation option switch (-co vs --co)
+## This creates the appropriate syntax for gdaldem and gdal_calc.
+## Echoes the reformatted switch
+##
+## **Arguments:**
+##    - $1: the gdal tool to be used
+##    - $2: the original creation option(s) which should be in the format "-co xxx <-co xxx>"
+##
+format_creation_option() {
+  local tool=$1
+  local compress=$2
+
+  # If no compression is specified or if suffix is "_prv" (preview), return empty
+  if [ -z "$compress" ] || [ "$suffix" = "_prv" ]; then
+    echo ""
+    return
+  fi
+
+  # Format the creation option flag based on the tool
+  case $tool in
+    gdaldem)
+      # Replace all occurrences of -co with -co (ensuring proper spacing)
+      echo "${compress}"
+      ;;
+    gdal_calc.py)
+      # Replace each "-co " with "--co=" to handle multiple occurrences
+      formatted=$(echo "$compress" | sed 's/-co /--co=/g')
+      echo "$formatted"
+      ;;
+    *)
+      echo "Error: Unknown tool '$tool' for compression flag formatting." >&2
+      exit 1
+      ;;
+  esac
+}
+
+
+
+## MAIN FUNCTIONS
+## --------------
+##
+## .. function::  init_dem():
+##
+## *color_relief.sh \--init_dem region layer*
+##
+## Create a merged DEM file and a truncated DEM preview file.  Optionally set CRS
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
+##
+## **YML Config Settings:**
+##   - LAYER - The active layer_id (A-G).  (Different from layer name)
+##   - FILES.layer_id - The file names for the active layer
 ##
 init_dem() {
   init "$@"
@@ -457,9 +503,10 @@ init_dem() {
 
   # Get GDAL switches from YML config
   vrt_flag=$(optional_flag    "VRT")
+  resample=$(optional_flag    "WARP3")
+
 
   # Get file list for DEM files.  layer_id is (A-G) not the layer text name
-  layer_id=$(mandatory_flag  "LAYER")
   file_list=$(optional_flag   FILES."$layer_id")
 
   # Check if flags are empty and output error message
@@ -485,8 +532,8 @@ vrt_temp="${region}_tmp1.vrt"
 rm -f "$vrt_temp"
 
 # Create DEM VRT
-echo gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list >&2
-if ! eval gdalbuildvrt $quiet $vrt_flag "$vrt_temp" $file_list; then
+echo gdalbuildvrt $quiet $vrt_flag $resample "$vrt_temp" $file_list >&2
+if ! eval gdalbuildvrt $quiet $vrt_flag $resample "$vrt_temp" $file_list; then
   echo_error "gdalbuildvrt failed ❌" >&2
   exit $ERROR_GDALBUILDVRT
 fi
@@ -506,9 +553,16 @@ fi
 finished "$dem_file"
 }
 
-
-## --preview_dem -  Create a truncated DEM file to build fast previews
-##              $region, $layer, and $ending must be set by init
+##
+## .. function::  preview_dem():
+##
+## *color_relief.sh \--preview_dem region layer*
+##
+## Create a truncated DEM file to build fast previews
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
 ##
 preview_dem() {
   init "$@"
@@ -521,11 +575,20 @@ preview_dem() {
   finished "target"
 }
 
-## --hillshade -  gdaldem hillshade
-##              $1 is region name $2 is layer name $3 preview
-## YML Config Settings:
-##   OUTPUT_TYPE  -of GTiff
-##   HILLSHADE1-5 gdaldem hillshade hillshade flags
+##
+## .. function::  create_hillshade():
+##
+## *color_relief.sh \--create_hillshade region layer*
+##
+## Create a hillshade image
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
+##
+## **YML Config Settings:**
+##   - OUTPUT_TYPE  -of GTiff
+##   - HILLSHADE1-5 gdaldem hillshade flags
 ##
 create_hillshade() {
   init "$@"
@@ -538,7 +601,7 @@ create_hillshade() {
   verify_files "${dem_file}"
 
   # Format the compression flag for gdaldem
-  gdaldem_compress=$(format_compression_flag gdaldem "$compress")
+  gdaldem_compress=$(format_creation_option gdaldem "$compress")
 
   # Build the gdaldem hillshade command
   hillshade_flags=$(get_flags "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
@@ -558,10 +621,19 @@ create_hillshade() {
   finished "$target"
 }
 
-## --contour -  gdal_contour
-##              $1 is region name $2 is layer name $3 preview
-## YML Config Settings:
-##   INTERVAL  -i 20
+##
+## .. function::  create_contour():
+##
+## *color_relief.sh \--create_contour region layer*
+##
+## Create a contour shapefile
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
+##
+## **YML Config Settings:**
+##   - INTERVAL  -i 20
 ##
 create_contour() {
   init "$@"
@@ -587,12 +659,20 @@ create_contour() {
   finished "$target"
 }
 
-
-## --create_color_relief -  gdaldem color-relief
-##              $1 is region name $2 is layer name $3 preview flag
-## YML Config Settings:
-##   OUTPUT_TYPE  -of GTiff
-##   EDGE -compute_edges
+##
+## .. function::  create_color_relief():
+##
+## *color_relief.sh \--create_color_relief region layer*
+##
+## Create a color relief image using gdaldem color-relief
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
+##
+## **YML Config Settings:**
+##   - OUTPUT_TYPE  -of GTiff
+##   - EDGE -compute_edges
 ##
 create_color_relief() {
   init "$@"
@@ -606,7 +686,7 @@ create_color_relief() {
   verify_files "${dem_file}" "${region}_color_ramp.txt"
 
   # Format the compression flag for gdaldem
-  gdaldem_compress=$(format_compression_flag gdaldem "$compress")
+  gdaldem_compress=$(format_creation_option gdaldem "$compress")
 
   # Build the gdaldem color-relief command
   cmd="gdaldem color-relief $gdaldem_flags $color_flags $quiet $gdaldem_compress \"$dem_file\" \"${region}_color_ramp.txt\" \"$target\""
@@ -622,13 +702,22 @@ create_color_relief() {
   finished "$target"
 }
 
-
-## --merge - merge hillshade with color relief
-##              $1 is region name $2 is layer name $3 preview
-## YML Config Settings:
-##   MERGE1-4 - gdal_calc.py flags
-##   COMPRESS - compression type.  --co=COMPRESS=ZSTD
-##   MERGE_CALC - calculation to run in gdal_calc.py
+##
+##
+## .. function::  merge_hillshade():
+##
+## *color_relief.sh \--merge_hillshade region layer*
+##
+## Merge hillshade with color relief
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
+##
+## **YML Config Settings:**
+##   - MERGE1-4 - gdal_calc.py flags
+##   - COMPRESS - compression type.  --co=COMPRESS=ZSTD
+##   - MERGE_CALC - calculation to run in gdal_calc.py
 ##
 merge_hillshade() {
   init "$@"
@@ -651,7 +740,7 @@ merge_hillshade() {
   calc_expression="${merge_calc#--calc=}"  # Strip the '--calc=' prefix
 
   # Format the compression flag for gdal_calc.py
-  gdal_calc_compress=$(format_compression_flag gdal_calc.py "$compress")
+  gdal_calc_compress=$(format_creation_option gdal_calc.py "$compress")
   cmd="gdal_calc.py -B \"$color_file\" -A \"$hillshade_file\" --allBands=B --calc=\"$calc_expression\" $merge_flags $gdal_calc_compress $long_quiet --overwrite --outfile=\"$target\""
 
   echo "$cmd" >&2
@@ -671,9 +760,16 @@ merge_hillshade() {
   finished "$target"
 }
 
-
-## --create_trigger - create trigger file if it doesnt exist
-##              $1 is region name $2 is layer name $3 name
+##
+## .. function::  create_trigger():
+##
+## *color_relief.sh \--create_trigger region layer*
+##
+## Create a trigger file for makefile granular dependency checks
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
 ##
 create_trigger(){
   init "$@"
@@ -685,20 +781,29 @@ create_trigger(){
   fi
 }
 
-## --doc - create rst documentation for this shell script
+##
+## .. function::  doc():
+##
+## *color_relief.sh \--doc*
+##
+## Create rst documentation for this shell script from comments with ##
+##
+## **Arguments:**
+##    - none
 ##
 doc(){
-  echo "Creating Documentation in docs/source/color_relief.rst"
+
   # Validate that script and folder exists
   if [ ! -f color_relief.sh ]; then
     pwd
-    echo "You must be in source root directory that contains scripts folder"
+    echo "You must be in the directory that contains the script"
     exit
   fi
  # Process the documentation, applying required transformations
   grep '^##' color_relief.sh | sed -e 's/^## //' \
                                    -e 's/^##//' \
                                    -e 's/^Function:/def /'  > ../docs/source/color_relief.rst
+  echo "Created color_relief.rst doc in ../docs/source/"
 }
 
 
@@ -735,40 +840,6 @@ case "$1" in
 esac
 
 # Shift the positional parameters and call the corresponding function
-version="0.4"
+version="0.5"
 shift
 $command "$@"
-
-## YAML File:
-## ----------
-## The YAML file contains the values for the GDAL switches.
-## These are mapped to shell script variables as below:
-##
-## - $vrt_flag=
-## VRT: -strict
-##
-## - $warp_flags=
-## WARP1: -t_srs epsg:3857
-## WARP2: -wo INIT_DEST=NO_DATA  -overwrite
-## WARP3: -r bilinear
-## WARP4: -multi -wo NUM_THREADS=val/ALL_CPUS --config GDAL_CACHEMAX 30%
-##
-## - $gdaldem_flags=
-## OUTPUT_TYPE:
-## EDGE: -compute_edges
-##
-## - $hillshade_flags=
-## HILLSHADE1: -alg ZevenbergenThorne
-## HILLSHADE2: -z  2
-## HILLSHADE3: ''
-## HILLSHADE4: ‘’
-##
-## - $merge_flags=
-## MERGE1: --extent=intersect —type=Byte
-##
-## - $merge_calc=
-## MERGE_CALC: --calc=(A/255.0) * B
-##
-## - $compress=
-## COMPRESS: -co COMPRESS=JPEG
-##
