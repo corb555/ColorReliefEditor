@@ -24,6 +24,9 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
+from ColorReliefEditor.instructions import get_instructions
+from ColorReliefEditor.preview_widget import PreviewWidget
+from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
 
 #
 #
@@ -34,10 +37,6 @@ except ImportError:
     from PyQt6.QtWidgets import QVBoxLayout
 
 from YMLEditor.settings_widget import SettingsWidget
-
-from ColorReliefEditor.instructions import get_instructions
-from ColorReliefEditor.preview_widget import PreviewWidget
-from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
 
 
 class ContourPage(TabPage):
@@ -64,7 +63,7 @@ class ContourPage(TabPage):
         }
 
         # Get basic or expert mode
-        mode = main.app_config["MODE"]
+        mode = main.app_config.get("MODE", "basic")
 
         # Widget for editing config settings
         settings_layout = QVBoxLayout()

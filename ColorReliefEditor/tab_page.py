@@ -114,19 +114,19 @@ class TabPage(QWidget):
         is entered.
     """
 
-    def __init__(self, main, name, on_exit_callback=None, on_enter_callback=None):
+    def __init__(self, main, tab_name, on_exit_callback=None, on_enter_callback=None):
         """
         Initialize the tab page widget.
 
         Args:
             main (QMainWindow): The main window instance.
-            name (str): The name of the tab.
+            tab_name (str): The name of the tab.
             on_exit_callback (callable, optional): Optional callback for saving data on tab exit.
             on_enter_callback (callable, optional): Optional callback for updating the display.
         """
         super().__init__()
         self.main = main
-        self.tab_name = name
+        self.tab_name = tab_name
         self.on_exit_callback = on_exit_callback
         self.on_enter_callback = on_enter_callback
         self.right_layout, self.left_layout, self.page_layout = None, None, None

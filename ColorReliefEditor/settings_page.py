@@ -63,7 +63,7 @@ class AppSettingsPage(TabPage):
                 "VIEWER": ("Viewer", "combo", ['default', "QGIS", 'GIMP', 'Firefox', ], 180),
                 "LABEL3": ("", "label", None, 400),
                 "MULTI": ("Multiprocessor", "combo", ["multi", 'single'], 180),
-                "VERBOSE": ("Verbose", "combo", ["0", '1', '2'], 180),
+                "VERBOSE": ("Verbose", "combo", ["0", '1', '2', '3', '4'], 180),
                 "FONT_SIZE": ("Font Size", "line_edit", r"^\d{1,2}$", 90),
             }, "basic": {
             }

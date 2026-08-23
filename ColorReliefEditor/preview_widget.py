@@ -46,7 +46,7 @@ except ImportError:
     from PyQt6.QtGui import QPixmap
     from PyQt6.QtWidgets import QLabel, QSizePolicy, QMessageBox
 
-from ColorReliefEditor.make_handler import MakeHandler
+from ColorReliefEditor.make_wrapper import MakeWrapper
 from ColorReliefEditor.tab_page import TabPage, create_hbox_layout, create_button, \
     create_readonly_window
 
@@ -61,32 +61,39 @@ class PreviewWidget(TabPage):
     temporary files, and launching an external viewer.
 
     Attributes:
-        preview_mode (bool): Determines the operational mode (Preview or Full Build).
+        preview_mode (bool): Sets the mode (Preview or Full Build).
         image_label (QLabel): Displays the generated image in preview mode.
         zoom_factor (float): The current zoom level for the image display.
-        make_handler (MakeHandler): Manages the `make` process for image generation and maintenance.
+        make_wrapper (MakeWrapper): Manages the `make` process for image generation and maintenance.
         full_output_height (int): Height of make output for full build. Default = 400
         preview_output_height (int): Height of make output for preview. Default = 80
     """
 
-    def __init__(self, main, name, settings, preview_mode, on_save, button_ids):
+    def __init__(self, main, tab_name, settings, preview_mode, on_save, button_ids, can_auto_publish=False):
         """
         Initialize
 
         Args:
             main (object): the main application object.
-            name (str): The name of this widget/tab.
+            tab_name (str): The name of this widget/tab.
             settings (object):  Configuration settings object for this widget.
             preview_mode (bool): Whether the widget is in preview mode.
-            on_save (callable): Callback function executed upon saving.
+            on_save (callable): Callback function for saving.
             button_ids (list): List of button ids to display in full mode (make,view,publish,
             clean,cancel)
+            can_auto_publish (bool): Whether the widget can automatically publish images.
         """
         self.image_file = None
         self.image = None
         self.image_layer = None
         self.settings = settings
-        super().__init__(main, name, on_exit_callback=on_save, on_enter_callback=self.redisplay)
+        self.our_jobs = {}
+
+        self.can_auto_publish = can_auto_publish
+        super().__init__(main, tab_name, on_exit_callback=on_save, on_enter_callback=self.redisplay)
+
+        # Convert tab name to file name
+        self.base_name = self.main.project.tab_to_filename(self.tab_name)
 
         # Button definitions
         self.button_definitions = [
@@ -94,7 +101,7 @@ class PreviewWidget(TabPage):
             {"id": "make", "label": "Create", "callback": self.make_image, "focus": True},
             {"id": "view", "label": "View...", "callback": self.launch_viewer, "focus": False},
             {"id": "publish", "label": "Publish", "callback": self.publish, "focus": False}, {
-                "id": "clean", "label": "Cleanup files", "callback": self.make_clean, "focus": False
+                "id": "clean", "label": "Cleanup", "callback": self.make_clean, "focus": False
             }, {
                 "id": "cancel", "label": "Cancel", "callback": self.on_cancel_button, "focus": False
             }, ]
@@ -131,12 +138,13 @@ class PreviewWidget(TabPage):
             multi = ' -j '
         else:
             multi = ''
-        self.make_handler = MakeHandler(
-            main, self.output_window, self.tab_name, multiprocess_flag=multi
+
+        self.make_wrapper = MakeWrapper(
+            main, self.output_window,  multiprocess_flag=multi
         )
 
         if not self.connected_to_make:
-            self.make_handler.make_process.make_finished.connect(self.on_make_done)
+            self.make_wrapper.make_process.make_finished.connect(self.on_make_done)
             self.connected_to_make = True
 
     def init_ui(self):
@@ -149,7 +157,7 @@ class PreviewWidget(TabPage):
             QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding
         )
 
-        # Create the buttons that are in self.button_ids
+        # Create buttons (as specified in self.button_ids)
         buttons = []
         for defn in self.button_definitions:
             if defn["id"] in self.button_ids:
@@ -165,20 +173,19 @@ class PreviewWidget(TabPage):
             )
             # Allow the image to shrink to a reasonable minimum size
             self.image_label.setMinimumSize(400, 400)
-
             self.output_window.setMinimumSize(70, self.preview_output_height)
 
-            # Vertical size ratios of widgets:  buttons, output_window, image
+            # Vertical size ratios of widgets:  buttons, console output, image
             stretch = [1, 3, 15]
         else:
-            # Full Build Mode - just an output window, no image preview
+            # Full Build Mode - just a console output window, no preview image
             self.output_window.setMinimumSize(70, self.full_output_height)
 
-            # Vertical size ratios of widgets:  buttons, output_window, image
+            # Vertical size ratios of widgets:  buttons, console output, image
             stretch = [1, 20, 0]
 
         self.image = Image(
-            self.main, tab_name=self.tab_name, image_label=self.image_label,
+            self.main, base_name=self.base_name, image_label=self.image_label,
             preview_mode=self.preview_mode
         )
 
@@ -200,23 +207,39 @@ class PreviewWidget(TabPage):
         self.on_save()
 
         self.image_layer = self.main.project.get_layer()
-
-        self.image_file = self.make_handler.make_image(
-            self.image.get_image_base(), self.preview_mode, [self.image_layer]
-        )
+        base = self.image.get_image_base()
+        target = self.main.project.get_target_image_name(base, self.preview_mode, self.image_layer)
+        job_id = self.make_wrapper.make_image(target)
+        self.our_jobs[job_id] = target
 
     def make_clean(self):
         self.set_buttons_ready(False)
-        self.make_handler.make_clean([self.main.project.get_layer()])
+        self.make_wrapper.make_clean([self.main.project.get_layer()])
 
-    def on_make_done(self, name, exit_code):
-        if name == self.tab_name:
+    def on_make_done(self, job_id, exit_code):
+        self.set_buttons_ready(True)
+        # Multiple jobs can run in parallel. Make sure this is us.
+        if job_id in self.our_jobs:
             self.set_buttons_ready(True)
+            image_path = self.our_jobs[job_id]
+            print(f"  {job_id}) {image_path} done")
 
             if exit_code == 0:
-                # Only display "Done" if this wasn't a dry run
-                if not self.make_handler.dry_run:
-                    msg = "Done ✅"
+                # Display "Done" if this wasn't a dry run
+                if not self.make_wrapper.dry_run:
+                    if self.can_auto_publish:
+                        # Auto publish the image - verify destination_folder isn't blank
+                        auto_publish = self.main.proj_config.get("AUTOPUBLISH")
+                        _, destination_folder = self.get_publish_targets()
+                        if auto_publish == '1' and destination_folder != "":
+                            try:
+                                self.publish_image(image_path, destination_folder)
+                                msg = f"Published {Path(image_path).name} ✅"
+                                self.output(msg)
+                            except Exception as e:
+                                QMessageBox.warning(self.main, "Error", f"Error copying image: {str(e)}")
+
+                    msg = f"{Path(image_path).name} done. ✅"
                     self.output(msg)
 
                 # Display image
@@ -239,40 +262,51 @@ class PreviewWidget(TabPage):
             )
             return
 
+        # Check if the project is up to date and confirm action if needed
+        target = self.get_target_name()
+        if self.cancel_for_out_of_date("Publish", target):
+            return
+
+        try:
+            image_path, destination_folder = self.get_publish_targets()
+            self.publish_image(image_path, destination_folder)
+
+            self.output(f"Copied file ✅")
+            QMessageBox.information(self.main, "Success", f"Image copied to {destination_folder}")
+        except OSError as e:
+            QMessageBox.warning(self.main, "Error", f"Error copying image: {str(e)}")
+
+    def publish_image(self, image_path, destination_folder):
+        if destination_folder == "" or not destination_folder.is_dir():
+            raise FileNotFoundError( "Error", f"Publish directory '{destination_folder}' does not exist."
+            )
+        destination_path = destination_folder / Path(image_path).name
+        shutil.copy2(image_path, destination_path)
+
+    def get_publish_targets(self):
         image_path = self.image.construct_image_path()
+
+        # todo - this gets the destination from proj_config.  switch it
+        # to get it from bash environment variable MAP_SERVER_DIR
         dest = self.main.proj_config.get("PUBLISH") or ""
         if dest != "":
             destination_folder = Path(dest)  # Convert to Path object
         else:
             destination_folder = ""
+        return image_path, destination_folder
 
-        if destination_folder == "" or not destination_folder.is_dir():
-            QMessageBox.warning(
-                self.main, "Error", f"Publish directory '{destination_folder}' does not exist."
-            )
-            return
-
-        # Check if the project is up to date and confirm action if needed
+    def get_target_name(self):
         layer = self.main.project.get_layer()
         target = self.main.project.get_target_image_name(
             self.image.get_image_base(), self.preview_mode, layer
         )
-        if self.cancel_for_out_of_date("Publish", target):
-            return
-
-        target_path = destination_folder / Path(image_path).name
-        try:
-            shutil.copy2(image_path, target_path)
-            self.output(f"Copied file ✅")
-            QMessageBox.information(self.main, "Success", f"Image copied to {target_path}")
-        except OSError as e:
-            QMessageBox.warning(self.main, "Error", f"Error copying image: {str(e)}")
+        return target
 
     def on_cancel_button(self):
         """
         Cancel the make process.
         """
-        self.make_handler.make_process.cancel()
+        self.make_wrapper.make_process.cancel()
 
     def set_buttons_ready(self, ready):
         """
@@ -301,7 +335,7 @@ class PreviewWidget(TabPage):
             bool: True if out of date, and they cancel, False to proceed,
         """
         # Check if the project is up to date
-        if not self.make_handler.up_to_date(target):
+        if not self.make_wrapper.up_to_date(target):
             # Prompt the user to confirm action even if not up to date
             msg_box = QMessageBox(self)
             msg_box.setWindowTitle("Out of Date")
@@ -350,7 +384,7 @@ class PreviewWidget(TabPage):
             return
 
         # Get user preferred viewer app from config
-        app = self.main.app_config["VIEWER"]
+        app = self.main.app_config.get("VIEWER", "QGIS")
 
         try:
             # Attempt to launch the viewer application
@@ -426,11 +460,11 @@ class PreviewWidget(TabPage):
 
 
 class Image:
-    def __init__(self, main, tab_name, image_label, preview_mode):
+    def __init__(self, main, base_name, image_label, preview_mode):
         self._pixmap = None
         self.zoom_factor = None
         self.main = main
-        self.tab_name = tab_name
+        self.base_name = base_name
         self.image_label = image_label
         self.preview_mode = preview_mode
         self._image_file = None
@@ -460,10 +494,10 @@ class Image:
         return str(Path(self.main.project.project_directory) / target)
 
     def get_image_base(self):
-        if self.tab_name.lower() == "create":
+        if self.base_name.lower() == "create":
             return "relief"
         else:
-            return self.tab_name.lower()
+            return self.base_name.lower()
 
     def load_image(self, zoom=True):
         """
@@ -494,6 +528,7 @@ class Image:
             self.image_label.update()  # Update the display
             self.zoom_factor = 1
             return False
+
         if zoom:
             # Use a single-shot timer to defer zoom until geometry is set
             QTimer.singleShot(0, self.zoom_image)

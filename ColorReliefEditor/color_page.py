@@ -28,12 +28,20 @@
 import os
 from pathlib import Path
 
+from ColorReliefEditor.file_drop_widget import FileDropWidget
+from ColorReliefEditor.instructions import get_instructions
+from ColorReliefEditor.preview_widget import PreviewWidget
+from ColorReliefEditor.tab_page import TabPage, create_button, expanding_vertical_spacer, \
+    create_hbox_layout, create_vbox_layout
+from project_config import ProjectConfig
+
 try:
     # Use PySide6 imports
     from PySide6.QtCore import Signal, QTimer
     from PySide6.QtGui import QPainter, QColor, QFontMetrics, QLinearGradient
     from PySide6.QtWidgets import (QWidget, QPushButton, QTableWidget, QLineEdit, QColorDialog,
-                                   QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
+                                   QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar,
+                                   QFileDialog)
 except ImportError:
     # Use PyQt6 imports as fallback
     from PyQt6.QtCore import pyqtSignal as Signal, QTimer
@@ -42,17 +50,11 @@ except ImportError:
                                  QHeaderView, QMessageBox, QInputDialog, QSizePolicy, QScrollBar)
 
 from ColorReliefEditor.color_config import ColorConfig
-from ColorReliefEditor.file_drop_widget import FileDropWidget
-from ColorReliefEditor.instructions import get_instructions
-from ColorReliefEditor.preview_widget import PreviewWidget
-from ColorReliefEditor.tab_page import TabPage, create_button, expanding_vertical_spacer, \
-    create_hbox_layout, create_vbox_layout
-from YMLEditor.data_manager import DataManager
 
 
 class ColorPage(TabPage):
     """
-    Provides an editor for the color table used by gdaldem color-relief
+    Provides an editor TabPage for the color table used by gdaldem color-relief
 
     1) Provides editing for colors and elevations including rescale, insert, and delete rows.
     2) Displays an elevation scaled sample of the color gradients.
@@ -70,7 +72,7 @@ class ColorPage(TabPage):
             name: The name of the page.
         """
         # Create data_mgr to load and save color table
-        self.data_mgr = ColorConfig()
+        self.data_mgr = ColorConfig(archive_data=True)
 
         # Create color settings widget to edit the color table settings
         self.color_settings_widget = ColorSettingsWidget(self.data_mgr, main.app_config["MODE"])
@@ -80,31 +82,20 @@ class ColorPage(TabPage):
             main, name, on_exit_callback=self.data_mgr.save, on_enter_callback=self.display
         )
 
-        # Styles for Drag and Drop box
-        file_drop_style = f"""
-             QLabel {{
-                 font-size: {main.font_size + 2}px;
-                 background-color: slategray;
-                 padding: 30px;
-             }}
-            """
-        status_style = """
-             QLabel {
-                 color: "orange";
-             }
-            """
+        self.open_button = create_button("Open", self.open_color, True, self)
+        buttons = [self.open_button ]
+        # Arrange buttons in a horizontal layout
+        button_layout = create_hbox_layout(buttons, 0, 0, 0, 0, 5)
 
-        # Create drag and drop target for elevation files
-        self.drop_widget = FileDropWidget(
-            "Drag GDAL Color File Here", r"^.*\.txt[i]?$", self.import_color_file, file_drop_style,
-            status_style
-        )
+
+        # Create Drag N Drop target box
+        #self.drop_widget = self.create_drop_target(main)
 
         # If expert mode, add drag and drop for Color File to display
-        if main.app_config["MODE"] == 'expert':
-            widgets = [self.color_settings_widget, self.drop_widget]
-        else:
-            widgets = [self.color_settings_widget]
+        #if main.app_config.get("MODE","expert") == 'expert':
+        #    widgets = [self.color_settings_widget, self.drop_widget]
+        #else:
+        widgets = [button_layout, self.color_settings_widget]
 
         # Create the main layout with color_sample and settings_widget plus drop target in expert
         # mode
@@ -120,27 +111,67 @@ class ColorPage(TabPage):
         mode = self.main.app_config["MODE"]
 
         # Get Instructions for this tab and mode
-        if self.main.app_config["INSTRUCTIONS"] == "show":
+        if self.main.app_config.get("INSTRUCTIONS","show") == "show":
             instructions = get_instructions(self.tab_name, (mode == "basic"))
         else:
             instructions = None
 
-        widgets = [color_settings_pane, self.preview]
-        stretch = [1, 3]
+        #widgets = [color_settings_pane, self.preview]
+        widgets = [color_settings_pane]
+
+        #stretch = [1, 3]
 
         # Create the page
         self.create_page(
-            widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch, )
+            widgets, None, instructions, self.tab_name, vertical=False )
 
         # When color is updated, notify color_sample to redisplay
         self.color_settings_widget.colors_updated.connect(
-            self.color_settings_widget.color_sample.update
+            self.color_settings_widget.color_gradient_sample.update
         )
 
     def display(self):
         self.color_settings_widget.display()
         if self.preview:
             self.preview.display()
+
+    def open_color(self):
+
+        file_path = self.show_file_dialog(
+            "open_file", "Open Color File",
+            f"Color Files (*_color_palette.txt)"
+        )
+        print(f"Path = {file_path}")
+        self.main.project.color_file_path = file_path
+        self.load(self.main.project)
+        self.display()
+
+    def show_file_dialog(self, dialog_type, title, file_type_filter=""):
+        """
+        Display a file or directory selection dialog.
+
+        Args:
+            dialog_type (str): Type of dialog ("open_file", "recent_file", "directory").
+            title (str): Title of the dialog.
+            file_type_filter (str): Filter for file types (used only for file selection).
+
+        Returns:
+            str: The selected file or directory path, or None if cancelled.
+        """
+        if dialog_type == "open_file":
+            return QFileDialog.getOpenFileName(self, title, "", file_type_filter)[0]
+        elif dialog_type == "recent_file":
+            recent_files = self.main.project.recent_files.items()
+            if not recent_files:
+                QMessageBox.warning(self, "Recent Files", "No recent files found.")
+                return None
+            return self.show_list_dialog(title, recent_files)
+        elif dialog_type == "directory":
+            return QFileDialog.getExistingDirectory(
+                self, title, "", options=QFileDialog.Option.ShowDirsOnly
+            )
+        return None
+
 
     def load(self, project):
         """
@@ -154,10 +185,13 @@ class ColorPage(TabPage):
         self.preview.target = self.main.project.get_target_image_name(self.tab_name, True, layer)
         project_dir = Path(self.main.project.project_directory)
         self.preview.image_file = str(project_dir / self.preview.target)
-        self.drop_widget.target_path = self.main.project.project_directory
+        #self.drop_widget.target_path = self.main.project.project_directory
 
         try:
             res = self.data_mgr.load(self.main.project.color_file_path)
+            print(f"LOAD '{self.main.project.color_file_path}' res={res}")
+            if not res:
+                print(f"ERR {self.data_mgr.error}")
             return res
         except (FileNotFoundError, ValueError) as e:
             QMessageBox.warning(self, "Error", f"Color File error: {str(e)}")
@@ -218,7 +252,6 @@ class ColorPage(TabPage):
         else:
             print("Operation canceled by the user.")
 
-
 def touch_file(filename):
     """
     Set the file's modification and access time to the current time.
@@ -260,7 +293,7 @@ class ColorSettingsWidget(QWidget):
         super().__init__()
         self.data_mgr = data_mgr
 
-        # Timer for periodic saves to reduce redundant saves during rapid editing
+        # Debounce saves during rapid editing
         self.save_timer = QTimer()
         self.save_timer.setSingleShot(True)
         self.save_timer.timeout.connect(self.save)
@@ -268,10 +301,9 @@ class ColorSettingsWidget(QWidget):
         # Widget configuration
         self.table_width = 200  # Width for the table
         self.initial_rows = 15
-        self.row_height, self.color_table = None, None
+        self.row_height, self.color_display_table = None, None
         self.insert_button, self.delete_button, self.rescale_button, self.layout = (
-            None, None, None, None
-        )
+            None, None, None, None)
         self.init_ui(mode)
 
     def save(self):
@@ -290,20 +322,24 @@ class ColorSettingsWidget(QWidget):
         self.color_width = self.row_height * 2
 
         # Create a widget to display a scaled sample with color gradients
-        self.color_sample = ColorSampleWidget(self.data_mgr, self.table_height)
+        self.color_gradient_sample = ColorGradientWidget(self.data_mgr, self.table_height)
 
         # Initialize the color table widget
-        self.color_table = QTableWidget(self.initial_rows, 2, self)
-        self.color_table.setFixedHeight(self.table_height)
-        self.color_table.setFixedWidth(
+        self.color_display_table = QTableWidget(self.initial_rows, 2, self)
+        self.color_display_table.setFixedHeight(self.table_height)
+        self.color_display_table.setFixedWidth(
             self.elevation_width() + self.color_width + scrollbar_width() + 5
         )
-        self.color_table.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
-        self.color_table.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
-        self.color_table.setShowGrid(False)  # Disable grid lines
-        self.color_table.setContentsMargins(0, 0, 0, 0)
-        self.color_table.horizontalHeader().hide()  # Hide headers
-        self.color_table.verticalHeader().hide()
+        self.color_display_table.horizontalHeader().setSectionResizeMode(
+            0, QHeaderView.ResizeMode.ResizeToContents
+            )
+        self.color_display_table.horizontalHeader().setSectionResizeMode(
+            1, QHeaderView.ResizeMode.ResizeToContents
+            )
+        self.color_display_table.setShowGrid(False)  # Disable grid lines
+        self.color_display_table.setContentsMargins(0, 0, 0, 0)
+        self.color_display_table.horizontalHeader().hide()  # Hide headers
+        self.color_display_table.verticalHeader().hide()
 
         # Create buttons for row manipulation and rescaling
         self.insert_button = create_button("Insert", self.insert_row, False, self)
@@ -311,14 +347,15 @@ class ColorSettingsWidget(QWidget):
         self.undo_button = create_button("Undo", self.undo, False, self)
         if mode == "expert":
             self.rescale_button = create_button("Rescale", self.rescale, False, self)
-            buttons = [self.insert_button, self.delete_button, self.undo_button, self.rescale_button]
+            buttons = [self.insert_button, self.delete_button, self.undo_button,
+                       self.rescale_button]
         else:
             buttons = [self.insert_button, self.delete_button, self.undo_button]
 
         top_button_panel = create_hbox_layout(buttons, 0, 0, 0, 0)
 
         # Main layout with color table and controls
-        self.edit_panel = create_hbox_layout([self.color_sample, self.color_table], spacing=0)
+        self.edit_panel = create_hbox_layout([self.color_gradient_sample, self.color_display_table], spacing=0)
         widgets = [top_button_panel, self.edit_panel, expanding_vertical_spacer(5)]
         self.layout = create_vbox_layout(widgets)
         self.setLayout(self.layout)
@@ -329,14 +366,14 @@ class ColorSettingsWidget(QWidget):
         Each row consists of an elevation value and its corresponding color.
         """
         if self.data_mgr and len(self.data_mgr) > 0:
-            self.color_table.setRowCount(len(self.data_mgr))
+            self.color_display_table.setRowCount(len(self.data_mgr))
             for row_idx, row in enumerate(self.data_mgr._data):
                 elevation, r, g, b, a = row
                 elevation_edit = self._create_line_edit(row_idx, elevation)
                 color_button = self._create_color_button(row_idx, r, g, b, a)
-                self.color_table.setCellWidget(row_idx, 0, elevation_edit)
-                self.color_table.setCellWidget(row_idx, 1, color_button)
-                self.color_table.setRowHeight(row_idx, self.row_height)
+                self.color_display_table.setCellWidget(row_idx, 0, elevation_edit)
+                self.color_display_table.setCellWidget(row_idx, 1, color_button)
+                self.color_display_table.setRowHeight(row_idx, self.row_height)
 
     def rescale(self):
         """
@@ -380,7 +417,7 @@ class ColorSettingsWidget(QWidget):
         Args:
             row_idx (int): The row index of the updated elevation.
         """
-        line_edit = self.color_table.cellWidget(row_idx, 0)
+        line_edit = self.color_display_table.cellWidget(row_idx, 0)
         self.save_timer.start(500)  # Debounce saves (500 ms)
         if isinstance(line_edit, QLineEdit):
             try:
@@ -418,7 +455,7 @@ class ColorSettingsWidget(QWidget):
             new_color (QColor): The new color selected by the user.
         """
         self.save()
-        color_button = self.color_table.cellWidget(idx, 1)
+        color_button = self.color_display_table.cellWidget(idx, 1)
         r, g, b, a = new_color.red(), new_color.green(), new_color.blue(), new_color.alpha()
         self.data_mgr.update_line(idx, colors=[r, g, b, a])
         color_button.setStyleSheet(f"background-color: rgba({r}, {g}, {b}, {a}); border: none;")
@@ -429,7 +466,7 @@ class ColorSettingsWidget(QWidget):
         Insert a new row by interpolating elevation and color data.
         """
         self.save()
-        current_row_idx = self.color_table.currentRow()
+        current_row_idx = self.color_display_table.currentRow()
         new_row = self.data_mgr.interpolate(current_row_idx)
         self.data_mgr.insert(current_row_idx, new_row)
         self.display()
@@ -440,7 +477,7 @@ class ColorSettingsWidget(QWidget):
         Delete the currently selected row from the color table.
         """
         self.save()
-        current_row = self.color_table.currentRow()
+        current_row = self.color_display_table.currentRow()
         if current_row != -1:
             self.data_mgr.delete(current_row)
             self.display()
@@ -483,11 +520,9 @@ class ColorSettingsWidget(QWidget):
         return font_metrics.horizontalAdvance("9999999") + 10
 
 
-
-
-class ColorSampleWidget(QWidget):
+class ColorGradientWidget(QWidget):
     """
-    Widget to display color bands with gradients between elevation levels.
+    Widget to display a color sample with gradients between elevation level colors.
     """
 
     def __init__(self, color_ramp_mgr, height):

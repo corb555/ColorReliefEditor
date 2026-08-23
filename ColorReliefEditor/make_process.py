@@ -48,131 +48,162 @@ ANSI_COLOR_MAP = {
 ANSI_ESCAPE = re.compile(r'\x1b\[([0-9;]*)m')
 
 
-class MakeProcess(QObject):
+# Error codes
+ERROR_COMMAND_NOT_FOUND = -102
+ERROR_MAKEFILE_MISSING = -103
+ERROR_CWD_FAILURE = -104
+ERROR_START_FAILURE = -105
+
+class Job:
     """
-    Executes Makefile commands, streaming real-time output to an optional output window and
-    emitting a `make_finished` signal upon completion. Supports dry-run mode to preview actions
-    without execution and provides `build_required` to indicate if the dry-run determined that a
-    build
-    is required.
+    Represents an individual job with associated metadata.
 
     Attributes:
-        make_finished (Signal): Signal emitted when the make process finishes, with
-            the job name and exit code.
-        job_name (str): Name of the current job being processed.
-        dry_run (bool): Specifies if the current process is a dry-run. Set to True if the
-            make command ends with '-n'. Runs the process synchronously for analysis
-            without actual execution.
-        build_required (bool): Indicates whether a build is required based on the output
-            of a dry-run. Set to True if any files or commands in the make process indicate
-            a build is necessary, or if there is error output.
-
-    **Methods**:
+        job_id (int): Unique identifier for the job.
+        dry_run (bool): Whether the job is a dry-run.
+        build_required (bool): Whether a build is required.
+        process (QProcess): The running QProcess instance, if any.
     """
 
-    make_finished = Signal(str, int)
+    def __init__(self, job_id):
+        self.job_id = job_id
+        self.dry_run = False
+        self.build_required = False
+        self.process = None
+        self.user_data = None
 
-    def __init__(self, verbose=0, dark_mode=True):
-        """
-        Initialize the MakeProcess object.
-        """
+
+class MakeProcess(QObject):
+    """
+    Executes Makefile commands via QProcess
+    Streaming real-time output to an optional output window
+    Emits a `make_finished` signal upon completion.
+    Supports dry-run mode and provides build_required per job.
+    """
+
+    make_finished = Signal(int, int)  # Emits job_id and exit code
+
+    def __init__(self, verbose=3, dark_mode=True):
         super().__init__()
         self.dark_mode = dark_mode
         self.verbose = verbose
-        self.dry_run = False
-        self.build_required = False
-        self.process = QProcess()
-        self.job_name = ""
         self._output_window = None
-        self.process.readyReadStandardOutput.connect(self._on_standard_output)
-        self.process.readyReadStandardError.connect(self._on_standard_error)
-        self.process.finished.connect(self._on_process_finished)
+        self.jobs = {}
+        self.last_job_id = 0
 
         system = platform.system()
-        if system == "Darwin":
-            self.make = "gmake"
-        else:
-            self.make = "make"
+        #self.make = "gmake" if system == "Darwin" else "make"
+        self.make = "make"
 
-    def run_make(self, makefile_path, project_directory, command, job_name, output_window=None):
+    def run_make(self, makefile_path, project_directory, command, output_window=None, user_data=None):
         """
-        Execute the given command.
-        Runs synchronously if '-n' is in the command (fast dry-run),
-        otherwise runs the process asynchronously and emits the `make_finished` signal
+        Runs a Make command using the provided makefile and project directory. It handles both synchronous
+        and asynchronous execution of the make command, including dry-runs and actual builds. Processes
+        are managed internally, ensuring proper error handling and output redirection.
 
         Args:
-            makefile_path (str): The path to the Makefile file.
-            command (str): The command to execute.
-            job_name (str): The name of the job for tracking purposes.
-            output_window (QPlainTextEdit, optional): The window to display process output.
-            project_directory (str): The path to the project directory.
+            makefile_path: str
+                The path to the Makefile that will be executed.
+            project_directory: str
+                The directory in which the Makefile is located and where the command should execute.
+            command: str
+                The Make command to be executed, including any options or arguments.
+            output_window: Optional[Any]
+                An optional output window where the process logs and errors will be redirected.
+                If not provided, the default output mechanism will be used.
 
         Returns:
-            int: Exit code if running synchronously, 0 if running asynchronously.
+            int: The job ID of the initiated Make process or a negative number if an error occurs.
+
         """
+        self.last_job_id += 1
+        job = Job(self.last_job_id)
+        job.user_data = user_data
+        self.jobs[job.job_id] = job
         self._output_window = output_window
         self.clear_output()
-        self.job_name = job_name
         self.output(f"{command}\n")
 
-        # Validate command
         if shutil.which(command.split()[0]) is None:
-            return self.return_error(102, f"ERROR: Command not found: {command.split()[0]}")
+            return self.return_error(job.job_id, ERROR_COMMAND_NOT_FOUND,
+                                     f"ERROR: Command not found: {command.split()[0]}")
 
         if not makefile_path or not os.path.isfile(makefile_path):
-            self.return_error(103, f"ERROR: Makefile not found at: {makefile_path} ")
+            return self.return_error(job.job_id, ERROR_MAKEFILE_MISSING,
+                                     f"ERROR: Makefile not found at: {makefile_path}")
 
-        # chdir to the project directory
         try:
             os.chdir(project_directory)
         except OSError as e:
-            self.return_error(
-                104, f"ERROR: Unable to change directory to: {project_directory} {e} "
-            )
+            return self.return_error(job.job_id, ERROR_CWD_FAILURE,
+                                     f"ERROR: Unable to change directory to: {project_directory} {e}")
 
-        # Start the make process
-        self.build_required = False
+        # Dry-run handled synchronously
+        if command.strip().endswith("-n"):
+            job.dry_run = True
+            process = QProcess()
+            process.startCommand(command)
+
+            if not process.waitForStarted():
+                return self.return_error(job.job_id, ERROR_START_FAILURE,
+                                         f"\nERROR: Failed to start dry-run: {command}")
+
+            process.waitForFinished()
+            output = process.readAllStandardOutput().data().decode()
+            error_output = process.readAllStandardError().data().decode()
+
+            if any(x in output for x in [".sh", "make"]) or error_output:
+                job.build_required = True
+
+            self.output(output)
+            self.output(error_output)
+            self.make_finished.emit(job.job_id, process.exitCode())
+            return process.exitCode()
+
+        # Async process
+        job.dry_run = False
+        job.process = QProcess()
+
+        job.process.readyReadStandardOutput.connect(lambda job_id=job.job_id: self._on_standard_output(job_id))
+        job.process.readyReadStandardError.connect(lambda job_id=job.job_id: self._on_standard_error(job_id))
+        job.process.finished.connect(lambda code, _=None, job_id=job.job_id: self._on_process_finished(job_id, code))
+
+        self.info(f"ID {job.job_id} - Make command: {command}")
 
         try:
-            self.process.startCommand(command)
+            job.process.startCommand(command)
         except Exception as e:
-            self.warn(f"\nERROR: Unable to run Makefile command.\n{e}")
-            return self.return_error(105, f"ERROR: Unable to start process. {e}")
+            return self.return_error(job.job_id, ERROR_START_FAILURE,
+                                     f"ERROR: Unable to start process: {e}")
 
-        # Check if this is a dry-run command
-        if command.strip().endswith("-n"):
-            # Run dry-run synchronously and scan output for ".sh" to determine if
-            # build is required
-            self.dry_run = True
-            self.process.waitForFinished()
-        else:
-            # Run asynchronously and handle with signal
-            # Monitor if the process fails to start
-            self.process.waitForStarted()
-            if self.process.state() != QProcess.ProcessState.Running:
-                self.return_error(105, f"\nERROR: Unable to run {command}")
-            self.dry_run = False
+        if not job.process.waitForStarted():
+            return self.return_error(job.job_id, ERROR_START_FAILURE,
+                                     f"\nERROR: Unable to run {command}")
 
-    def _on_process_finished(self, exit_code):
-        """
-        Handle the process finished event.
+        return job.job_id
 
-        Args:
-            exit_code (int): The exit code of the completed process.
-        """
-        self.make_finished.emit(self.job_name, exit_code)
+    def _on_process_finished(self, job_id, exit_code):
+        self.info(f"Job {job_id} finished with exit code {exit_code}")
+        job = self.jobs.pop(job_id, None)
+        if job and job.process:
+            job.process.deleteLater()
+        self.make_finished.emit(job_id, exit_code)
 
-    def return_error(self, error, message):
+    def return_error(self, job_id, error, message):
         self.output(f"\033[33m{message}\x1b[0m")
-        self.make_finished.emit(self.job_name, error)
+        self.make_finished.emit(job_id, error)
         return error
+
+    def get_user_data(self, job_id):
+        return self.jobs[job_id].user_data
 
     def clear_output(self):
         """
         Clear output window
         """
-        if self._output_window:
-            self._output_window.clear()
+        # todo if self._output_window:
+            #self._output_window.clear()
+        pass
 
     def output(self, text):
         """
@@ -190,38 +221,56 @@ class MakeProcess(QObject):
         """
         Cancel the currently running make process.
         """
-        self.process.kill()
-        self.make_finished.emit(self.job_name, 2)
+        # todo - walk through all processes in self.processes and kill them
+        #self.process.kill()
+        #self.make_finished.emit(self.job_id, 2)
 
-    def _on_standard_output(self):
+    def _on_standard_output(self, job_id):
         """
-        Handle and display standard output from the make process.
+        Handle and display standard output from the specified make process.
+
+        Args:
+            job_id (int): Identifier for the job.
         """
-        output = self.process.readAllStandardOutput().data().decode()
+        job = self.jobs.get(job_id)
+        if not job or not job.process:
+            return
+
+        output = job.process.readAllStandardOutput().data().decode()
 
         if self._output_window:
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
             self._append_ansi_text(output)
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
 
-        # During dry run check if output contains ".sh" (indicating work to be done)
-        if self.dry_run and ".sh " in output:
-            # If there are script names in the dry run output, a build is required
-            self.build_required = True
+        # Detect if dry run shows work to be done
+        if job.dry_run and ".sh " in output:
+            job.build_required = True
 
-    def _on_standard_error(self):
+    def _on_standard_error(self, job_id):
         """
-        Handle and display standard error output from the make process.
+        Handle and display standard error output from the specified make process.
+
+        Args:
+            job_id (str): Identifier for the  job.
         """
-        self.build_required = True
-        output = self.process.readAllStandardError().data().decode()
+        job = self.jobs.get(job_id)
+        if not job or not job.process:
+            return
+
+        job.build_required = True
+
+        output = job.process.readAllStandardError().data().decode()
 
         if self._output_window:
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
-            if "ERR" in output or "err" in output or "Err" in output or "failed" in output:
+
+            # Highlight likely errors
+            if any(keyword in output for keyword in ("ERR", "err", "Err", "failed")):
                 self._append_ansi_text(f"\033[33m{output}\x1b[0m")
             else:
                 self._append_ansi_text(output)
+
             self._output_window.moveCursor(QTextCursor.MoveOperation.End)
 
     def _append_ansi_text(self, text):
@@ -262,9 +311,9 @@ class MakeProcess(QObject):
         cursor.insertText(text[pos:], current_format)
 
     def warn(self, message):
-        if self.verbose > 0:
+        if self.verbose > 2:
             print(f"WARNING: {message}")
 
     def info(self, message):
-        if self.verbose > 1:
+        if self.verbose > 3:
             print(f"INFO: {message}")

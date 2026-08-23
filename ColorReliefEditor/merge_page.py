@@ -24,11 +24,6 @@
 #   With the LGPL license option, you can use the essential libraries and some add-on libraries
 #   of Qt.
 #   See https://www.qt.io/licensing/open-source-lgpl-obligations for QT details.
-
-#
-#
-from pathlib import Path
-
 # Handle imports for PyQt6 versus PySide depending on which has been installed
 try:
     from PySide6.QtWidgets import QVBoxLayout
@@ -42,9 +37,10 @@ from ColorReliefEditor.preview_widget import PreviewWidget
 from ColorReliefEditor.tab_page import TabPage, expanding_vertical_spacer
 
 
-class HillshadePage(TabPage):
+class MergePage(TabPage):
     """
-    A widget for editing Hillshade settings and generating GDAL hillshade images.
+    A widget for running Makefile commands to merge hillshade and color to make a Color Relief TIFF image.
+
     **Methods**:
     """
 
@@ -54,35 +50,21 @@ class HillshadePage(TabPage):
 
         Args:
             main (MainClass): Reference to the main application class.
-            name (str): The name of the page.
+            name (str): Name of the page.
         """
         # Set up display format for settings in basic mode and expert mode
+
         # Make layer label large
         label_style = f"font-size: {main.font_size + 5}px; "
 
         formats = {
             "expert": {
                 "NAMES.@LAYER": ("", "read_only", None, 180, label_style),
-                "HILLSHADEZ.@LAYER": (
-                    "Strength", "combo", ['-z 1', '-z 2', '-z 3', '-z 4', '-z 5', '-z 6', ], 180),
-                "BRIGHTNESS.@LAYER": ("Brightness", "spinbox", [.3, 1.8, .1, 1], 200),
-                "LABEL1": ("", "label", None, 400),
-                "LABEL2": ("Global", "label", None, 400),
-                "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
-                                                                          'ZevenbergenThorne',
-                                                    '-combined', '-multidirectional', " "], 180),
-
-                "HILLSHADE3": ("Other", "line_edit", None, 180),
-
+                "MERGE_CALC": ("Calc ", "text_edit", r"^--calc=.*$", 280),
+                "PUBLISH": ("Publish To", "text_edit", None, 280),
+                "QUIET": ("Quiet Mode", "combo", ["-q", "-v", "--version"], 100),
             }, "basic": {
-                "NAMES.@LAYER": ("Layer", "read_only", None, 200),
-                "HILLSHADE1": ("Shading", "combo", ["-igor", '-alg Horn', '-alg '
-                                                                          'ZevenbergenThorne',
-                                                    '-combined', '-multidirectional', " "], 180),
-                "HILLSHADEZ.@LAYER": (
-                    "Strength", "combo", ['-z 1', '-z 2', '-z 3', '-z 4', '-z 5', '-z 6', ], 180),
-                "BRIGHTNESS.@LAYER": ("Brightness", "spinbox", [.3, 1.8, .1, 1], 200),
-            }
+            },
         }
 
         # Get basic or expert mode
@@ -90,36 +72,38 @@ class HillshadePage(TabPage):
 
         # Widget for editing config settings
         settings_layout = QVBoxLayout()
-
-        # Set margins (left, top, right, bottom) to 0 and spacing between widgets to 5
         settings_layout.setContentsMargins(0, 0, 0, 0)  # No external margins
         settings_layout.setSpacing(5)  # Internal padding between widgets
 
-        # Create Settings widget to read and update settings
-        self.settings_widget = SettingsWidget(main.proj_config, formats, mode, verbose=main.verbose)
-
+        self.settings_widget = SettingsWidget(
+            main.proj_config, formats, mode, verbose=main.verbose, text_edit_height=60,
+            error_style="color: crimson;"
+        )
         settings_layout.addWidget(self.settings_widget)
-        settings_layout.addItem(expanding_vertical_spacer(1))
+        settings_layout.addItem(expanding_vertical_spacer(10))
 
         super().__init__(
             main, name, on_exit_callback=main.proj_config.save, on_enter_callback=self.display
         )
 
-        # Widget for creating and displaying a preview
-        button_flags = ["preview"]
+        # Widget for building and managing images
+        if mode == "expert":
+            button_flags = ["make", "view", "clean"]
+        else:
+            button_flags = ["make", "view"]
         self.preview = PreviewWidget(
-            main, self.tab_name, self.settings_widget, True, main.proj_config.save, button_flags, )
+            main, self.tab_name, self.settings_widget, False, main.proj_config.save, button_flags, can_auto_publish=True
+        )
 
         widgets = [settings_layout, self.preview]
-        stretch = [1, 3]
+        stretch = [1, 8]
 
-        # Retrieve Instructions HTML for this tab from resources
+        # Instructions
         if self.main.app_config["INSTRUCTIONS"] == "show":
             instructions = get_instructions(self.tab_name, (mode == "basic"))
         else:
             instructions = None
 
-        # Create page with widgets vertically on left and instructions on right
         self.create_page(
             widgets, None, instructions, self.tab_name, vertical=False, stretch=stretch
         )
@@ -128,35 +112,3 @@ class HillshadePage(TabPage):
         self.settings_widget.display()
         if self.preview:
             self.preview.display()
-
-    def load(self, project):
-        """
-        Load the given project, configure preview target and image path,
-        and register proxy dependencies for hillshade updates.
-
-        Args:
-            project: The project to load.
-
-        Returns:
-            bool: True if loading succeeded.
-        """
-        super().load(project)
-
-        # Determine current layer and target preview image
-        layer = self.main.project.get_layer()
-        self.preview.target = self.main.project.get_target_image_name(self.tab_name, True, layer)
-
-        project_dir = Path(self.main.project.project_directory)
-        self.preview.image_file = str(project_dir / self.preview.target)
-
-        # Build proxy file path specific to the layer
-        raw_proxy_path = self.main.project.get_proxy_path("hillshade")
-        proxy_path = Path(raw_proxy_path)
-
-        # Register keys that should trigger a hillshade rebuild, note some are wildcards to support Layer
-        # at end of name
-        self.main.proj_config.register_proxy_file(
-            str(proxy_path), ["BRIGHTNESS.*", "HILLSHADEZ.*", "HILLSHADE1", "HILLSHADE3", "HILLSHADE4"]
-        )
-
-        return True

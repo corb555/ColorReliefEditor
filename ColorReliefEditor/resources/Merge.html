@@ -52,36 +52,31 @@
     final full-size image for this layer.</p>
 <p><b>View:</b> Launches an external viewer to display the full-size image. The default system viewer is the default but
     QGIS is
-    highly recommended instead. You can change this in the expert mode Settings tab</p>
+    highly recommended. You can set your preferred viewer in the expert mode Settings tab</p>
 
 <!-- Expert Settings section is shown or hidden depending on app mode -->
 <div class="expert-section">
     <p>Expert Settings</p>
     <ul>
-        <li><b>Calc:</b> The calculation for combining the hillshade (A) and color (B) layers. The default is a
-            composite multiply. Must start with --calc=
+        <li><b>Calc:</b> The calculation to combine the hillshade (A) and color (B) layers. The default is a
+            weighted composite multiply. Must start with --calc=
         </li>
-        <li><b>Quiet Mode:</b></li>
-        <li>-q will show minimal output.</li>
-        <li>-v show detailed progress</li>
-        <li>--version show detailed progress and gdal version</li>
+        <li><b>Quiet Mode Options:</b></li>
+        <li>-q Minimal output.</li>
+        <li>-v Verbose progress</li>
+        <li>--version Show detailed progress and gdal version</li>
     </ul>
-    <p><b>Publish:</b> Clicking Publish will copy the image file for the current layer to the destination folder.</p>
-    <p><b>Publish To:</b> The destination folder to copy the image to when Publish is clicked. Click on field and enter
-        full
-        path.</p>
-    <p><b>Cleanup Files:</b> This will delete intermediate files for this layer. Use this when you are done with a
-        project to
-        free space.
-        The intermediate files significantly speed up image creation.</p>
-    <p>Use the Elevation Tab to switch the active layer</p>
-    <p>If you have multiple layers, you need to run Create and Publish for each layer.</p>
+    <p><b>Publish To:</b> (Optional) Destination folder for the final image. Enter a full path in the field provided.</p>
+    <p><b>Cleanup:</b> Deletes intermediate files for the current layer to save space. These files are useful for
+        re-creating images faster, so use this only when you're finished.</p>
+    <p>Use the Layers Tab to switch the active layer</p>
+    <p>If you have multiple layers, run Create for each layer.</p>
 </div>
 
 <h3>Notes</h3>
-<p>The output window is mainly to show progress. You only need to read the details if there is a problem.</p>
+<p>The output window primarily shows progress. You only need to review the output if something goes wrong.</p>
 <p>The app will display 'Done' when the image is successfully built. Click View to view it externally.</p>
-<p>"Create" runs multiple processes in parallel, so the output may be garbled.</p>
+<p>"Create" runs multiple processes in parallel, which can result in mixed or garbled output text.</p>
 
 </body>
 </html>

@@ -30,6 +30,11 @@
 from functools import partial
 import os
 
+from ColorReliefEditor.file_drop_widget import FileDropWidget
+from ColorReliefEditor.instructions import get_instructions
+from ColorReliefEditor.tab_page import TabPage, create_button, create_hbox_layout, \
+    expanding_vertical_spacer
+
 # Handle imports for PyQt6 versus PySide depending on which has been installed
 try:
     from PySide6.QtCore import QUrl
@@ -42,15 +47,10 @@ except ImportError:
 
 from YMLEditor.settings_widget import SettingsWidget
 
-from ColorReliefEditor.file_drop_widget import FileDropWidget
-from ColorReliefEditor.instructions import get_instructions
-from ColorReliefEditor.tab_page import TabPage, create_button, create_hbox_layout, \
-    expanding_vertical_spacer
 
-
-class ElevationPage(TabPage):
+class LayersPage(TabPage):
     """
-    Widget for editing Digital Elevation Model (DEM) settings in the application.
+    Widget for editing Layers and Digital Elevation Model (DEM) settings in the application.
 
     This tab allows users to define and configure DEM layers, set files for
     each layer, and specify GDAL settings to merge DEM files. The tab also supports drag-and-drop
@@ -83,8 +83,8 @@ class ElevationPage(TabPage):
                 "FILES.@LAYER": (
                     "Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$",
                     680),
-                "EXTENT.@LAYER": ("Extent", "line_edit", None, 400),
-                "SOURCES.@LAYER": ("Source", "line_edit", None, 680),
+                "EXTENT.@LAYER": ("Extent", "line_edit", r'^(-te .*)?$', 400),
+                "NOTES.@LAYER": ("Notes", "line_edit", None, 680),
             }, "basic": {
                 "FILES.@LAYER": (
                     "Elevation Files", "text_edit", r"^([a-zA-Z0-9._*-]+)( [a-zA-Z0-9._*-]+)*$",

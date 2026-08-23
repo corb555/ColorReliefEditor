@@ -14,7 +14,7 @@
 
 import pytest
 
-from ColorReliefEditor.color_file import ColorFile
+from ColorReliefEditor import ColorFile
 
 
 def test_valid_lines():

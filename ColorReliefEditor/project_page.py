@@ -53,39 +53,6 @@ class ProjectPage(TabPage):
     **Methods**:
     """
 
-    # Display formats for the Project settings
-    project_formats = {
-        "error": {
-            "PROJECT": ("Project", "read_only", None, 600),
-            "STATUS": ("Status", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-            "FOLDER": ("Folder", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-            "SETTINGS": ("Settings", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-            "COLORFILE": ("Color File", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-            "MAKEFILE": ("Makefile", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-            "SCRIPT": ("Script", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-            "MAKE": ("Make", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
-        }, "success": {
-            "PROJECT": ("Project", "read_only", None, 600),
-            "STATUS": ("Status", "read_only", None, 600),
-            "FOLDER": ("Folder", "read_only", None, 600),
-        }
-    }
-
-    # Set up display format for the app settings that this tab uses
-    app_formats = {
-        "expert": {
-            "LABEL1": (" ", "label", None, 180),
-            "MODE": ("Mode", "combo", ["basic", "expert"], 180),
-            "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
-            "SHOW_TABS": ("Tabs", "combo", ["normal", 'extended'], 180),
-        },
-
-        "basic": {
-            "LABEL1": (" ", "label", None, 180),
-            "MODE": ("Mode", "combo", ["basic", "expert"], 180),
-        }
-    }
-
     def __init__(self, main, name):
         """
         Initialize
@@ -94,6 +61,43 @@ class ProjectPage(TabPage):
             main (MainClass): Main application class reference.
             name (str): Name of the widget.
         """
+        label_style = f"font-size: {main.font_size + 5}px; "
+
+        # Display formats for the Project settings
+        project_formats = {
+            "error": {
+                "PROJECT": ("Project", "read_only", None, 600, label_style),
+                "STATUS": ("Status", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+                "FOLDER": ("Folder", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+                "SETTINGS": ("Settings", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+                "COLORFILE": ("Color File", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+                "MAKEFILE": ("Makefile", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+                "SCRIPT": ("Script", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+                "MAKE": ("Make", "read_only", r'^(?!.*\b(missing|error)\b).*', 600),
+            }, "success": {
+                "PROJECT": ("Project", "read_only", None, 600, label_style),
+                "STATUS": ("Status", "read_only", None, 600),
+                "FOLDER": ("Folder", "read_only", None, 600),
+                "COLORFILE": ("Color File", "read_only", None, 600),
+            }
+        }
+
+        # Set up display format for the app settings that this tab uses
+        app_formats = {
+            "expert": {
+                "LABEL1": (" ", "label", None, 180),
+                "MODE": ("Mode", "combo", ["basic", "expert"], 180),
+                "INSTRUCTIONS": ("Instructions", "combo", ["show", 'hide'], 180),
+                "SHOW_TABS": ("Tabs", "combo", ["normal", 'extended'], 180),
+            },
+
+            "basic": {
+                "LABEL1": (" ", "label", None, 180),
+                "MODE": ("Mode", "combo", ["basic", "expert"], 180),
+            }
+        }
+
+
         # Initialize the parent TabPage with the display callback
         super().__init__(
             main, name, on_exit_callback=main.save_settings, on_enter_callback=self.display_settings
@@ -107,7 +111,7 @@ class ProjectPage(TabPage):
 
         # Configure project status display
         self.project_settings = SettingsWidget(
-            main.project, self.project_formats, "success", verbose=main.verbose
+            main.project, project_formats, "success", verbose=main.verbose
         )
 
         # If these keys change, notify user that restart is required
@@ -115,7 +119,7 @@ class ProjectPage(TabPage):
 
         # Configure application settings display
         self.app_settings_widget = SettingsWidget(
-            main.app_config, self.app_formats, mode, verbose=main.verbose, trigger_keys=watch,
+            main.app_config, app_formats, mode, verbose=main.verbose, trigger_keys=watch,
             callback=self.restart_dialog
         )
 

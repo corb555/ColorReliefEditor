@@ -14,7 +14,7 @@
 
 import pytest
 
-from ColorReliefEditor.color_config import GdalColorFile
+from ColorReliefEditor import GdalColorFile
 
 
 @pytest.fixture

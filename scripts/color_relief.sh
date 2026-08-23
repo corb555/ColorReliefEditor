@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #
-# Copyright (c) 2024. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
+# Copyright (c) 2025. Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated
 # documentation files (the “Software”), to deal in the Software without restriction, including but not limited to the
 # rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit
 # persons to whom the Software is furnished to do so, subject to the following conditions:
@@ -29,7 +29,6 @@ ERROR_PREVIEW_SIZE=109
 ERROR_GDAL_COLOR_RELIEF_FAILED=110
 ERROR_MISSING_FILE_PATTERN=111
 ERROR_GDAL_MERGE_FAILED=112
-ERROR_GDAL_CALC_FAILED=113
 ERROR_INVALID_PREVIEW_SHIFT=114
 ERROR_GDALBUILDVRT=115
 ERROR_GDAL_CONTOUR_FAILED=116
@@ -53,6 +52,7 @@ RESET="\033[0m"
 ##   - **\--init_dem** - Merges multiple DEM files into a single DEM file.
 ##   - **\--create_color_relief** - Generates a color relief image from a DEM file and color ramp.
 ##   - **\--create_hillshade** - Produces a hillshade image from a DEM file.
+##   - **\--create_slope** - Produces a slope image from a DEM file.
 ##   - **\--merge_hillshade** - Merges color relief and hillshade images into a single image.
 ##   - **\--preview_dem** - Extracts a small section from the merged DEM file for preview generation.
 ##   - **\--create_contour** - Creates a contour shapefile
@@ -66,6 +66,7 @@ RESET="\033[0m"
 ##   - **dem_file** - "${region}_${layer}_DEM${suffix}.${ending}"
 ##   - **color_relief** - "${region}_${layer}_color${suffix}.${ending}"
 ##   - **hillshade** - "${region}_${layer}$_hillshade${suffix}.${ending}"
+##   - **slope** - "${region}_${layer}$_slope${suffix}.${ending}"
 ##   - **final** - "${region}_${layer}$_relief${suffix}.${ending}"
 ##   - **config** - "${region}_relief.cfg"
 ##
@@ -86,6 +87,7 @@ RESET="\033[0m"
 ##   - **$warp_flags** = WARP1 - WARP4
 ##   - **$gdaldem_flags** = OUTPUT_TYPE, EDGE
 ##   - **$hillshade_flags** = HILLSHADE1 - HILLSHADE4
+##   - **$slope_flags** = SLOPE1
 ##   - **$merge_flags** = MERGE1
 ##   - **$merge_calc** = MERGE_CALC
 ##   - **$compress** = COMPRESS
@@ -192,7 +194,7 @@ finished() {
 }
 
 echo_error() {
-  printf "${YELLOW}ERROR: %s${RESET}\n" "$1" >&2
+  printf "color_relief.sh - ${YELLOW}ERROR: %s${RESET}\n" "$1" >&2
 }
 
 
@@ -204,6 +206,7 @@ echo_error() {
 ##    - $1: Key to search for in the $config YAML file
 ##
 optional_flag() {
+  echo "Error: optional_flag: " >&2
   # Check if exactly 1 parameters are provided
   if [ "$#" -ne 1 ]; then
     echo "Error: optional_flag: " >&2
@@ -326,7 +329,7 @@ set_crs() {
   echo "set crs" $1 $2
   echo $config
 
-  # Get GDAL switches from YML config
+  # Get gdalwarp switches from YML config
   warp_flags=$(get_flags  "WARP1" "WARP2" "WARP3" "WARP4")
   echo "= Set CRS =" >&2
 
@@ -359,12 +362,14 @@ set_crs() {
 ##   - $target: image file to adjust
 ##
 adjust_brightness() {
-  brightness=$(get_flags  "BRIGHTNESS" )
+  echo "= Adjust Brightness =" >&2
+  brightness=$(get_flags  BRIGHTNESS."$layer_id" )
+  echo $brightness
   bright_flag="uint8(clip(((A / 255.) * $brightness) * 255, 1, 254))"
   bright_calc="$bright_flag"  # Assign the final calculation string
 
   if [ -n "$brightness" ] && [ "$(echo "$brightness != 1" | bc)" -eq 1 ]; then
-    echo "Adjusting brightness to $brightness for $target..." >&2
+    echo "Adjust brightness to $brightness for $target..." >&2
 
     brightness_temp="${target%.tif}_brightness.tif"  # Temporary file for brightness adjustment
     echo gdal_calc.py -A "$target" --outfile="$brightness_temp" $long_quiet --calc="$bright_calc" >&2
@@ -505,7 +510,6 @@ init_dem() {
   vrt_flag=$(optional_flag    "VRT")
   resample=$(optional_flag    "WARP3")
 
-
   # Get file list for DEM files.  layer_id is (A-G) not the layer text name
   file_list=$(optional_flag   FILES."$layer_id")
 
@@ -533,7 +537,7 @@ rm -f "$vrt_temp"
 
 # Create DEM VRT
 echo gdalbuildvrt $quiet $vrt_flag $resample "$vrt_temp" $file_list >&2
-if ! eval gdalbuildvrt $quiet $vrt_flag $resample "$vrt_temp" $file_list; then
+if ! gdalbuildvrt $quiet $vrt_flag $resample "$vrt_temp" $file_list; then
   echo_error "gdalbuildvrt failed ❌" >&2
   exit $ERROR_GDALBUILDVRT
 fi
@@ -604,8 +608,9 @@ create_hillshade() {
   gdaldem_compress=$(format_creation_option gdaldem "$compress")
 
   # Build the gdaldem hillshade command
-  hillshade_flags=$(get_flags "HILLSHADE1" "HILLSHADE2" "HILLSHADE3" "HILLSHADE4" )
-  cmd="gdaldem hillshade $gdaldem_flags $gdaldem_compress $hillshade_flags $quiet \"$dem_file\" \"$target\""
+  hillshade_flags=$(get_flags "HILLSHADE1" "HILLSHADE3" "HILLSHADE4" )
+  hillz_flag=$(get_flags   HILLSHADEZ."$layer_id")
+  cmd="gdaldem hillshade $gdaldem_flags $gdaldem_compress $hillz_flag $hillshade_flags $quiet \"$dem_file\" \"$target\""
   echo "$cmd" >&2
   echo >&2
 
@@ -658,6 +663,94 @@ create_contour() {
 
   finished "$target"
 }
+
+
+##
+## .. function::  create_slope():
+##
+## *color_relief.sh \--create_slope region layer*
+##
+## Create a slope image
+##
+## **Arguments:**
+##    - $1: region name
+##    - $2: layer name
+##
+## **YML Config Settings:**
+##   - OUTPUT_TYPE  -of GTiff
+##   - SLOPE1 gdaldem slope flags
+##
+create_slope() {
+  init "$@"
+  echo "= Create Slope =" >&2
+  compress=$(get_flags  "COMPRESS")
+  slope_min=$(get_flags  "SLOPEMIN")
+  slope_max=$(get_flags  "SLOPEMAX")
+
+  target="${region}_${layer}_slope${suffix}.${ending}"
+  rm -f "${target}"
+
+  verify_files "${dem_file}"
+
+  # Format the compression flag for gdaldem
+  gdaldem_compress=$(format_creation_option gdaldem "$compress")
+
+  # Build the gdaldem slope command
+  slope_flags=$(get_flags "SLOPE1" )
+  cmd="gdaldem slope $gdaldem_flags  $slope_flags $quiet \"$dem_file\" temp.tif"
+
+  # Execute the command
+  echo "$cmd" >&2
+  echo >&2
+  if ! eval "$cmd"; then
+      echo_error "gdaldem slope failed. ❌" >&2
+      exit $ERROR_GDAL_MERGE_FAILED
+  fi
+
+  #Scale the output
+  cmd="gdal_translate -scale $slope_min $slope_max -ot Byte   $quiet temp.tif mask.tif "
+  # Execute the command
+  echo "$cmd" >&2
+  echo >&2
+  if ! eval "$cmd"; then
+      echo_error "gdal_translate failed. ❌" >&2
+      exit $ERROR_GDAL_MERGE_FAILED
+  fi
+
+  relief_name="${region}_${layer}_relief${suffix}.${ending}"
+
+  calc=$(get_flags "SLOPECALC" )
+  # (1.0 - A/255.0) * B + (A/255.0) * (0.33 * B + 0.33 * C + 0.33 * D)
+
+  echo "gdal_calc.py --outfile=r.tif -A mask.tif -B $relief_name -C $relief_name -D $relief_name"
+  echo "$calc"
+
+  # Process Red Channel
+gdal_calc.py -A mask.tif -B "$relief_name" -C "$relief_name" -D "$relief_name" \
+    --A_band=1 --B_band=1 --C_band=2 --D_band=3 \
+    --calc="$calc" \
+    --outfile="r.tif" --overwrite
+
+# Process Green Channel
+gdal_calc.py -A mask.tif -B "$relief_name" -C "$relief_name" -D "$relief_name" \
+    --A_band=1 --B_band=2 --C_band=1 --D_band=3 \
+    --calc="$calc" \
+    --outfile="g.tif" --overwrite
+
+# Process Blue Channel
+gdal_calc.py -A mask.tif -B "$relief_name" -C "$relief_name" -D "$relief_name" \
+    --A_band=1 --B_band=3 --C_band=1 --D_band=2 \
+    --calc="$calc" \
+    --outfile="b.tif" --overwrite
+
+# Merge channels back into a single RGB file
+gdal_merge.py -separate -o "$target" r.tif g.tif b.tif
+
+ rm -f temp.tif r.tif g.tif b.tif
+
+finished "$target"
+}
+
 
 ##
 ## .. function::  create_color_relief():
@@ -752,6 +845,13 @@ merge_hillshade() {
     exit $ERROR_GDAL_MERGE_FAILED
   fi
 
+  # Build overviews with gdaladdo
+  echo "⏳ Creating overviews with gdaladdo..." >&2
+  if ! gdaladdo -r average "$target" 2 4 8 16; then
+    echo_error "gdaladdo failed on $target ❌" >&2
+    exit $ERROR_GDAL_MERGE_FAILED
+  fi
+
   echo >&2
   if [ "$quiet" != "-q" ]; then
     echo "color_relief.sh $version" >&2
@@ -818,6 +918,9 @@ case "$1" in
   --create_contour)
     command="create_contour"
     ;;
+  --create_slope)
+    command="create_slope"
+    ;;
   --preview_dem)
     command="preview_dem"
     ;;
@@ -834,12 +937,13 @@ case "$1" in
     command="create_trigger"
     ;;
   *)
+    echo_error "Unknown switch " $1
     display_help
     exit 100
     ;;
 esac
 
 # Shift the positional parameters and call the corresponding function
-version="0.5"
+version="0.7"
 shift
 $command "$@"

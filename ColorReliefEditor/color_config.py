@@ -38,7 +38,7 @@ class ColorConfig(DataManager):
     """
         Extends DataManager with functionality for managing GDALDEM color text files,
         which are used to define color reliefs for elevation data. These files
-        consist of lines specifying color mappings for elevation levels. This class adds
+        consist of rows specifying color mappings for elevation levels. This class adds
         support for GDALDEM color files: load, save, update elevation-color.
 
         Color File Format:
@@ -52,7 +52,7 @@ class ColorConfig(DataManager):
 
         Attributes:
         - misc_lines: A list to store metadata lines such as comments or 'nv' lines.
-        - _data: A list of tuples, where each tuple represents an elevation level and its
+        - _data: The base color data. A list of tuples, where each tuple represents an elevation level and its
         associated color values.
 
         Methods:
@@ -65,17 +65,20 @@ class ColorConfig(DataManager):
         - delete(idx): Removes the color mapping row at the specified index in `_data`.
 
         Notes:
-        - Comment line position is not preserved
+        - Position of comment lines is not preserved
 
         Subclass of `DataManager`:
         - Inherits base file handling functionality, such as file loading, saving, and change
         tracking.
-        - Implements methods specific to the GDALDEM color text file format, including custom
-        parsing and saving logic.
+        - Implements methods specific to the GDALDEM color text file format, including
+        parsing GDAL files and saving logic.
+        - adds the ability to create a desaturated variant of the color text file.
+        - adds the ability to create an HSV modified variant of the color text file.  This can be
+        used to create an "arid" palette from a "humid" palette
         """
 
-    def __init__(self):
-        super().__init__()
+    def __init__(self,verbose=3, archive_data=False):
+        super().__init__(verbose, archive_data)
         self.misc_lines = []
         self._data = []
         self.max_snapshots = 20
@@ -116,12 +119,26 @@ class ColorConfig(DataManager):
 
     def _load_data(self, f):
         """
-        Load and parse elevation and color data from a file.
+        Load and parse elevation and color data from a GDAL color ramp file.
 
         This method reads each line in the file, skipping lines that begin with "#" or "nv",
         which are treated as miscellaneous lines. Valid data lines are parsed to extract
         elevation and color values, which are stored as tuples in a list. The list is then
         sorted in descending order by elevation.
+
+        GDAL line format:
+            1. A metadata line, beginning with "#" (comment) or "nv" (no-data value).
+            2. A color mapping line, with the format:
+               "<elevation> <red> <green> <blue> [<alpha>]"
+               - `<elevation>`: Integer or float representing the elevation level.
+               - `<red>`, `<green>`, `<blue>`: Integers (0-255) representing the RGB color.
+               - `<alpha>` (optional): Integer (0-255) representing the opacity.
+
+        Field separators can be: comma, tabulation, spaces, ':'.
+        Although GDAL supports colors by using their name, instead of the RGB triplet, this will
+        generate an error.
+
+        Position of comment lines is not preserved
 
         Args:
             f (file object): An open file object to read lines from.
@@ -134,10 +151,10 @@ class ColorConfig(DataManager):
             ValueError: If a line cannot be parsed correctly or contains invalid values.
         """
         data = []
-        for line in f:
+        for idx, line in enumerate(f):
             line = line.strip()
             if line.startswith("#") or line.startswith("nv"):
-                # Add comments or no data lines to misc
+                # Add comments or nodata lines to misc
                 self.misc_lines.append(line)
             else:
                 # Parse an Elev, RGB(A) line
@@ -146,7 +163,7 @@ class ColorConfig(DataManager):
                     if val is not None:
                         data.append(val)
                 except ValueError as e:
-                    raise ValueError(f"Error in line: '{line}': {str(e)}")
+                    raise ValueError(f"Error in line {idx}: '{line}': {str(e)}")
 
         # Sort data by elevation in descending order
         data.sort(key=lambda x: x[0], reverse=True)
@@ -218,8 +235,12 @@ class ColorConfig(DataManager):
         # Split the line using comma, tab, or space as separators
         parts = re.split(r'[,\t\s]+', line.strip())
 
+        ln = len(parts)
+        if ln < 2:
+            return None
+
         # Ensure the line has the right number of components (4 or 5)
-        if len(parts) < 4 or len(parts) > 5:
+        if ln < 4 or ln > 5:
             raise ValueError("Invalid line format")
 
         # Parse elevation as a float if possible, fallback to int otherwise
@@ -228,7 +249,7 @@ class ColorConfig(DataManager):
             color_values = [int(value) for value in parts[1:]]
         except ValueError:
             raise ValueError(
-                "Elevation must be an integer or float, and color values must be integers"
+                "Elevation must be an integer or float. Color values must be integers"
             )
 
         # Validate that color values are within the 0-255 range
@@ -267,7 +288,6 @@ def extrap(a, b, minv=None, maxv=None):
         return round(a - (b - a))
     else:
         return clip(round(a - (b - a)), minv, maxv)
-
 
 def clip(value, min_value, max_value):
     """Clamp a value between min_value and max_value."""

@@ -47,21 +47,44 @@ class ProjectConfig(DataManager):
         "app_config": "relief_editor.cfg", "hillshade": "_hillshade_trigger.cfg",
     }
 
-    def __init__(self, main, verbose=0):
+    def __init__(self, tab_to_files, verbose=3):
         """
-        Initialize
+        Initializes the project state, including file mappings, project paths,
+        and recently accessed files.
 
         Args:
-            main (MainClass): Main application class.
+            tab_to_files (dict): A dictionary mapping tab names (str) to associated file names (str).
+            verbose (int, optional): Verbosity level for logging or debugging output.
+                Default is 0 (silent mode).
         """
         super().__init__(verbose=verbose)
+
+        # Mapping of tab names to associated file paths
+        self.tab_to_files = tab_to_files
+
+        # Directory containing DEM (Digital Elevation Model) files
         self.dem_directory = None
-        self.main = main
+
+        # Reference to the main application window or controller
+        self.main = None
+
+        # In-memory cache for project data
         self._data = {}
-        self.project_directory, self.color_file_path, self.makefile_path = None, None, None,
+
+        # Paths related to the current project
+        self.project_directory = None
+        self.color_file_path = None
+        self.makefile_path = None
+
+        # Load recently accessed file list
         self.recent_files = RecentFiles()
         self.recent_files.load(str(app_files_path("recent_files.pkl")))
+
+        # Currently selected region
         self.region = None
+
+    def set_main(self, main):
+        self.main = main
 
     def _load_data(self, _):
         """ Update project data and statuses."""
@@ -98,11 +121,11 @@ class ProjectConfig(DataManager):
         self.region = os.path.basename(config_path).replace(ProjectConfig.file_suffix["config"], "")
         self.project_directory = os.path.dirname(config_path)
 
-        self.color_file_path = os.path.join(
-            self.project_directory, os.path.basename(config_path).replace(
-                ProjectConfig.file_suffix["config"], ProjectConfig.file_suffix["color_ramp"]
-            )
-        )
+        if self.color_file_path is None:
+            self.color_file_path = os.path.join(
+                self.project_directory, "base_color_palette.txt"
+                )
+
         self.makefile_path = os.path.join(self.project_directory, "Makefile")
 
         # Update recent_files list
@@ -116,28 +139,28 @@ class ProjectConfig(DataManager):
             ["SETTINGS", "COLORFILE", "MAKEFILE"], ["SCRIPT", "MAKE"], "FOLDER", )
         if error:
             self._data["STATUS"] = "Files missing ❌"
-            return False
         else:
             self._data["STATUS"] = "Loaded ✅"
+        self._data["STATUS"] = "Loaded ✅"
 
-            # Get name of folder for elevation files.  Create if necessary
-            dem_folder = self.main.proj_config._data["DEM_FOLDER"]
-            rel_path = os.path.join(self.project_directory, dem_folder)
+        # Get name of folder for elevation files.  Create if necessary
+        dem_folder = self.main.proj_config._data["DEM_FOLDER"]
+        rel_path = os.path.join(self.project_directory, dem_folder)
 
-            # Create the folder if necessary
-            if not os.path.exists(rel_path):
-                os.mkdir(rel_path)
-            self.dem_directory = os.path.join(os.path.dirname(config_path), dem_folder)
-            return True
+        # Create the folder if necessary
+        if not os.path.exists(rel_path):
+            os.mkdir(rel_path)
+        self.dem_directory = os.path.join(os.path.dirname(config_path), dem_folder)
+        return True
 
     def print_project_files(self, config_path):
         """
         Print project file paths.
         """
-        self.main.warn(f"\nProject config file: {config_path} ")
-        self.main.warn(f"Color definition file: {self.color_file_path} ")
-        self.main.warn(f"Makefile: {self.makefile_path} ")
-        self.main.warn(f"Color relief script: color_relief.sh ")
+        self.main.info(f"Project config file: {config_path} ")
+        self.main.info(f"Color definition file: {self.color_file_path} ")
+        self.main.info(f"Makefile: {self.makefile_path} ")
+        self.main.info(f"Color relief script: color_relief.sh ")
 
     def get_target_image_name(self, basename, preview_mode, layer):
         """
@@ -165,6 +188,9 @@ class ProjectConfig(DataManager):
 
         # Get the name for the active layer id
         return self.main.proj_config[f"NAMES.{layer_id}"]
+
+    def tab_to_filename(self, tab_name):
+        return self.tab_to_files.get(tab_name, '')
 
     def layer_id_to_name(self, layer_id):
         return self.main.proj_config[f"NAMES.{layer_id}"]
